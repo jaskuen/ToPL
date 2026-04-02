@@ -109,8 +109,125 @@ public class LexerTest
             """,
             [Lex.KwVoid, Lex.KwMain, Lex.LPar, Lex.RPar, Lex.LBrace, Lex.RBrace]
         },
+        {
+            """
+            int main()
+            {
+                return 0;
+            }
+            """,
+            [
+                Lex.KwInt, Lex.KwMain, Lex.LPar, Lex.RPar,
+                Lex.LBrace,
+                Lex.KwReturn, Lex.Int(0), Lex.Semi,
+                Lex.RBrace,
+            ]
+        },
 
         // === Циклы и ветвления (2 эпик) ===
+        {
+            """
+            if (a > b) 
+            {
+                write("a > b");
+            }
+            else 
+            {
+                write("b >= a");
+            }
+            """,
+            [
+                Lex.KwIf, Lex.LPar, Lex.Id("a"), Lex.Gt, Lex.Id("b"), Lex.RPar,
+                Lex.LBrace,
+                    Lex.KwWrite, Lex.LPar, Lex.Str("a > b"), Lex.RPar, Lex.Semi,
+                Lex.RBrace,
+                Lex.KwElse,
+                Lex.LBrace,
+                    Lex.KwWrite, Lex.LPar, Lex.Str("b >= a"), Lex.RPar, Lex.Semi,
+                Lex.RBrace,
+            ]
+        },
+        {
+            """
+            if (bool1)
+            {
+                if(bool2)
+                {
+                    Write("bool1, bool2");
+                }
+            }
+            """,
+            [
+                Lex.KwIf, Lex.LPar, Lex.Id("bool1"), Lex.RPar,
+                Lex.LBrace,
+                    Lex.KwIf, Lex.LPar, Lex.Id("bool2"), Lex.RPar,
+                    Lex.LBrace,
+                        Lex.KwWrite, Lex.LPar, Lex.Str("bool1, bool2"), Lex.RPar,
+                    Lex.RBrace,
+                Lex.RBrace
+            ]
+        },
+        {
+            """
+            while(i < 10)
+            {
+                write("i = ", i++, "\n");
+            }
+            """,
+            [
+                Lex.KwWhile, Lex.LPar, Lex.Id("i"), Lex.Lt, Lex.Int(10), Lex.RPar,
+                Lex.LBrace,
+                    Lex.KwWrite, Lex.LPar, Lex.Str("i = "), Lex.Comma, Lex.Id("i"), Lex.Inc, Lex.Comma, Lex.Str("\n"), Lex.RPar, Lex.Semi,
+                Lex.RBrace
+            ]
+        },
+        {
+            """
+            while(i < 10)
+            {
+                i++;
+                if (i % 2 == 0)
+                {
+                    continue;
+                }
+
+                if (i > 5)
+                {
+                    break;
+                }
+            }
+            """,
+            [
+                Lex.KwWhile, Lex.LPar, Lex.Id("i"), Lex.Lt, Lex.Int(10), Lex.RPar,
+                Lex.LBrace,
+                    Lex.Id("i"), Lex.Inc, Lex.Semi,
+                    Lex.KwIf, Lex.LPar, Lex.Id("i"), Lex.Mod, Lex.Int(2), Lex.Eq, Lex.Int(0), Lex.RPar,
+                    Lex.LBrace,
+                        Lex.KwContinue, Lex.Semi,
+                    Lex.RBrace,
+                    Lex.KwIf, Lex.LPar, Lex.Id("i"), Lex.Gt, Lex.Int(5), Lex.RPar,
+                    Lex.LBrace,
+                        Lex.KwBreak, Lex.Semi,
+                    Lex.RBrace,
+                Lex.RBrace
+            ]
+        },
+
+        // === Пользовательские функции ===
+        {
+            """
+            int Sqr(int x)
+            {
+                return x * x;
+            }
+            """,
+            [
+                Lex.KwInt, Lex.Id("Sqr"), Lex.LPar, Lex.KwInt, Lex.Id("x"), Lex.RPar,
+                Lex.LBrace,
+                    Lex.KwReturn, Lex.Id("x"), Lex.Mul, Lex.Id("x"), Lex.Semi,
+                Lex.RBrace,
+            ]
+        },
     };
 
     private List<Token> Tokenize(string sql)
