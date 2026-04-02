@@ -3,252 +3,272 @@
 public enum TokenType
 {
     /// <summary>
-    ///  Недопустимая лексема.
+    /// Ошибка лексического анализа (недопустимый символ и т.д.).
     /// </summary>
     Error,
 
     /// <summary>
-    /// Конец чтения
+    /// Конец файла (EOF).
     /// </summary>
     End,
 
     /// <summary>
-    /// Начало блока кода
-    /// </summary>
-    CodeBlockBegin,
-
-    /// <summary>
-    /// Конец блока кода
-    /// </summary>
-    CodeBlockEnd,
-
-    /// <summary>
-    /// Возврат значения
-    /// </summary>
-    Return,
-
-    /// <summary>
-    /// Оператор прерывания
-    /// </summary>
-    Break,
-
-    /// <summary>
-    /// Оператор перехода к следующей итерации
-    /// </summary>
-    Continue,
-
-    /// <summary>
-    /// Оператор присваивания
-    /// </summary>
-    Assignment,
-
-    /// <summary>
-    /// Оператор условия
-    /// </summary>
-    If,
-
-    /// <summary>
-    /// Оператор "иначе"
-    /// </summary>
-    Else,
-
-    /// <summary>
-    /// "Пустой" возвратный тип
-    /// </summary>
-    Void,
-
-    /// <summary>
-    /// Тип "целое число"
-    /// </summary>
-    NumericType,
-
-    /// <summary>
-    /// Тип "число с плавающей точкой"
-    /// </summary>
-    FloatType,
-
-    /// <summary>
-    /// Тип "строка"
-    /// </summary>
-    StringType,
-
-    /// <summary>
-    /// Логический тип
-    /// </summary>
-    BooleanType,
-
-    /// <summary>
-    ///  Идентификатор (имя символа)
-    /// </summary>
-    Identifier,
-
-    /// <summary>
-    ///  Литерал целого числа
+    /// Литерал целого числа (int_literal, 32-битное знаковое).
     /// </summary>
     IntLiteral,
 
     /// <summary>
-    ///  Литерал числа с плавающей точкой
+    /// Литерал числа с плавающей точкой (float_literal, 32-битное одинарной точности).
     /// </summary>
-    DoubleLiteral,
+    FloatLiteral,
 
     /// <summary>
-    ///  Литерал строки
+    /// Строковый литерал (string_literal).
     /// </summary>
     StringLiteral,
 
     /// <summary>
-    ///  Оператор сложения
-    /// </summary>
-    PlusSign,
-
-    /// <summary>
-    ///  Оператор вычитания
-    /// </summary>
-    MinusSign,
-
-    /// <summary>
-    ///  Оператор умножения
-    /// </summary>
-    MultiplySign,
-
-    /// <summary>
-    ///  Оператор деления
-    /// </summary>
-    DivideSign,
-
-    /// <summary>
-    /// Оператор остатка от деления
-    /// </summary>
-    ModuloSign,
-
-    /// <summary>
-    /// Инкремент
-    /// </summary>
-    Increment,
-
-    /// <summary>
-    /// Декремент
-    /// </summary>
-    Decrement,
-
-    /// <summary>
-    /// Оператор равенства
-    /// </summary>
-    Equal,
-
-    /// <summary>
-    /// Оператор неравенства
-    /// </summary>
-    NotEqual,
-
-    /// <summary>
-    /// Логическая истина
+    /// Логическая истина (литерал 'true').
     /// </summary>
     True,
 
     /// <summary>
-    /// Логическая ложь
+    /// Логическая ложь (литерал 'false').
     /// </summary>
     False,
 
     /// <summary>
-    ///  Оператор сравнения "меньше".
+    /// Идентификатор (имя переменной или функции).
     /// </summary>
-    LessThan,
+    Identifier,
 
     /// <summary>
-    ///  Оператор сравнения "меньше или равно".
+    /// Ключевое слово 'int'.
     /// </summary>
-    LessThanOrEqual,
+    Int,
 
     /// <summary>
-    ///  Оператор сравнения "больше".
+    /// Ключевое слово 'float'.
     /// </summary>
-    GreaterThan,
+    Float,
 
     /// <summary>
-    ///  Оператор сравнения "больше или равно".
+    /// Ключевое слово 'string'.
     /// </summary>
-    GreaterThanOrEqual,
+    String,
 
     /// <summary>
-    /// Логическое "и"
+    /// Ключевое слово 'bool'.
     /// </summary>
-    And,
+    Bool,
 
     /// <summary>
-    /// Логическое "или"
+    /// Ключевое слово 'void'.
     /// </summary>
-    Or,
+    Void,
 
     /// <summary>
-    /// Логическое "не"
+    /// Ключевое слово 'main' (точка входа).
     /// </summary>
-    Not,
+    Main,
 
     /// <summary>
-    ///  Открывающая круглая скобка '('.
+    /// Ключевое слово 'const' (объявление константы).
     /// </summary>
-    OpenParenthesis,
+    Const,
 
     /// <summary>
-    ///  Закрывающая круглая скобка ')'.
+    /// Ключевое слово 'if'.
     /// </summary>
-    CloseParenthesis,
+    If,
 
     /// <summary>
-    /// Открывающая квадратная скобка '['.
+    /// Ключевое слово 'else'.
     /// </summary>
-    OpenArrayParenthesis,
+    Else,
 
     /// <summary>
-    /// Закрывающая квадратная скобка ']'.
-    /// </summary>
-    CloseArrayParenthesis,
-
-    /// <summary>
-    ///  Запятая ','
-    /// </summary>
-    Comma,
-
-    /// <summary>
-    ///  Разделитель 'поклон'
-    /// </summary>
-    Semicolon,
-
-    /// <summary>
-    /// Оператор 'изберется'
-    /// </summary>
-    Switch,
-
-    /// <summary>
-    /// Оператор 'егда'
-    /// </summary>
-    Case,
-
-    /// <summary>
-    /// Оператор 'поеликуже'
-    /// </summary>
-    Default,
-
-    /// <summary>
-    /// Оператор цикла 'доколе'
+    /// Ключевое слово 'while'.
     /// </summary>
     While,
 
     /// <summary>
-    /// Оператор цикла 'повторити'
+    /// Ключевое слово 'break'.
     /// </summary>
-    For,
+    Break,
 
     /// <summary>
-    /// Чтение из консоли
+    /// Ключевое слово 'continue'.
     /// </summary>
-    ConsoleRead,
+    Continue,
 
     /// <summary>
-    /// Вывод в консоль
+    /// Ключевое слово 'return'.
     /// </summary>
-    ConsoleWrite,
+    Return,
+
+    /// <summary>
+    /// Ключевое слово 'read'.
+    /// </summary>
+    Read,
+
+    /// <summary>
+    /// Ключевое слово 'write'.
+    /// </summary>
+    Write,
+
+    /// <summary>
+    /// Встроенная функция 'abs'.
+    /// </summary>
+    Abs,
+
+    /// <summary>
+    /// Встроенная функция 'round'.
+    /// </summary>
+    Round,
+
+    /// <summary>
+    /// Встроенная функция 'ceil'.
+    /// </summary>
+    Ceil,
+
+    /// <summary>
+    /// Встроенная функция 'floor'.
+    /// </summary>
+    Floor,
+
+    /// <summary>
+    /// Встроенная функция 'min'.
+    /// </summary>
+    Min,
+
+    /// <summary>
+    /// Встроенная функция 'max'.
+    /// </summary>
+    Max,
+
+    /// <summary>
+    /// Встроенная функция 'length'.
+    /// </summary>
+    Length,
+
+    /// <summary>
+    /// Встроенная функция 'substring'.
+    /// </summary>
+    Substring,
+
+    /// <summary>
+    /// Оператор '+' (Сложение, конкатенация, унарный плюс).
+    /// </summary>
+    Plus,
+
+    /// <summary>
+    /// Оператор '-' (Вычитание, унарный минус).
+    /// </summary>
+    Minus,
+
+    /// <summary>
+    /// Оператор '*' (Умножение).
+    /// </summary>
+    Multiply,
+
+    /// <summary>
+    /// Оператор '/' (Деление).
+    /// </summary>
+    Divide,
+
+    /// <summary>
+    /// Оператор '%' (Остаток от деления).
+    /// </summary>
+    Modulo,
+
+    /// <summary>
+    /// Оператор '++' (Инкремент).
+    /// </summary>
+    Increment,
+
+    /// <summary>
+    /// Оператор '--' (Декремент).
+    /// </summary>
+    Decrement,
+
+    /// <summary>
+    /// Оператор '==' или 'equals' (Равенство).
+    /// </summary>
+    Equal,
+
+    /// <summary>
+    /// Оператор '!=' (Неравенство).
+    /// </summary>
+    NotEqual,
+
+    /// <summary>
+    /// Оператор '<' (Меньше).
+    /// </summary>
+    LessThan,
+
+    /// <summary>
+    /// Оператор '<=' (Меньше или равно).
+    /// </summary>
+    LessThanOrEqual,
+
+    /// <summary>
+    /// Оператор '>' (Больше).
+    /// </summary>
+    GreaterThan,
+
+    /// <summary>
+    /// Оператор '>=' (Больше или равно).
+    /// </summary>
+    GreaterThanOrEqual,
+
+    /// <summary>
+    /// Оператор '&&' или 'and' (Логическое И).
+    /// </summary>
+    LogicalAnd,
+
+    /// <summary>
+    /// Оператор '||' или 'or' (Логическое ИЛИ).
+    /// </summary>
+    LogicalOr,
+
+    /// <summary>
+    /// Оператор '!' или 'not' (Логическое НЕ).
+    /// </summary>
+    LogicalNot,
+
+    /// <summary>
+    /// Оператор '=' (Присваивание).
+    /// </summary>
+    Assignment,
+
+    /// <summary>
+    /// Открывающая круглая скобка '('.
+    /// </summary>
+    OpenParenthesis,
+
+    /// <summary>
+    /// Закрывающая круглая скобка ')'.
+    /// </summary>
+    CloseParenthesis,
+
+    /// <summary>
+    /// Открывающая фигурная скобка '{' (Начало блока кода).
+    /// </summary>
+    OpenBrace,
+
+    /// <summary>
+    /// Закрывающая фигурная скобка '}' (Конец блока кода).
+    /// </summary>
+    CloseBrace,
+
+    /// <summary>
+    /// Запятая ','.
+    /// </summary>
+    Comma,
+
+    /// <summary>
+    /// Точка с запятой ';'.
+    /// </summary>
+    Semicolon,
 }
