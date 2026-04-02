@@ -1,4 +1,5 @@
 # IDE settings
+/.vs/
 /.vscode/
 /.idea/
 *.sln.DotSettings.user

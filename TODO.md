@@ -1,4 +1,0 @@
-﻿- [ ] В грамматике выражений неоднозначность между выбором assignment_expression и logical_or_expression
-- [ ] Неоднозначность в primary_expression (identifier)
-- [ ] Сгенерировать тесты к TokenStream, BuiltinFunctions с помощью ИИ.
-- [ ] Отрефакторить тесты с помощью ИИ (убрать typeof)
