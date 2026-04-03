@@ -8,40 +8,40 @@ public class Lexer
 
     private static readonly Dictionary<string, TokenType> Keywords = new()
     {
-        { "воистину", TokenType.CodeBlockBegin },
-        { "аминь", TokenType.CodeBlockEnd },
+        { "воистину", TokenType.OpenBrace },
+        { "аминь", TokenType.CloseBrace },
         { "поклон", TokenType.Semicolon },
         { "аще", TokenType.If },
         { "илиже", TokenType.Else },
         { "ничтоже", TokenType.Void },
-        { "благодать", TokenType.NumericType },
-        { "кадило", TokenType.FloatType },
-        { "верующий", TokenType.BooleanType },
-        { "словеса", TokenType.StringType },
+        { "благодать", TokenType.Int },
+        { "кадило", TokenType.Float },
+        { "верующий", TokenType.Bool },
+        { "словеса", TokenType.String },
         { "доколе", TokenType.While },
-        { "повторити", TokenType.For },
+        //{ "повторити", TokenType.For },
         { "возврати", TokenType.Return },
         { "отрешити", TokenType.Break },
         { "уповаю", TokenType.Continue },
         { "даруй", TokenType.Assignment },
         { "яко", TokenType.Equal },
         { "негоже", TokenType.NotEqual },
-        { "не", TokenType.Not },
+        { "не", TokenType.LogicalNot },
         { "паче", TokenType.GreaterThanOrEqual },
         { "меньше", TokenType.LessThanOrEqual },
         { "велий", TokenType.GreaterThan },
         { "малый", TokenType.LessThan },
-        { "или", TokenType.Or },
-        { "и", TokenType.And },
+        { "или", TokenType.LogicalOr },
+        { "и", TokenType.LogicalAnd },
         { "истинно", TokenType.True },
         { "лукаво", TokenType.False },
-        { "возгласи", TokenType.ConsoleWrite },
-        { "внемли", TokenType.ConsoleRead },
+        { "возгласи", TokenType.Write },
+        { "внемли", TokenType.Read },
         { "приумножу", TokenType.Increment },
         { "умалю", TokenType.Decrement },
-        { "егда", TokenType.Case },
-        { "изберется", TokenType.Switch },
-        { "поеликуже", TokenType.Default },
+        //{ "егда", TokenType.Case },
+        //{ "изберется", TokenType.Switch },
+        //{ "поеликуже", TokenType.Default },
     };
 
     private readonly TextScanner scanner;
@@ -89,31 +89,31 @@ public class Lexer
                 return new Token(TokenType.Comma);
             case '+':
                 scanner.Advance();
-                return new Token(TokenType.PlusSign);
+                return new Token(TokenType.Plus);
             case '-':
                 scanner.Advance();
-                return new Token(TokenType.MinusSign);
+                return new Token(TokenType.Minus);
             case '*':
                 scanner.Advance();
-                return new Token(TokenType.MultiplySign);
+                return new Token(TokenType.Multiply);
             case '%':
                 scanner.Advance();
-                return new Token(TokenType.ModuloSign);
+                return new Token(TokenType.Modulo);
             case '/':
                 scanner.Advance();
-                return new Token(TokenType.DivideSign);
+                return new Token(TokenType.Divide);
             case '(':
                 scanner.Advance();
                 return new Token(TokenType.OpenParenthesis);
             case ')':
                 scanner.Advance();
                 return new Token(TokenType.CloseParenthesis);
-            case '[':
-                scanner.Advance();
-                return new Token(TokenType.OpenArrayParenthesis);
-            case ']':
-                scanner.Advance();
-                return new Token(TokenType.CloseArrayParenthesis);
+            //case '[':
+            //    scanner.Advance();
+            //    return new Token(TokenType.OpenArrayParenthesis);
+            //case ']':
+            //    scanner.Advance();
+            //    return new Token(TokenType.CloseArrayParenthesis);
         }
 
         scanner.Advance();
@@ -179,7 +179,7 @@ public class Lexer
                 factor *= 0.1;
             }
 
-            return new Token(TokenType.DoubleLiteral, new TokenValue(value));
+            return new Token(TokenType.FloatLiteral, new TokenValue(value));
         }
 
         return new Token(TokenType.IntLiteral, new TokenValue((int)value));

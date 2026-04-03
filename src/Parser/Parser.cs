@@ -33,7 +33,7 @@ public class Parser
     {
         List<TokenType> types =
         [
-            TokenType.Void, TokenType.BooleanType, TokenType.FloatType, TokenType.NumericType, TokenType.StringType
+            TokenType.Void, TokenType.Bool, TokenType.Float, TokenType.Int, TokenType.String
         ];
 
         do
@@ -103,7 +103,7 @@ public class Parser
     /// </summary>
     private ScopeStatement ParseScope()
     {
-        Match(TokenType.CodeBlockBegin);
+        Match(TokenType.OpenBrace);
         List<AstNode> statements = [];
         do
         {
@@ -117,9 +117,9 @@ public class Parser
 
             statements.Add(statement);
         }
-        while (tokens.Peek().Type != TokenType.CodeBlockEnd);
+        while (tokens.Peek().Type != TokenType.CloseBrace);
 
-        Match(TokenType.CodeBlockEnd);
+        Match(TokenType.CloseBrace);
 
         return new ScopeStatement(statements);
     }
@@ -146,10 +146,10 @@ public class Parser
     {
         switch (tokens.Peek().Type)
         {
-            case TokenType.NumericType:
-            case TokenType.FloatType:
-            case TokenType.BooleanType:
-            case TokenType.StringType:
+            case TokenType.Int:
+            case TokenType.Float:
+            case TokenType.Bool:
+            case TokenType.String:
                 return ParseVariableDeclaration();
             case TokenType.Identifier:
                 if (tokens.Peek(1).Type == TokenType.Assignment)
@@ -158,9 +158,9 @@ public class Parser
                 }
 
                 return ParseIdentifierSuffix();
-            case TokenType.ConsoleRead:
+            case TokenType.Read:
                 return ParseInputStatement();
-            case TokenType.ConsoleWrite:
+            case TokenType.Write:
                 return ParseOutputStatement();
             case TokenType.Return:
                 return ParseReturnStatement();
@@ -168,10 +168,10 @@ public class Parser
                 return ParseIfStatement();
             case TokenType.While:
                 return ParseWhileLoopStatement();
-            case TokenType.Switch:
-                return ParseSwitchStatement();
-            case TokenType.For:
-                return ParseForLoopStatement();
+            //case TokenType.Switch:
+            //    return ParseSwitchStatement();
+            //case TokenType.For:
+            //    return ParseForLoopStatement();
             case TokenType.Break:
                 tokens.Advance();
                 Match(TokenType.Semicolon);
@@ -272,7 +272,7 @@ public class Parser
     /// </summary>
     private InputStatement ParseInputStatement()
     {
-        Match(TokenType.ConsoleRead);
+        Match(TokenType.Read);
         Match(TokenType.OpenParenthesis);
         List<string> list = ParseInputStatementArguments();
         Match(TokenType.CloseParenthesis);
@@ -321,7 +321,7 @@ public class Parser
     /// </summary>
     private OutputStatement ParseOutputStatement()
     {
-        Match(TokenType.ConsoleWrite);
+        Match(TokenType.Write);
         Match(TokenType.OpenParenthesis);
         List<Expression> items = ParseOutputStatementArguments();
         Match(TokenType.CloseParenthesis);
@@ -409,15 +409,15 @@ public class Parser
     /// <returns></returns>
     private SwitchStatement ParseSwitchStatement()
     {
-        Match(TokenType.Switch);
+        //Match(TokenType.Switch);
         Match(TokenType.OpenParenthesis);
         Expression condition = ParseExpression();
         Match(TokenType.CloseParenthesis);
-        Match(TokenType.CodeBlockBegin);
+        Match(TokenType.OpenBrace);
         Dictionary<Expression, ScopeStatement> cases = ParseSwitchStatements();
-        Match(TokenType.Default);
+        //Match(TokenType.Default);
         ScopeStatement defaultStatement = ParseScope();
-        Match(TokenType.CodeBlockEnd);
+        Match(TokenType.CloseParenthesis);
 
         return new SwitchStatement(cases, condition, defaultStatement);
     }
@@ -430,14 +430,14 @@ public class Parser
     private Dictionary<Expression, ScopeStatement> ParseSwitchStatements()
     {
         Dictionary<Expression, ScopeStatement> cases = [];
-        while (tokens.Peek().Type == TokenType.Case)
-        {
-            Match(TokenType.Case);
-            Expression constValue = ParseExpression();
-            ScopeStatement statement = ParseScope();
+        //while (tokens.Peek().Type == TokenType.Case)
+        //{
+        //    Match(TokenType.Case);
+        //    Expression constValue = ParseExpression();
+        //    ScopeStatement statement = ParseScope();
 
-            cases.Add(constValue, statement);
-        }
+        //    cases.Add(constValue, statement);
+        //}
 
         return cases;
     }
@@ -448,7 +448,7 @@ public class Parser
     /// <returns></returns>
     private ForLoopStatement ParseForLoopStatement()
     {
-        Match(TokenType.For);
+        //Match(TokenType.For);
         Match(TokenType.OpenParenthesis);
 
         // пока пропускаем тип
@@ -506,7 +506,7 @@ public class Parser
         {
             switch (tokens.Peek().Type)
             {
-                case TokenType.Or:
+                case TokenType.LogicalOr:
                     tokens.Advance();
                     return new BinaryOperationExpression(value, BinaryOperation.Or, ParseLogicalAndExpression());
                 default:
@@ -527,7 +527,7 @@ public class Parser
         {
             switch (tokens.Peek().Type)
             {
-                case TokenType.And:
+                case TokenType.LogicalAnd:
                     tokens.Advance();
                     return new BinaryOperationExpression(value, BinaryOperation.And, ParseEqualityExpression());
                 default:
@@ -610,10 +610,10 @@ public class Parser
         {
             switch (tokens.Peek().Type)
             {
-                case TokenType.PlusSign:
+                case TokenType.Plus:
                     tokens.Advance();
                     return new BinaryOperationExpression(value, BinaryOperation.Plus, ParseMultiplicativeExpression());
-                case TokenType.MinusSign:
+                case TokenType.Minus:
                     tokens.Advance();
                     return new BinaryOperationExpression(value, BinaryOperation.Minus, ParseMultiplicativeExpression());
                 default:
@@ -634,13 +634,13 @@ public class Parser
         {
             switch (tokens.Peek().Type)
             {
-                case TokenType.MultiplySign:
+                case TokenType.Multiply:
                     tokens.Advance();
                     return new BinaryOperationExpression(value, BinaryOperation.Multiply, ParseUnaryExpression());
-                case TokenType.DivideSign:
+                case TokenType.Divide:
                     tokens.Advance();
                     return new BinaryOperationExpression(value, BinaryOperation.Divide, ParseUnaryExpression());
-                case TokenType.ModuloSign:
+                case TokenType.Modulo:
                     tokens.Advance();
                     return new BinaryOperationExpression(value, BinaryOperation.Modulo, ParseUnaryExpression());
                 default:
@@ -658,13 +658,13 @@ public class Parser
     {
         switch (tokens.Peek().Type)
         {
-            case TokenType.Not:
+            case TokenType.LogicalNot:
                 tokens.Advance();
                 return new UnaryOperationExpression(UnaryOperation.Not, ParsePostfixExpression());
-            case TokenType.PlusSign:
+            case TokenType.Plus:
                 tokens.Advance();
                 return new UnaryOperationExpression(UnaryOperation.Plus, ParsePostfixExpression());
-            case TokenType.MinusSign:
+            case TokenType.Minus:
                 tokens.Advance();
                 return new UnaryOperationExpression(UnaryOperation.Minus, ParsePostfixExpression());
             case TokenType.Increment:
@@ -713,7 +713,7 @@ public class Parser
         Token t = tokens.Peek();
         switch (t.Type)
         {
-            case TokenType.DoubleLiteral:
+            case TokenType.FloatLiteral:
                 tokens.Advance();
                 return new LiteralExpression(t.Value!.ToDouble());
             case TokenType.IntLiteral:
@@ -808,10 +808,10 @@ public class Parser
     {
         return tokenType switch
         {
-            TokenType.BooleanType => VariableType.Boolean,
-            TokenType.StringType => VariableType.String,
-            TokenType.NumericType => VariableType.Int,
-            TokenType.FloatType => VariableType.Double,
+            TokenType.Bool => VariableType.Boolean,
+            TokenType.String => VariableType.String,
+            TokenType.Int => VariableType.Int,
+            TokenType.Float => VariableType.Double,
             TokenType.Void => VariableType.Void,
             _ => throw new UnexpectedLexemeException(tokenType, tokens.Peek())
         };

@@ -32,47 +32,47 @@ public static class LexicalStats
             case TokenType.If:
             case TokenType.Else:
             case TokenType.Void:
-            case TokenType.NumericType:
-            case TokenType.StringType:
-            case TokenType.BooleanType:
+            case TokenType.Int:
+            case TokenType.String:
+            case TokenType.Bool:
             case TokenType.While:
             case TokenType.Return:
             case TokenType.Break:
             case TokenType.Continue:
-            case TokenType.ConsoleWrite:
-            case TokenType.ConsoleRead:
-            case TokenType.Case:
-            case TokenType.Switch:
-            case TokenType.Default:
+            case TokenType.Write:
+            case TokenType.Read:
+            //case TokenType.Case:
+            //case TokenType.Switch:
+            //case TokenType.Default:
                 return LexicalType.Keyword;
             case TokenType.Identifier:
                 return LexicalType.Identifier;
             case TokenType.IntLiteral:
-            case TokenType.DoubleLiteral:
-                return LexicalType.Number;
+            case TokenType.FloatLiteral:
+                return LexicalType.IntLiteral;
             case TokenType.StringLiteral:
-                return LexicalType.String;
-            case TokenType.PlusSign:
-            case TokenType.MinusSign:
-            case TokenType.DivideSign:
-            case TokenType.MultiplySign:
+                return LexicalType.StringLiteral;
+            case TokenType.Plus:
+            case TokenType.Minus:
+            case TokenType.Divide:
+            case TokenType.Multiply:
             case TokenType.Increment:
             case TokenType.Decrement:
-            case TokenType.ModuloSign:
+            case TokenType.Modulo:
             case TokenType.Assignment:
             case TokenType.GreaterThan:
             case TokenType.GreaterThanOrEqual:
             case TokenType.LessThan:
             case TokenType.LessThanOrEqual:
-            case TokenType.Or:
+            case TokenType.LogicalOr:
             case TokenType.Equal:
             case TokenType.NotEqual:
             case TokenType.True:
             case TokenType.False:
-            case TokenType.Not:
+            case TokenType.LogicalNot:
                 return LexicalType.Operator;
             default:
-                return LexicalType.OtherLexemes;
+                return LexicalType.Punctuation; // Тут было OtherLexems, думаю что это {}(),;
         }
     }
 
@@ -81,10 +81,10 @@ public static class LexicalStats
         return $"""
                 keywords: {dict[LexicalType.Keyword]}
                 identifier: {dict[LexicalType.Identifier]}
-                number literals: {dict[LexicalType.Number]}
-                string literals: {dict[LexicalType.String]}
+                number literals: {dict[LexicalType.IntLiteral]}
+                string literals: {dict[LexicalType.StringLiteral]}
                 operators: {dict[LexicalType.Operator]}
-                other lexemes: {dict[LexicalType.OtherLexemes]}
+                other lexemes: {dict[LexicalType.Punctuation]}
                 """;
     }
 }
