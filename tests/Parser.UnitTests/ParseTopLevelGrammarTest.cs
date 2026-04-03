@@ -22,7 +22,7 @@ public class ParseTopLevelGrammarTest
         string program = $"""
                           главная воистину
                           {code}
-                          возврати {variableName} поклон
+                          возврати {variableName};
                           аминь
                           """;
 
@@ -39,51 +39,51 @@ public class ParseTopLevelGrammarTest
         return new TheoryData<string, string, RuntimeValue>
         {
             // Объявление одной переменной
-            { "благодать x даруй 5 поклон", "x", new RuntimeValue("5") },
+            { "int x = 5;", "x", new RuntimeValue("5") },
 
             // Объявление нескольких переменных, присваивание одной значения (другая = 0)
-            { "благодать x, y даруй 2 + 3 * 4 поклон", "y", new RuntimeValue("14") },
+            { "int x, y = 2 + 3 * 4;", "y", new RuntimeValue("14") },
 
             // Множественное присваивание
-            { "благодать a даруй 5, b даруй 10 поклон", "a", new RuntimeValue("5") },
-            { "благодать a даруй 5, b даруй 10 поклон", "b", new RuntimeValue("10") },
+            { "int a = 5, b = 10;", "a", new RuntimeValue("5") },
+            { "int a = 5, b = 10;", "b", new RuntimeValue("10") },
 
             // Функция в качестве значения переменной
-            { "кадило f даруй синус(пи/2) поклон", "f", new RuntimeValue("1") },
+            { "float f = min(1.0, 5.0);", "f", new RuntimeValue("1") },
 
             // Неявное преобразование Int -> Double
-            { "кадило x даруй 3 поклон", "x", new RuntimeValue("3") },
+            { "float x = 3;", "x", new RuntimeValue("3") },
 
             // Сравнение Int и Double
-            { "верующий x даруй 5 паче 3.0 поклон", "x", new RuntimeValue("True") },
+            { "bool x = 5 >= 3.0;", "x", new RuntimeValue("True") },
 
             // Вычисление по короткой схеме
-            { "верующий x даруй истинно или 3.0 поклон", "x", new RuntimeValue("True") },
-            { "верующий x даруй лукаво и 3.0 поклон", "x", new RuntimeValue("False") },
+            { "bool x = true || 3.0;", "x", new RuntimeValue("True") },
+            { "bool x = false && 3.0;", "x", new RuntimeValue("False") },
 
             // Префиксный инкремент
             {
                 """
-                благодать счетчик даруй 4 поклон
-                возгласи(приумножу счетчик) поклон
+                int counter = 4;
+                write(++counter);
                 """,
-                "счетчик", new RuntimeValue("5")
+                "counter", new RuntimeValue("5")
             },
 
             // Префиксный декремент
             {
                 """
-                благодать счетчик даруй 4 поклон
-                возгласи(умалю счетчик) поклон
+                int counter = 4;
+                write(--counter);
                 """,
-                "счетчик", new RuntimeValue("3")
+                "counter", new RuntimeValue("3")
             },
 
             // Префиксный инкремент в выражении
             {
                 """
-                благодать x даруй 4 поклон
-                благодать y даруй (приумножу x) * 2 поклон
+                int x = 4;
+                int y = (++x) * 2;
                 """,
                 "y", new RuntimeValue("10")
             },
@@ -91,8 +91,8 @@ public class ParseTopLevelGrammarTest
             // Постфиксный инкремент
             {
                 """
-                благодать x даруй 4 поклон
-                возгласи(x приумножу) поклон
+                int x = 4;
+                write(x++);
                 """,
                 "x", new RuntimeValue("4")
             },
@@ -100,8 +100,8 @@ public class ParseTopLevelGrammarTest
             // Постфиксный декремент
             {
                 """
-                благодать x даруй 4 поклон
-                возгласи(x умалю) поклон
+                int x = 4;
+                write(x--);
                 """,
                 "x", new RuntimeValue("4")
             },
@@ -109,8 +109,8 @@ public class ParseTopLevelGrammarTest
             // Постфиксный инкремент в выражении
             {
                 """
-                благодать x даруй 4 поклон
-                благодать y даруй (x приумножу) * 2 поклон
+                int x = 4;
+                int y = (x++) * 2;
                 """,
                 "y", new RuntimeValue("8")
             },
@@ -129,8 +129,8 @@ public class ParseTopLevelGrammarTest
     {
         return new TheoryData<string>
         {
-            "а даруй б поклон", // Нет объявления переменных.
-            "благодать а даруй б поклон", // Одна из переменных не объявлена
+            "a = b;",       // Нет объявления переменных.
+            "int a = b;",   // Одна из переменных не объявлена
         };
     }
 
@@ -146,10 +146,10 @@ public class ParseTopLevelGrammarTest
     {
         return new TheoryData<string>
         {
-            "благодать а даруй 5", // Разбор объявления переменной без конца инструкции
-            "благодать даруй 5 поклон", // Разбор объявления переменной с пустым идентификатором
-            "благодать x поклон", // Разбор объявления переменной с пустым выражением
-            "благодать 123 даруй 321", // Разбор объявления переменной с неправильным идентификатором
+            "int а = 5",        // Разбор объявления переменной без конца инструкции
+            "int = 5;",         // Разбор объявления переменной с пустым идентификатором
+            "int x;",           // Разбор объявления переменной с пустым выражением
+            "int 123 = 321",    // Разбор объявления переменной с неправильным идентификатором
         };
     }
 
@@ -165,14 +165,14 @@ public class ParseTopLevelGrammarTest
     {
         return new TheoryData<string>
         {
-            "благодать а даруй 5.0 поклон", // Double -> Int
-            "благодать а даруй \"5\" поклон", // String -> Int
-            "благодать а даруй лукаво поклон", // Boolean -> Int
-            "кадило а даруй \"5.0\" поклон", // String -> Double
-            "кадило а даруй лукаво поклон", // Boolean -> Double
-            "верующий а даруй 3 паче \"2\" поклон", // Сравнение Int и String
-            "верующий а даруй 3 паче лукаво поклон", // Сравнение Int и Boolean
-            "верующий ",
+            "int а = 5.0;", // Double -> Int
+            "int а = \"5\";", // String -> Int
+            "int а = false;", // Boolean -> Int
+            "float а = \"5.0\";", // String -> Double
+            "float а = false;", // Boolean -> Double
+            "bool а = 3 >= \"2\";", // Сравнение Int и String
+            "bool а = 3 >= false;", // Сравнение Int и Boolean
+            "bool ",
         };
     }
 }
