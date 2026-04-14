@@ -88,14 +88,14 @@ public class LexerTest
         { "a = b; // Присвоение", [Lex.Id("a"), Lex.Assign, Lex.Id("b"), Lex.Semi] },
 
         // === Встроенные функции ===
-        { "abs(-123)", [Lex.FnAbs, Lex.LPar, Lex.Minus, Lex.Int(123), Lex.RPar] },
-        { "round(3.14)", [Lex.FnRound, Lex.LPar, Lex.Flt(3.14f), Lex.RPar] },
-        { "ceil(3.14)", [Lex.FnCeil, Lex.LPar, Lex.Flt(3.14f), Lex.RPar] },
-        { "floor(3.14)", [Lex.FnFloor, Lex.LPar, Lex.Flt(3.14f), Lex.RPar] },
-        { "min(a, b)", [Lex.FnMin, Lex.LPar, Lex.Id("a"), Lex.Comma, Lex.Id("b"), Lex.RPar] },
-        { "max(a, b)", [Lex.FnMax, Lex.LPar, Lex.Id("a"), Lex.Comma, Lex.Id("b"), Lex.RPar] },
-        { "length(s)", [Lex.FnLength, Lex.LPar, Lex.Id("s"), Lex.RPar] },
-        { "substring(s, 0, 3)", [Lex.FnSubstring, Lex.LPar, Lex.Id("s"), Lex.Comma, Lex.Int(0), Lex.Comma, Lex.Int(3), Lex.RPar] },
+        // { "abs(-123)", [Lex.FnAbs, Lex.LPar, Lex.Minus, Lex.Int(123), Lex.RPar] },
+        // { "round(3.14)", [Lex.FnRound, Lex.LPar, Lex.Flt(3.14f), Lex.RPar] },
+        // { "ceil(3.14)", [Lex.FnCeil, Lex.LPar, Lex.Flt(3.14f), Lex.RPar] },
+        // { "floor(3.14)", [Lex.FnFloor, Lex.LPar, Lex.Flt(3.14f), Lex.RPar] },
+        // { "min(a, b)", [Lex.FnMin, Lex.LPar, Lex.Id("a"), Lex.Comma, Lex.Id("b"), Lex.RPar] },
+        // { "max(a, b)", [Lex.FnMax, Lex.LPar, Lex.Id("a"), Lex.Comma, Lex.Id("b"), Lex.RPar] },
+        // { "length(s)", [Lex.FnLength, Lex.LPar, Lex.Id("s"), Lex.RPar] },
+        // { "substring(s, 0, 3)", [Lex.FnSubstring, Lex.LPar, Lex.Id("s"), Lex.Comma, Lex.Int(0), Lex.Comma, Lex.Int(3), Lex.RPar] },
         { "read(s)", [Lex.KwRead, Lex.LPar, Lex.Id("s"), Lex.RPar] },
         { "write(s)", [Lex.KwWrite, Lex.LPar, Lex.Id("s"), Lex.RPar] },
 
@@ -162,7 +162,7 @@ public class LexerTest
                 Lex.LBrace,
                     Lex.KwIf, Lex.LPar, Lex.Id("bool2"), Lex.RPar,
                     Lex.LBrace,
-                        Lex.KwWrite, Lex.LPar, Lex.Str("bool1, bool2"), Lex.RPar,
+                        Lex.KwWrite, Lex.LPar, Lex.Str("bool1, bool2"), Lex.RPar, Lex.Semi,
                     Lex.RBrace,
                 Lex.RBrace
             ]

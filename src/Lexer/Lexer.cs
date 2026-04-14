@@ -8,37 +8,29 @@ public class Lexer
 
     private static readonly Dictionary<string, TokenType> Keywords = new()
     {
-        { "воистину", TokenType.OpenBrace },
-        { "аминь", TokenType.CloseBrace },
-        { "поклон", TokenType.Semicolon },
-        { "аще", TokenType.If },
-        { "илиже", TokenType.Else },
-        { "ничтоже", TokenType.Void },
-        { "благодать", TokenType.Int },
-        { "кадило", TokenType.Float },
-        { "верующий", TokenType.Bool },
-        { "словеса", TokenType.String },
-        { "доколе", TokenType.While },
+        { ";", TokenType.Semicolon },
+        { "if", TokenType.If },
+        { "else", TokenType.Else },
+        { "void", TokenType.Void },
+        { "int", TokenType.Int },
+        { "float", TokenType.Float },
+        { "bool", TokenType.Bool },
+        { "string", TokenType.String },
+        { "while", TokenType.While },
         //{ "повторити", TokenType.For },
-        { "возврати", TokenType.Return },
-        { "отрешити", TokenType.Break },
-        { "уповаю", TokenType.Continue },
-        { "даруй", TokenType.Assignment },
-        { "яко", TokenType.Equal },
-        { "негоже", TokenType.NotEqual },
-        { "не", TokenType.LogicalNot },
-        { "паче", TokenType.GreaterThanOrEqual },
-        { "меньше", TokenType.LessThanOrEqual },
-        { "велий", TokenType.GreaterThan },
-        { "малый", TokenType.LessThan },
-        { "или", TokenType.LogicalOr },
-        { "и", TokenType.LogicalAnd },
-        { "истинно", TokenType.True },
-        { "лукаво", TokenType.False },
-        { "возгласи", TokenType.Write },
-        { "внемли", TokenType.Read },
-        { "приумножу", TokenType.Increment },
-        { "умалю", TokenType.Decrement },
+        { "return", TokenType.Return },
+        { "break", TokenType.Break },
+        { "continue", TokenType.Continue },
+        { "equals", TokenType.Equal },
+        { "not", TokenType.LogicalNot },
+        { "or", TokenType.LogicalOr },
+        { "and", TokenType.LogicalAnd },
+        { "true", TokenType.True },
+        { "false", TokenType.False },
+        { "write", TokenType.Write },
+        { "read", TokenType.Read },
+        { "const", TokenType.Const },
+        { "main",  TokenType.Main },
         //{ "егда", TokenType.Case },
         //{ "изберется", TokenType.Switch },
         //{ "поеликуже", TokenType.Default },
@@ -84,15 +76,12 @@ public class Lexer
 
         switch (c)
         {
+            case ';':
+                scanner.Advance();
+                return new Token(TokenType.Semicolon);
             case ',':
                 scanner.Advance();
                 return new Token(TokenType.Comma);
-            case '+':
-                scanner.Advance();
-                return new Token(TokenType.Plus);
-            case '-':
-                scanner.Advance();
-                return new Token(TokenType.Minus);
             case '*':
                 scanner.Advance();
                 return new Token(TokenType.Multiply);
@@ -108,6 +97,21 @@ public class Lexer
             case ')':
                 scanner.Advance();
                 return new Token(TokenType.CloseParenthesis);
+            case '{':
+                scanner.Advance();
+                return new Token(TokenType.OpenBrace);
+            case '}':
+                scanner.Advance();
+                return new Token(TokenType.CloseBrace);
+            case '!':
+            case '>':
+            case '<':
+            case '|':
+            case '&':
+            case '=':
+            case '+':
+            case '-':
+                return ParseOperand();
             //case '[':
             //    scanner.Advance();
             //    return new Token(TokenType.OpenArrayParenthesis);
@@ -147,6 +151,83 @@ public class Lexer
 
         // Возвращаем токен идентификатора.
         return new Token(TokenType.Identifier, new TokenValue(value));
+    }
+
+    private Token ParseOperand()
+    {
+        char c = scanner.Peek();
+        scanner.Advance();
+        switch (c)
+        {
+            case '!':
+                if (scanner.Peek() != '=')
+                {
+                    return new Token(TokenType.LogicalNot);
+                }
+
+                scanner.Advance();
+                return new Token(TokenType.NotEqual);
+
+            case '>':
+                if (scanner.Peek() != '=')
+                {
+                    return new Token(TokenType.GreaterThan);
+                }
+
+                scanner.Advance();
+                return new Token(TokenType.GreaterThanOrEqual);
+
+            case '<':
+                if (scanner.Peek() != '=')
+                {
+                    return new Token(TokenType.LessThan);
+                }
+
+                scanner.Advance();
+                return new Token(TokenType.LessThanOrEqual);
+            case '|':
+                if (scanner.Peek() == '|')
+                {
+                    scanner.Advance();
+                    return new Token(TokenType.LogicalOr);
+                }
+
+                break;
+            case '&':
+                if (scanner.Peek() == '&')
+                {
+                    scanner.Advance();
+                    return new Token(TokenType.LogicalAnd);
+                }
+
+                break;
+            case '+':
+                if (scanner.Peek() == '+')
+                {
+                    scanner.Advance();
+                    return new Token(TokenType.Increment);
+                }
+
+                return new Token(TokenType.Plus);
+            case '-':
+                if (scanner.Peek() == '-')
+                {
+                    scanner.Advance();
+                    return new Token(TokenType.Decrement);
+                }
+
+                return new Token(TokenType.Minus);
+            case '=':
+                if (scanner.Peek() == '=')
+                {
+                    scanner.Advance();
+                    return new Token(TokenType.Equal);
+                }
+
+                return new Token(TokenType.Assignment);
+        }
+
+        return new Token(TokenType.Error, new TokenValue(c.ToString()));
     }
 
     /// <summary>
@@ -292,8 +373,7 @@ public class Lexer
         do
         {
             SkipWhiteSpaces();
-        }
-        while (TryParseSingleLineComment());
+        } while (TryParseSingleLineComment());
     }
 
     /// <summary>
@@ -313,13 +393,12 @@ public class Lexer
     /// </summary>
     private bool TryParseSingleLineComment()
     {
-        if (scanner.Peek() == '#')
+        if (scanner.Peek() == '/' && scanner.Peek(1) == '/')
         {
             do
             {
                 scanner.Advance();
-            }
-            while (scanner.Peek() != '\n' && scanner.Peek() != '\r' && scanner.Peek() != '\0');
+            } while (scanner.Peek() != '\n' && scanner.Peek() != '\r' && scanner.Peek() != '\0');
 
             return true;
         }

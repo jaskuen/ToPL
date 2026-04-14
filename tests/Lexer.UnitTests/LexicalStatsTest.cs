@@ -36,8 +36,6 @@ public class LexicalStatsTest
                           bool literals: 0
                           operators: 4
                           punctuations: 27
-                          comments: 0
-                          errors: 0
                           """;
 
         Assert.Equal(expected, LexicalStats.CollectFromFile(path));

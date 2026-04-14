@@ -10,14 +10,15 @@ public static class LexicalStats
 
         Lexer lexer = new Lexer(fileText);
         IDictionary<LexicalType, int> result = new Dictionary<LexicalType, int>();
+
+        foreach (LexicalType type in Enum.GetValues(typeof(LexicalType)))
+        {
+            result.Add(type, 0);
+        }
+
         for (Token t = lexer.ParseToken(); t.Type != TokenType.End; t = lexer.ParseToken())
         {
             LexicalType type = TokenToLexicalType(t.Type);
-
-            if (!result.ContainsKey(type))
-            {
-                result.Add(new KeyValuePair<LexicalType, int>(type, 0));
-            }
 
             result[type]++;
         }
@@ -41,17 +42,22 @@ public static class LexicalStats
             case TokenType.Continue:
             case TokenType.Write:
             case TokenType.Read:
-            //case TokenType.Case:
-            //case TokenType.Switch:
-            //case TokenType.Default:
+            case TokenType.Main:
+                //case TokenType.Case:
+                //case TokenType.Switch:
+                //case TokenType.Default:
                 return LexicalType.Keyword;
             case TokenType.Identifier:
                 return LexicalType.Identifier;
             case TokenType.IntLiteral:
-            case TokenType.FloatLiteral:
                 return LexicalType.IntLiteral;
+            case TokenType.FloatLiteral:
+                return LexicalType.FloatLiteral;
             case TokenType.StringLiteral:
                 return LexicalType.StringLiteral;
+            case TokenType.True:
+            case TokenType.False:
+                return LexicalType.BoolLiteral;
             case TokenType.Plus:
             case TokenType.Minus:
             case TokenType.Divide:
@@ -67,8 +73,6 @@ public static class LexicalStats
             case TokenType.LogicalOr:
             case TokenType.Equal:
             case TokenType.NotEqual:
-            case TokenType.True:
-            case TokenType.False:
             case TokenType.LogicalNot:
                 return LexicalType.Operator;
             default:
@@ -80,11 +84,13 @@ public static class LexicalStats
     {
         return $"""
                 keywords: {dict[LexicalType.Keyword]}
-                identifier: {dict[LexicalType.Identifier]}
-                number literals: {dict[LexicalType.IntLiteral]}
+                identifiers: {dict[LexicalType.Identifier]}
+                int literals: {dict[LexicalType.IntLiteral]}
+                float literals: {dict[LexicalType.FloatLiteral]}
                 string literals: {dict[LexicalType.StringLiteral]}
+                bool literals: {dict[LexicalType.BoolLiteral]}
                 operators: {dict[LexicalType.Operator]}
-                other lexemes: {dict[LexicalType.Punctuation]}
+                punctuations: {dict[LexicalType.Punctuation]}
                 """;
     }
 }

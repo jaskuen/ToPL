@@ -15,9 +15,7 @@ public static class Lex
 
     public static Token Str(string v) => new(TokenType.StringLiteral, new TokenValue(v));
 
-    public static Token Err(string v = "") => string.IsNullOrEmpty(v)
-                                            ? new(TokenType.Error)
-                                            : new(TokenType.Error, new TokenValue(v));
+    public static Token Err(string v = "") => new(TokenType.Error, new TokenValue(v));
 
     // Логика
     public static Token True => new(TokenType.True);
