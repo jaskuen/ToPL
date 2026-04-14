@@ -18,10 +18,10 @@ public class ParseExpressionsTest
     [MemberData(nameof(GetParseTestData))]
     public void Can_parse_expressions(string expression, object expectedValue)
     {
-        string program = $"""
-                          главная воистину
-                          возврати {expression} поклон
-                          аминь
+        string program = $$"""
+                          void main() {
+                            return {{expression}} ;
+                          }
                           """;
 
         Parser parser = new Parser(context, environment, program);
@@ -37,10 +37,10 @@ public class ParseExpressionsTest
                     result.ToBoolean() == boolValue,
                     $"Expected boolean {expectedValue}, but got {result.ToBoolean()}");
                 break;
-            case double doubleValue:
+            case float doubleValue:
                 Assert.True(
-                    Math.Abs(result.ToDouble() - doubleValue) < 0.001,
-                    $"Expected double {expectedValue}, but got {result.ToDouble()}");
+                    Math.Abs(result.ToFloat() - doubleValue) < 0.001,
+                    $"Expected double {expectedValue}, but got {result.ToFloat()}");
                 break;
             case int intValue:
                 Assert.True(

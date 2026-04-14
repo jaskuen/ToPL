@@ -6,18 +6,21 @@ public static class BuiltinFunctions
 {
     private static readonly Dictionary<string, Func<List<RuntimeValue>, RuntimeValue>> Functions = new()
     {
-        { "преисподняя", Floor },
-        { "небеса", Ceiling },
-        { "колобок", Round },
-        { "синус", Sin },
-        { "косинус", Cos },
-        { "тангенс", Tan },
-        { "верстыСловесные", StrLen },
-        { "раздробити", Substring },
+        { "floor", Floor },
+        { "ceil", Ceiling },
+        { "round", Round },
+        { "sin", Sin },
+        { "cos", Cos },
+        { "tan", Tan },
+        { "length", StrLen },
+        { "substring", Substring },
+        { "min", Min },
+        { "max", Max },
+        { "abs", Abs },
         { "кНевысокому", ToLower },
         { "кСловесам", ToStringType },
         { "кБлагодати", ToIntType },
-        { "кКадилу", ToDoubleType },
+        { "кКадилу", ToFloatType },
     };
 
     public static Func<List<RuntimeValue>, RuntimeValue> GetFunction(string name)
@@ -42,7 +45,7 @@ public static class BuiltinFunctions
             throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
         }
 
-        return new RuntimeValue(Math.Floor(arguments[0].ToDouble()));
+        return new RuntimeValue(MathF.Floor(arguments[0].ToFloat()));
     }
 
     private static RuntimeValue Ceiling(List<RuntimeValue> arguments)
@@ -52,7 +55,7 @@ public static class BuiltinFunctions
             throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
         }
 
-        return new RuntimeValue(Math.Ceiling(arguments[0].ToDouble()));
+        return new RuntimeValue(MathF.Ceiling(arguments[0].ToFloat()));
     }
 
     private static RuntimeValue Round(List<RuntimeValue> arguments)
@@ -62,7 +65,7 @@ public static class BuiltinFunctions
             throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
         }
 
-        return new RuntimeValue(Math.Round(arguments[0].ToDouble()));
+        return new RuntimeValue(MathF.Round(arguments[0].ToFloat(), MidpointRounding.AwayFromZero));
     }
 
     private static RuntimeValue Sin(List<RuntimeValue> arguments)
@@ -72,7 +75,7 @@ public static class BuiltinFunctions
             throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
         }
 
-        return new RuntimeValue(Math.Sin(arguments[0].ToDouble()));
+        return new RuntimeValue(MathF.Sin(arguments[0].ToFloat()));
     }
 
     private static RuntimeValue Cos(List<RuntimeValue> arguments)
@@ -82,7 +85,7 @@ public static class BuiltinFunctions
             throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
         }
 
-        return new RuntimeValue(Math.Cos(arguments[0].ToDouble()));
+        return new RuntimeValue(MathF.Cos(arguments[0].ToFloat()));
     }
 
     private static RuntimeValue Tan(List<RuntimeValue> arguments)
@@ -92,7 +95,7 @@ public static class BuiltinFunctions
             throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
         }
 
-        return new RuntimeValue(Math.Tan(arguments[0].ToDouble()));
+        return new RuntimeValue(MathF.Tan(arguments[0].ToFloat()));
     }
 
     private static RuntimeValue Substring(List<RuntimeValue> arguments)
@@ -118,6 +121,38 @@ public static class BuiltinFunctions
         return new RuntimeValue(arguments[0].ToString().Length);
     }
 
+    private static RuntimeValue Min(List<RuntimeValue> arguments)
+    {
+        if (arguments.Count != 2)
+        {
+            throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
+        }
+
+        return new RuntimeValue(Math.Min(arguments[0].ToFloat(), arguments[1].ToFloat()));
+    }
+
+    private static RuntimeValue Max(List<RuntimeValue> arguments)
+    {
+        if (arguments.Count != 2)
+        {
+            throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
+        }
+
+        return new RuntimeValue(Math.Max(arguments[0].ToFloat(), arguments[1].ToFloat()));
+    }
+
+    private static RuntimeValue Abs(List<RuntimeValue> arguments)
+    {
+        if (arguments.Count != 1)
+        {
+            throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
+        }
+
+        RuntimeValue value = arguments[0];
+
+        return new RuntimeValue(Math.Abs(arguments[0].ToFloat()));
+    }
+
     private static RuntimeValue ToLower(List<RuntimeValue> arguments)
     {
         if (arguments.Count != 1)
@@ -137,7 +172,7 @@ public static class BuiltinFunctions
 
         RuntimeValue value = arguments[0];
         RuntimeValueType type = value.GetValueType();
-        if (type is not(RuntimeValueType.Int or RuntimeValueType.Double))
+        if (type is not (RuntimeValueType.Int or RuntimeValueType.Float))
         {
             throw new Exception($"Incorrect ToStringType argument type: {type}");
         }
@@ -162,7 +197,7 @@ public static class BuiltinFunctions
         return new RuntimeValue(arguments[0].ToInt());
     }
 
-    private static RuntimeValue ToDoubleType(List<RuntimeValue> arguments)
+    private static RuntimeValue ToFloatType(List<RuntimeValue> arguments)
     {
         if (arguments.Count != 1)
         {
@@ -176,6 +211,6 @@ public static class BuiltinFunctions
             throw new Exception($"Incorrect ToDoubleType argument type: {type}");
         }
 
-        return new RuntimeValue(arguments[0].ToDouble());
+        return new RuntimeValue(arguments[0].ToFloat());
     }
 }

@@ -238,7 +238,7 @@ public class Lexer
     /// </summary>
     private Token ParseNumericLiteral()
     {
-        double value = GetDigitValue(scanner.Peek());
+        float value = GetDigitValue(scanner.Peek());
         scanner.Advance();
 
         // Читаем целую часть числа.
@@ -252,12 +252,12 @@ public class Lexer
         if (scanner.Peek() == '.')
         {
             scanner.Advance();
-            double factor = 0.1;
+            float factor = 0.1f;
             for (char c = scanner.Peek(); char.IsAsciiDigit(c); c = scanner.Peek())
             {
                 scanner.Advance();
                 value += factor * GetDigitValue(c);
-                factor *= 0.1;
+                factor *= 0.1f;
             }
 
             return new Token(TokenType.FloatLiteral, new TokenValue(value));

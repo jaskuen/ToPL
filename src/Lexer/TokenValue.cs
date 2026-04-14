@@ -4,7 +4,7 @@ namespace Lexer;
 
 public class TokenValue
 {
-    public const double DoubleTolerance = 0.001;
+    public const float FloatTolerance = 0.001f;
     private readonly object value;
 
     public TokenValue(string value)
@@ -12,7 +12,7 @@ public class TokenValue
         this.value = value;
     }
 
-    public TokenValue(double value)
+    public TokenValue(float value)
     {
         this.value = value;
     }
@@ -33,7 +33,7 @@ public class TokenValue
         return value switch
         {
             string s => s,
-            double d => d.ToString(CultureInfo.InvariantCulture),
+            float d => d.ToString(CultureInfo.InvariantCulture),
             _ => throw new NotImplementedException(),
         };
     }
@@ -41,12 +41,12 @@ public class TokenValue
     /// <summary>
     ///  Возвращает значение токена в виде числа.
     /// </summary>
-    public double ToDouble()
+    public float ToFloat()
     {
         return value switch
         {
-            string s => double.Parse(s, CultureInfo.InvariantCulture),
-            double d => d,
+            string s => float.Parse(s, CultureInfo.InvariantCulture),
+            float d => d,
             _ => throw new NotImplementedException(),
         };
     }
@@ -74,7 +74,7 @@ public class TokenValue
             return value switch
             {
                 string s => (string)other.value == s,
-                double d => Math.Abs((double)other.value - d) < DoubleTolerance,
+                float d => Math.Abs((float)other.value - d) < FloatTolerance,
                 int i => (int)value == i,
                 _ => throw new NotImplementedException(),
             };

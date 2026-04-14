@@ -19,11 +19,11 @@ public class ParseTopLevelGrammarTest
     [MemberData(nameof(GetCanParseTopLevelStatementsData))]
     public void Can_parse_top_level_statements(string code, string variableName, RuntimeValue expected)
     {
-        string program = $"""
-                          главная воистину
-                          {code}
-                          возврати {variableName};
-                          аминь
+        string program = $$"""
+                          void main() {
+                          {{code}}
+                          return {{variableName}};
+                          }
                           """;
 
         Parser parser = new(context, environment, program);

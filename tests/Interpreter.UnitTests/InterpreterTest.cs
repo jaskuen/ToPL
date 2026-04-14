@@ -22,7 +22,7 @@ public class InterpreterTest
             bool areEqual = expectedOutputValues[i] switch
             {
                 int => (int)expectedOutputValues[i] == actual[i].ToInt(),
-                double => Math.Abs((double)expectedOutputValues[i] - actual[i].ToDouble()) < 0.001,
+                double => Math.Abs((double)expectedOutputValues[i] - actual[i].ToFloat()) < 0.001,
                 string => (string)expectedOutputValues[i] == actual[i].ToString(),
                 bool => (bool)expectedOutputValues[i] == actual[i].ToBoolean(),
                 _ => false,

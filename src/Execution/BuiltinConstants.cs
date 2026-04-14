@@ -31,11 +31,11 @@ public static class BuiltinConstants
 
     private static RuntimeValue Pi()
     {
-        return new RuntimeValue(Math.PI);
+        return new RuntimeValue(MathF.PI);
     }
 
     private static RuntimeValue Euler()
     {
-        return new RuntimeValue(Math.E);
+        return new RuntimeValue(MathF.E);
     }
 }

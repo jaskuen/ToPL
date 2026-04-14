@@ -4,7 +4,7 @@ namespace Runtime;
 
 public class RuntimeValue
 {
-    private const double DoubleTolerance = 0.001;
+    private const float DoubleTolerance = 0.001f;
     private readonly object value;
     private RuntimeValueType type;
 
@@ -14,10 +14,10 @@ public class RuntimeValue
         type = RuntimeValueType.Int;
     }
 
-    public RuntimeValue(double value)
+    public RuntimeValue(float value)
     {
         this.value = value;
-        type = RuntimeValueType.Double;
+        type = RuntimeValueType.Float;
     }
 
     public RuntimeValue(bool value)
@@ -38,7 +38,7 @@ public class RuntimeValue
         value = type switch
         {
             RuntimeValueType.Int => 0,
-            RuntimeValueType.Double => 0.0,
+            RuntimeValueType.Float => 0.0,
             RuntimeValueType.Boolean => false,
             RuntimeValueType.String => string.Empty,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
@@ -50,16 +50,16 @@ public class RuntimeValue
         return left.value switch
         {
             bool _ => throw new Exception("Cannot sum a bool value."),
-            double d => right.value switch
+            float d => right.value switch
             {
-                double d2 => new RuntimeValue(d + d2),
+                float d2 => new RuntimeValue(d + d2),
                 int i => new RuntimeValue(d + i),
                 _ => throw new Exception("Incorrect sum parameters.")
             },
             int i => right.value switch
             {
                 int j => new RuntimeValue(i + j),
-                double d => new RuntimeValue(i + d),
+                float d => new RuntimeValue(i + d),
                 _ => throw new Exception("Incorrect sum parameters.")
             },
             string s => right.value switch
@@ -77,16 +77,16 @@ public class RuntimeValue
         {
             bool _ => throw new Exception("Cannot subtract a bool value."),
             string _ => throw new Exception("Cannot subtract a string value."),
-            double d => right.value switch
+            float d => right.value switch
             {
-                double d2 => new RuntimeValue(d - d2),
+                float d2 => new RuntimeValue(d - d2),
                 int i => new RuntimeValue(d - i),
                 _ => throw new Exception("Incorrect subtract parameters.")
             },
             int i => right.value switch
             {
                 int j => new RuntimeValue(i - j),
-                double d => new RuntimeValue(i - d),
+                float d => new RuntimeValue(i - d),
                 _ => throw new Exception("Incorrect subtract parameters.")
             },
             _ => throw new NotImplementedException()
@@ -99,7 +99,7 @@ public class RuntimeValue
         {
             bool _ => throw new Exception("Cannot subtract a bool value."),
             string _ => throw new Exception("Cannot subtract a string value."),
-            double d => new RuntimeValue(-d),
+            float d => new RuntimeValue(-d),
             int i => new RuntimeValue(-i),
             _ => throw new NotImplementedException()
         };
@@ -111,16 +111,16 @@ public class RuntimeValue
         {
             bool _ => throw new Exception("Cannot multiply a bool value."),
             string _ => throw new Exception("Cannot multiply a string value."),
-            double d => right.value switch
+            float d => right.value switch
             {
-                double d2 => new RuntimeValue(d * d2),
+                float d2 => new RuntimeValue(d * d2),
                 int i => new RuntimeValue(d * i),
                 _ => throw new Exception("Incorrect multiply parameters.")
             },
             int i => right.value switch
             {
                 int j => new RuntimeValue(i * j),
-                double d => new RuntimeValue(i * d),
+                float d => new RuntimeValue(i * d),
                 _ => throw new Exception("Incorrect multiply parameters.")
             },
             _ => throw new NotImplementedException()
@@ -133,16 +133,16 @@ public class RuntimeValue
         {
             bool _ => throw new Exception("Cannot divide a bool value."),
             string _ => throw new Exception("Cannot divide a string value."),
-            double d => right.value switch
+            float d => right.value switch
             {
-                double d2 => new RuntimeValue(d / d2),
+                float d2 => new RuntimeValue(d / d2),
                 int i => new RuntimeValue(d / i),
                 _ => throw new Exception("Incorrect divide parameters.")
             },
             int i => right.value switch
             {
                 int j => new RuntimeValue(i / j),
-                double d => new RuntimeValue(i / d),
+                float d => new RuntimeValue(i / d),
                 _ => throw new Exception("Incorrect divide parameters.")
             },
             _ => throw new NotImplementedException()
@@ -155,16 +155,16 @@ public class RuntimeValue
         {
             bool _ => throw new Exception("Cannot find module of a bool value."),
             string _ => throw new Exception("Cannot find module of a string value."),
-            double d => right.value switch
+            float d => right.value switch
             {
-                double d2 => new RuntimeValue(d % d2),
+                float d2 => new RuntimeValue(d % d2),
                 int i => new RuntimeValue(d % i),
                 _ => throw new Exception("Incorrect find module parameters.")
             },
             int i => right.value switch
             {
                 int j => new RuntimeValue(i % j),
-                double d => new RuntimeValue(i % d),
+                float d => new RuntimeValue(i % d),
                 _ => throw new Exception("Incorrect find module parameters.")
             },
             _ => throw new NotImplementedException()
@@ -177,7 +177,7 @@ public class RuntimeValue
         {
             bool b => b,
             int i => i != 0,
-            double d => Math.Abs(d) < DoubleTolerance,
+            float d => Math.Abs(d) < DoubleTolerance,
             _ => throw new NotImplementedException()
         };
     }
@@ -188,7 +188,7 @@ public class RuntimeValue
         {
             bool b => !b,
             int i => i == 0,
-            double d => Math.Abs(d) > DoubleTolerance,
+            float d => Math.Abs(d) > DoubleTolerance,
             _ => throw new NotImplementedException()
         };
     }
@@ -206,16 +206,16 @@ public class RuntimeValue
     {
         return left.value switch
         {
-            double d => right.value switch
+            float d => right.value switch
             {
-                double d2 => d - d2 > DoubleTolerance,
+                float d2 => d - d2 > DoubleTolerance,
                 int i => d - i > DoubleTolerance,
                 _ => throw new Exception("Incorrect comparison parameters.")
             },
             int i => right.value switch
             {
                 int j => i > j,
-                double d => i - d > DoubleTolerance,
+                float d => i - d > DoubleTolerance,
                 _ => throw new Exception("Incorrect comparison parameters.")
             },
             _ => throw new NotImplementedException()
@@ -245,7 +245,7 @@ public class RuntimeValue
         return value switch
         {
             bool s => s,
-            double d => Math.Abs(d) < DoubleTolerance,
+            float d => Math.Abs(d) < DoubleTolerance,
             int i => i != 0,
             _ => throw new NotImplementedException()
         };
@@ -254,16 +254,16 @@ public class RuntimeValue
     /// <summary>
     ///  Возвращает значение в виде числа c плавающей точкой.
     /// </summary>
-    public double ToDouble()
+    public float ToFloat()
     {
         return value switch
         {
             bool s => s ? 1 : 0,
-            double d => d,
+            float d => d,
             int i => i,
-            string s => double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out double v)
+            string s => float.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out float v)
                 ? v
-                : throw new Exception("Failed to parse string to double value"),
+                : throw new Exception("Failed to parse string to float value"),
             _ => throw new NotImplementedException()
         };
     }
@@ -273,7 +273,7 @@ public class RuntimeValue
         return value switch
         {
             bool s => s ? 1 : 0,
-            double d => (int)d,
+            float d => (int)d,
             int i => i,
             string s => int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out int v)
                 ? v
@@ -287,7 +287,7 @@ public class RuntimeValue
         return value switch
         {
             bool b => b ? "True" : "False",
-            double d => d.ToString("0.####", CultureInfo.InvariantCulture),
+            float d => d.ToString("0.####", CultureInfo.InvariantCulture),
             int i => i.ToString(CultureInfo.InvariantCulture),
             string s => s,
             _ => throw new NotImplementedException()
@@ -313,16 +313,16 @@ public class RuntimeValue
                     bool b => b == s,
                     _ => false
                 },
-                double d => other.value switch
+                float d => other.value switch
                 {
-                    double d2 => Math.Abs(d2 - d) < DoubleTolerance,
+                    float d2 => Math.Abs(d2 - d) < DoubleTolerance,
                     int i => Math.Abs(i - d) < DoubleTolerance,
                     _ => false
                 },
                 int i => other.value switch
                 {
                     int j => i == j,
-                    double d => Math.Abs(d - i) < DoubleTolerance,
+                    float d => Math.Abs(d - i) < DoubleTolerance,
                     _ => false
                 },
                 string s => other.value switch

@@ -38,22 +38,26 @@ public class Parser
 
         do
         {
-            while (types.Contains(tokens.Peek().Type))
+            Token type = tokens.Peek();
+
+            while (types.Contains(type.Type) && tokens.Peek(1).Type != TokenType.Main)
             {
                 FunctionDeclaration functionDeclaration = ParseFunctionDeclaration();
                 functionDeclaration.Accept(astEvaluator);
             }
 
-            // "главная"
-            Match(TokenType.Identifier);
+            // "main"
+            tokens.Advance();
+            Match(TokenType.Main);
+            Match(TokenType.OpenParenthesis);
+            Match(TokenType.CloseParenthesis);
             Statement scope = ParseScope();
             RuntimeValue result = astEvaluator.Evaluate(scope);
 
             environment.PrintValue($"{result}");
 
             Match(TokenType.End);
-        }
-        while (tokens.Peek().Type != TokenType.End);
+        } while (tokens.Peek().Type != TokenType.End);
     }
 
     private FunctionDeclaration ParseFunctionDeclaration()
@@ -116,8 +120,7 @@ public class Parser
             }
 
             statements.Add(statement);
-        }
-        while (tokens.Peek().Type != TokenType.CloseBrace);
+        } while (tokens.Peek().Type != TokenType.CloseBrace);
 
         Match(TokenType.CloseBrace);
 
@@ -715,7 +718,7 @@ public class Parser
         {
             case TokenType.FloatLiteral:
                 tokens.Advance();
-                return new LiteralExpression(t.Value!.ToDouble());
+                return new LiteralExpression(t.Value!.ToFloat());
             case TokenType.IntLiteral:
                 tokens.Advance();
                 return new LiteralExpression(t.Value!.ToInt());
@@ -731,12 +734,12 @@ public class Parser
             case TokenType.Identifier:
                 return ParseIdentifierSuffix();
             case TokenType.OpenParenthesis:
-            {
-                tokens.Advance();
-                Expression value = ParseExpression();
-                Match(TokenType.CloseParenthesis);
-                return value;
-            }
+                {
+                    tokens.Advance();
+                    Expression value = ParseExpression();
+                    Match(TokenType.CloseParenthesis);
+                    return value;
+                }
 
             default:
                 throw new UnexpectedLexemeException(TokenType.IntLiteral, t);

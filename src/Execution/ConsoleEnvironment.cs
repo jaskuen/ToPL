@@ -21,7 +21,7 @@ public class ConsoleEnvironment : IEnvironment
         return type switch
         {
             RuntimeValueType.Int => new RuntimeValue(int.Parse(value)),
-            RuntimeValueType.Double => new RuntimeValue(double.Parse(value)),
+            RuntimeValueType.Float => new RuntimeValue(float.Parse(value)),
             RuntimeValueType.String => new RuntimeValue(value),
             RuntimeValueType.Boolean => new RuntimeValue(bool.Parse(value)),
             _ => throw new Exception("Unknown value type")
