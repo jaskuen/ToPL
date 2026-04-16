@@ -158,6 +158,9 @@ if (age >= 18) {
 ```cpp
 while (условие) {
 }
+
+for (инициализация; условие завершения; шаг) {
+}
 ```
 
 **Примеры:**
@@ -178,6 +181,15 @@ while (true) {
         continue;
     }
     write(x);
+}
+
+for (int i = 0; i < 10; i++) {
+    write(i);
+}
+
+for (;;) {
+    // бесконечный цикл
+    break;
 }
 ```
 
@@ -204,6 +216,7 @@ statement = variable_definition
           | assignment , ";"
           | if_statement
           | while_statement
+          | for_statement
           | break_statement , ";"
           | continue_statement , ";"
           | return_statement , ";"
@@ -223,6 +236,10 @@ assignment = identifier , "=" , expression ;
 if_statement = "if" , "(" , expression , ")" , block , [ "else" , block ] ;
 
 while_statement = "while" , "(" , expression , ")" , block ;
+
+for_statement = "for" , "(" , [ for_init ] , ";" , [ expression ] , ";" , [ for_post ] , ")" , block ;
+for_init = variable_definition | expression ;
+for_post = expression ;
 
 return_statement = "return" , [ expression ] ;
 

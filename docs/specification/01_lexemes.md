@@ -130,14 +130,15 @@ bool_literal = "true" | "false" ;
 
 ### 3.3 Управление потоком выполнения
 
-| Ключевое слово | Описание                                             |
-| -------------- | ---------------------------------------------------- |
+| Ключевое слово | Описание                                                |
+| -------------- | ------------------------------------------------------- |
 | `if`           | Проверяет условие и выполняет код, если условие истинно |
-| `else`         | Выполняет код, если условие в блоке `if` ложно       |
-| `while`        | Выполняет код, пока условие истинно                  |
-| `break`        | Прерывает выполнение цикла                           |
-| `continue`     | Переходит к следующей итерации цикла                 |
-| `return`       | Возвращает значение из функции                       |
+| `else`         | Выполняет код, если условие в блоке `if` ложно          |
+| `while`        | Выполняет код, пока условие истинно                     |
+| `break`        | Прерывает выполнение цикла                              |
+| `continue`     | Переходит к следующей итерации цикла                    |
+| `return`       | Возвращает значение из функции                          |
+| `for`          | Выполняет код нужное количество шагов                   |
 
 ### 3.4 Ввод и вывод
 
@@ -279,13 +280,12 @@ string_literal = '"' , { string_char } , '"' ;
 
 bool_literal = "true" | "false" ;
 
-keyword = "int" | "float" | "string" | "bool" | "void"
-        | "func" | "const" | "main"
-        | "if" | "else" | "while" | "break" | "continue" | "return"
-        | "read" | "write"
-        | "and" | "or" | "not" | "equals"
-        | "abs" | "round" | "ceil" | "floor" | "min" | "max" 
-        | "length" | "substring" ;
+keyword = "int" | "float" | "string" | "bool" | "void"| 
+		  "func" | "const" | "main"| "if" | "else" | 
+		  "while" | "for" | "break" | "continue" | "return" | 
+		  "read" | "write"| "and" | "or" | "not" | "equals"| 
+		  "abs" | "round" | "ceil" | "floor" | "min" | "max" | 
+		  "length" | "substring" ;
 
 comment = "//" , { ? any character except newline ? } ;
 
