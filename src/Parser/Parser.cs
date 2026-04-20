@@ -47,12 +47,13 @@ public class Parser
             }
 
             // "main"
+            type = tokens.Peek();
             tokens.Advance();
             Match(TokenType.Main);
             Match(TokenType.OpenParenthesis);
             Match(TokenType.CloseParenthesis);
             Statement scope = ParseScope();
-            RuntimeValue result = astEvaluator.Evaluate(scope);
+            RuntimeValue result = astEvaluator.Evaluate(scope, type.Type == TokenType.Void);
 
             environment.PrintValue($"{result}");
 
@@ -153,11 +154,17 @@ public class Parser
             case TokenType.Float:
             case TokenType.Bool:
             case TokenType.String:
+            case TokenType.Const:
                 return ParseVariableDeclaration();
             case TokenType.Identifier:
                 if (tokens.Peek(1).Type == TokenType.Assignment)
                 {
                     return ParseAssignmentStatement();
+                }
+
+                if (tokens.Peek(1).Type is TokenType.Increment or TokenType.Decrement)
+                {
+                    return ParsePostfixExpression(true);
                 }
 
                 return ParseIdentifierSuffix();
@@ -187,6 +194,11 @@ public class Parser
                 tokens.Advance();
                 Match(TokenType.Semicolon);
                 return new EmptyStatement();
+            case TokenType.Increment:
+            case TokenType.Decrement:
+                AstNode result = ParseUnaryExpression(true);
+                Match(TokenType.Semicolon);
+                return result;
             default:
                 throw new Exception($"Unexpected token: {tokens.Peek().Type}");
         }
@@ -200,8 +212,17 @@ public class Parser
     private VariableDeclaration ParseVariableDeclaration()
     {
         TokenType type = tokens.Peek().Type;
+        if (type == TokenType.Const)
+        {
+            tokens.Advance();
+            TokenType variableType = tokens.Peek().Type;
+            tokens.Advance();
+            return new VariableDeclaration(true, TokenTypeToVariableType(variableType),
+                ParseVariableDeclarationList(type));
+        }
+
         tokens.Advance();
-        return new VariableDeclaration(TokenTypeToVariableType(type), ParseVariableDeclarationList(type));
+        return new VariableDeclaration(false, TokenTypeToVariableType(type), ParseVariableDeclarationList(type));
     }
 
     /// <summary>
@@ -657,7 +678,7 @@ public class Parser
     ///  Правило:
     ///     unary_expression = [("не" | "+" | "-" | "приумножу" | "умалю")], postfix_expression ;
     /// </summary>
-    private UnaryOperationExpression ParseUnaryExpression()
+    private UnaryOperationExpression ParseUnaryExpression(bool isStatement = false)
     {
         switch (tokens.Peek().Type)
         {
@@ -672,10 +693,10 @@ public class Parser
                 return new UnaryOperationExpression(UnaryOperation.Minus, ParsePostfixExpression());
             case TokenType.Increment:
                 tokens.Advance();
-                return new UnaryOperationExpression(UnaryOperation.Increment, ParsePostfixExpression());
+                return new UnaryOperationExpression(UnaryOperation.Increment, ParsePostfixExpression(isStatement));
             case TokenType.Decrement:
                 tokens.Advance();
-                return new UnaryOperationExpression(UnaryOperation.Decrement, ParsePostfixExpression());
+                return new UnaryOperationExpression(UnaryOperation.Decrement, ParsePostfixExpression(isStatement));
             default:
                 return ParsePostfixExpression();
         }
@@ -686,17 +707,17 @@ public class Parser
     ///  Правило:
     ///     postfix_expression = primary_expression, [("приумножу" | "умалю")] ;
     /// </summary>
-    private UnaryOperationExpression ParsePostfixExpression()
+    private UnaryOperationExpression ParsePostfixExpression(bool isStatement = false)
     {
         Expression value = ParsePrimaryExpression();
         switch (tokens.Peek().Type)
         {
             case TokenType.Increment:
                 tokens.Advance();
-                return new UnaryOperationExpression(UnaryOperation.Increment, value, true);
+                return new UnaryOperationExpression(UnaryOperation.Increment, value, true, !isStatement);
             case TokenType.Decrement:
                 tokens.Advance();
-                return new UnaryOperationExpression(UnaryOperation.Decrement, value, true);
+                return new UnaryOperationExpression(UnaryOperation.Decrement, value, true, !isStatement);
             default:
                 return new UnaryOperationExpression(null, value, true);
         }

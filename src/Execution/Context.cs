@@ -10,6 +10,7 @@ namespace Execution;
 /// </summary>
 public class Context
 {
+    private readonly bool hasReturnValue = false;
     private readonly Stack<Scope> scopes = [];
     private readonly Dictionary<string, FunctionDeclaration> functions = [];
 

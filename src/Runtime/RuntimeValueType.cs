@@ -10,7 +10,7 @@ public enum RuntimeValueType
     /// <summary>
     /// Число с плавающей точкой
     /// </summary>
-    Float,
+    Double,
 
     /// <summary>
     /// Строка

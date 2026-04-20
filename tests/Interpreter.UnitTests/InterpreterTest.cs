@@ -22,7 +22,7 @@ public class InterpreterTest
             bool areEqual = expectedOutputValues[i] switch
             {
                 int => (int)expectedOutputValues[i] == actual[i].ToInt(),
-                double => Math.Abs((double)expectedOutputValues[i] - actual[i].ToFloat()) < 0.001,
+                float => MathF.Abs((float)expectedOutputValues[i] - actual[i].ToFloat()) < 0.001,
                 string => (string)expectedOutputValues[i] == actual[i].ToString(),
                 bool => (bool)expectedOutputValues[i] == actual[i].ToBoolean(),
                 _ => false,
@@ -56,7 +56,7 @@ public class InterpreterTest
                 }
                 """,
                 [new RuntimeValue(5), new RuntimeValue(10)],
-                ["Введите первое число: ", "Введите второе число: ", "Сумма: 15", "15"]
+                ["Введите первое число: ", "Введите второе число: ", "Сумма: 15", "0"]
             },
             {
                 """
@@ -73,7 +73,7 @@ public class InterpreterTest
                     write("Площадь круга = ", circleArea);
                 }
                 """,
-                [new RuntimeValue(5)], ["Введи радиус круга: ", "Площадь круга = 78.5398", "78.5398"]
+                [new RuntimeValue(5)], ["Введи радиус круга: ", "Площадь круга = 78.5398", "0"]
             },
             {
                 """
@@ -90,7 +90,7 @@ public class InterpreterTest
                     write("Расстояние в милях ", miles, " = ", km, " км");
                 }
                 """,
-                [new RuntimeValue(4)], ["Введите расстояние в милях: ", "Расстояние в милях 4 = 6.4374 км", "6.4374"]
+                [new RuntimeValue(4)], ["Введите расстояние в милях: ", "Расстояние в милях 4 = 6.4374 км", "0"]
             },
             {
                 """
@@ -200,10 +200,10 @@ public class InterpreterTest
                     write("Введите число: ");
                     read(number);
                     
-                    return LessThanTen(number);
+                    write(LessThanTen(number));
                 }
                 """,
-                [new RuntimeValue(100)], ["Введите число: ", "6.25"]
+                [new RuntimeValue(100)], ["Введите число: ", "6.25", "0"]
             },
         };
     }

@@ -17,7 +17,7 @@ public class RuntimeValue
     public RuntimeValue(float value)
     {
         this.value = value;
-        type = RuntimeValueType.Float;
+        type = RuntimeValueType.Double;
     }
 
     public RuntimeValue(bool value)
@@ -38,7 +38,7 @@ public class RuntimeValue
         value = type switch
         {
             RuntimeValueType.Int => 0,
-            RuntimeValueType.Float => 0.0,
+            RuntimeValueType.Double => 0.0,
             RuntimeValueType.Boolean => false,
             RuntimeValueType.String => string.Empty,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
