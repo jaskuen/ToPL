@@ -7,9 +7,7 @@ using Reqnroll;
 using TestLibrary;
 using TestLibrary.Helpers;
 
-using Xunit;
-
-namespace PsTiger.Tests.Compiler.Specs.Steps;
+namespace Compiler.Specs.Steps;
 
 [Binding]
 public sealed class CompilerStepDefinitions : IDisposable
