@@ -105,7 +105,7 @@ namespace Compiler.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/InputOutput.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/InputOutput.feature.ndjson", 8);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Compiler.Specs.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="вывод текста функцией print")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="вывод текста функцией write")]
         [global::Xunit.TraitAttribute("FeatureTitle", "ввод-вывод и завершение программы")]
-        [global::Xunit.TraitAttribute("Description", "вывод текста функцией print")]
-        public async global::System.Threading.Tasks.Task ВыводТекстаФункциейPrint()
+        [global::Xunit.TraitAttribute("Description", "вывод текста функцией write")]
+        public async global::System.Threading.Tasks.Task ВыводТекстаФункциейWrite()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вывод текста функцией print", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вывод текста функцией write", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -157,11 +157,193 @@ namespace Compiler.Specs.Features
 #line 5
         await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/print_string.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 7
+#line 6
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 9
-        await testRunner.ThenAsync("я увижу вывод:", "Hello WWorld!   \r\nHi, I\'m from new line!", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 7
+        await testRunner.ThenAsync("я увижу вывод:", "Hello, WWorld!\r\nHi, I\'m from new line!", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="ввод и вывод строки")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "ввод-вывод и завершение программы")]
+        [global::Xunit.TraitAttribute("Description", "ввод и вывод строки")]
+        public async global::System.Threading.Tasks.Task ВводИВыводСтроки()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "1";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ввод и вывод строки", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 13
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 14
+        await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/read_write_string.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+#line hidden
+#line 15
+        await testRunner.AndAsync("я ввожу текст:", "TestInput", ((global::Reqnroll.Table)(null)), "И ");
+#line hidden
+#line 19
+        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 20
+        await testRunner.ThenAsync("я увижу вывод:", "TestInput", ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="ввод и вывод целого числа")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "ввод-вывод и завершение программы")]
+        [global::Xunit.TraitAttribute("Description", "ввод и вывод целого числа")]
+        public async global::System.Threading.Tasks.Task ВводИВыводЦелогоЧисла()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ввод и вывод целого числа", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 25
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 26
+        await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/read_write_int.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+#line hidden
+#line 27
+        await testRunner.AndAsync("я ввожу \"-42\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "И ");
+#line hidden
+#line 28
+        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 29
+        await testRunner.ThenAsync("я увижу вывод \"-42\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="ввод и вывод числа с плавающей точкой")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "ввод-вывод и завершение программы")]
+        [global::Xunit.TraitAttribute("Description", "ввод и вывод числа с плавающей точкой")]
+        public async global::System.Threading.Tasks.Task ВводИВыводЧислаСПлавающейТочкой()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ввод и вывод числа с плавающей точкой", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 31
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 32
+        await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/read_write_float.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+#line hidden
+#line 33
+        await testRunner.AndAsync("я ввожу \"3.1415\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "И ");
+#line hidden
+#line 34
+        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 35
+        await testRunner.ThenAsync("я увижу вывод \"3.1415\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="игнорирование ввода через read() без аргументов")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "ввод-вывод и завершение программы")]
+        [global::Xunit.TraitAttribute("Description", "игнорирование ввода через read() без аргументов")]
+        public async global::System.Threading.Tasks.Task ИгнорированиеВводаЧерезReadБезАргументов()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "4";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("игнорирование ввода через read() без аргументов", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 37
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 38
+        await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/read_ignore.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+#line hidden
+#line 39
+        await testRunner.AndAsync("я ввожу текст:", "skip_this\r\n100", ((global::Reqnroll.Table)(null)), "И ");
+#line hidden
+#line 44
+        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 45
+        await testRunner.ThenAsync("я увижу вывод \"100\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="вывод переменных со значениями по умолчанию")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "ввод-вывод и завершение программы")]
+        [global::Xunit.TraitAttribute("Description", "вывод переменных со значениями по умолчанию")]
+        public async global::System.Threading.Tasks.Task ВыводПеременныхСоЗначениямиПоУмолчанию()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "5";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вывод переменных со значениями по умолчанию", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 47
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 48
+        await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/default_values.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+#line hidden
+#line 49
+        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 50
+        await testRunner.ThenAsync("я увижу вывод \"0 0.0 false\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
