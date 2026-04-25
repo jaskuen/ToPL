@@ -93,6 +93,11 @@ public enum TokenType
     While,
 
     /// <summary>
+    /// Ключевое слово 'for'.
+    /// </summary>
+    For,
+
+    /// <summary>
     /// Ключевое слово 'break'.
     /// </summary>
     Break,

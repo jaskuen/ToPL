@@ -6,17 +6,6 @@
 /// </summary>
 public static class Lex
 {
-    // Литералы
-    public static Token Id(string v) => new(TokenType.Identifier, new TokenValue(v));
-
-    public static Token Int(int v) => new(TokenType.IntLiteral, new TokenValue(v));
-
-    public static Token Flt(float v) => new(TokenType.FloatLiteral, new TokenValue(v));
-
-    public static Token Str(string v) => new(TokenType.StringLiteral, new TokenValue(v));
-
-    public static Token Err(string v = "") => new(TokenType.Error, new TokenValue(v));
-
     // Логика
     public static Token True => new(TokenType.True);
 
@@ -120,6 +109,17 @@ public static class Lex
     public static Token Comma => new(TokenType.Comma);
 
     public static Token Semi => new(TokenType.Semicolon);
+
+    // Литералы
+    public static Token Id(string v) => new(TokenType.Identifier, new TokenValue(v));
+
+    public static Token Int(int v) => new(TokenType.IntLiteral, new TokenValue(v));
+
+    public static Token Flt(float v) => new(TokenType.FloatLiteral, new TokenValue(v));
+
+    public static Token Str(string v) => new(TokenType.StringLiteral, new TokenValue(v));
+
+    public static Token Err(string v = "") => new(TokenType.Error, new TokenValue(v));
 
     public static Token Tok(TokenType t) => new(t);
 }

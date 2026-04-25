@@ -43,9 +43,6 @@ public static class LexicalStats
             case TokenType.Write:
             case TokenType.Read:
             case TokenType.Main:
-                //case TokenType.Case:
-                //case TokenType.Switch:
-                //case TokenType.Default:
                 return LexicalType.Keyword;
             case TokenType.Identifier:
                 return LexicalType.Identifier;

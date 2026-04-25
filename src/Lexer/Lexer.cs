@@ -17,7 +17,7 @@ public class Lexer
         { "bool", TokenType.Bool },
         { "string", TokenType.String },
         { "while", TokenType.While },
-        //{ "повторити", TokenType.For },
+        { "for", TokenType.For },
         { "return", TokenType.Return },
         { "break", TokenType.Break },
         { "continue", TokenType.Continue },
@@ -31,9 +31,6 @@ public class Lexer
         { "read", TokenType.Read },
         { "const", TokenType.Const },
         { "main",  TokenType.Main },
-        //{ "егда", TokenType.Case },
-        //{ "изберется", TokenType.Switch },
-        //{ "поеликуже", TokenType.Default },
     };
 
     private readonly TextScanner scanner;
@@ -112,12 +109,6 @@ public class Lexer
             case '+':
             case '-':
                 return ParseOperand();
-            //case '[':
-            //    scanner.Advance();
-            //    return new Token(TokenType.OpenArrayParenthesis);
-            //case ']':
-            //    scanner.Advance();
-            //    return new Token(TokenType.CloseArrayParenthesis);
         }
 
         scanner.Advance();
@@ -373,7 +364,8 @@ public class Lexer
         do
         {
             SkipWhiteSpaces();
-        } while (TryParseSingleLineComment());
+        }
+        while (TryParseSingleLineComment());
     }
 
     /// <summary>
@@ -398,7 +390,8 @@ public class Lexer
             do
             {
                 scanner.Advance();
-            } while (scanner.Peek() != '\n' && scanner.Peek() != '\r' && scanner.Peek() != '\0');
+            }
+            while (scanner.Peek() != '\n' && scanner.Peek() != '\r' && scanner.Peek() != '\0');
 
             return true;
         }
