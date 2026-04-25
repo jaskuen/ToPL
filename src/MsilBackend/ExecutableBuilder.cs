@@ -5,33 +5,35 @@ using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
+using static System.IO.UnixFileMode;
+
 namespace MsilBackend;
 
 public class ExecutableBuilder
 {
-    private readonly string _executablePath;
-    private readonly PersistedAssemblyBuilder _assemblyBuilder;
-    private readonly ModuleBuilder _moduleBuilder;
+    private readonly string executablePath;
+    private readonly PersistedAssemblyBuilder assemblyBuilder;
+    private readonly ModuleBuilder moduleBuilder;
 
     public ExecutableBuilder(string executablePath)
     {
-        _executablePath = executablePath;
+        this.executablePath = executablePath;
         AssemblyName assemblyName = new(Path.GetFileNameWithoutExtension(executablePath));
 
-        _assemblyBuilder = new PersistedAssemblyBuilder(
+        assemblyBuilder = new PersistedAssemblyBuilder(
             assemblyName,
             coreAssembly: typeof(object).Assembly
         );
 
-        _moduleBuilder = _assemblyBuilder.DefineDynamicModule(Path.GetFileName(executablePath));
+        moduleBuilder = assemblyBuilder.DefineDynamicModule(Path.GetFileName(executablePath));
     }
 
-    public ModuleBuilder ModuleBuilder => _moduleBuilder;
+    public ModuleBuilder ModuleBuilder => moduleBuilder;
 
     public void Save(MethodBuilder mainMethod)
     {
         // Генерируем метаданные. После этого токены методов становятся валидными.
-        MetadataBuilder metadataBuilder = _assemblyBuilder.GenerateMetadata(
+        MetadataBuilder metadataBuilder = assemblyBuilder.GenerateMetadata(
             out BlobBuilder ilStream,
             out BlobBuilder fieldData
         );
@@ -49,8 +51,8 @@ public class ExecutableBuilder
         );
 
         // Сохраняем исполняемый файл и задаём ему UNIX-права на исполнение.
-        CreateExecutableFile(_executablePath, peBuilder);
-        SetExecutePermissions(_executablePath);
+        CreateExecutableFile(executablePath, peBuilder);
+        SetExecutePermissions(executablePath);
     }
 
     private static void CreateExecutableFile(
@@ -89,9 +91,7 @@ public class ExecutableBuilder
             // Добавляем UNIX-права на выполнение для владельца, группы и остальных, то есть -rwxr-xr-x (755).
             File.SetUnixFileMode(
                 executablePath,
-                UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
-                UnixFileMode.GroupRead | UnixFileMode.GroupExecute |
-                UnixFileMode.OtherRead | UnixFileMode.OtherExecute
+                UserRead | UserWrite | UserExecute | GroupRead | GroupExecute | OtherRead | OtherExecute
             );
         }
     }

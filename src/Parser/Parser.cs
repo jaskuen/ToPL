@@ -58,7 +58,8 @@ public class Parser
             environment.PrintValue($"{result}");
 
             Match(TokenType.End);
-        } while (tokens.Peek().Type != TokenType.End);
+        }
+        while (tokens.Peek().Type != TokenType.End);
     }
 
     private FunctionDeclaration ParseFunctionDeclaration()
@@ -121,7 +122,8 @@ public class Parser
             }
 
             statements.Add(statement);
-        } while (tokens.Peek().Type != TokenType.CloseBrace);
+        }
+        while (tokens.Peek().Type != TokenType.CloseBrace);
 
         Match(TokenType.CloseBrace);
 
@@ -178,10 +180,8 @@ public class Parser
                 return ParseIfStatement();
             case TokenType.While:
                 return ParseWhileLoopStatement();
-            //case TokenType.Switch:
-            //    return ParseSwitchStatement();
-            //case TokenType.For:
-            //    return ParseForLoopStatement();
+            case TokenType.For:
+                return ParseForLoopStatement();
             case TokenType.Break:
                 tokens.Advance();
                 Match(TokenType.Semicolon);
@@ -217,7 +217,9 @@ public class Parser
             tokens.Advance();
             TokenType variableType = tokens.Peek().Type;
             tokens.Advance();
-            return new VariableDeclaration(true, TokenTypeToVariableType(variableType),
+            return new VariableDeclaration(
+                true,
+                TokenTypeToVariableType(variableType),
                 ParseVariableDeclarationList(type));
         }
 
@@ -428,51 +430,12 @@ public class Parser
     }
 
     /// <summary>
-    /// switch_statement = "изберется", "(", expression, ")", scope;
-    /// </summary>
-    /// <returns></returns>
-    private SwitchStatement ParseSwitchStatement()
-    {
-        //Match(TokenType.Switch);
-        Match(TokenType.OpenParenthesis);
-        Expression condition = ParseExpression();
-        Match(TokenType.CloseParenthesis);
-        Match(TokenType.OpenBrace);
-        Dictionary<Expression, ScopeStatement> cases = ParseSwitchStatements();
-        //Match(TokenType.Default);
-        ScopeStatement defaultStatement = ParseScope();
-        Match(TokenType.CloseParenthesis);
-
-        return new SwitchStatement(cases, condition, defaultStatement);
-    }
-
-    /// <summary>
-    /// case_clause = "егда", constant, scope;
-    /// default_clause = "поеликуже", scope;
-    /// </summary>
-    /// <returns></returns>
-    private Dictionary<Expression, ScopeStatement> ParseSwitchStatements()
-    {
-        Dictionary<Expression, ScopeStatement> cases = [];
-        //while (tokens.Peek().Type == TokenType.Case)
-        //{
-        //    Match(TokenType.Case);
-        //    Expression constValue = ParseExpression();
-        //    ScopeStatement statement = ParseScope();
-
-        //    cases.Add(constValue, statement);
-        //}
-
-        return cases;
-    }
-
-    /// <summary>
     /// for_statement = "повторити", "(", assignment_expression, ",", logical_or_expression, ",", assignment_expression, ")", scope;
     /// </summary>
     /// <returns></returns>
     private ForLoopStatement ParseForLoopStatement()
     {
-        //Match(TokenType.For);
+        Match(TokenType.For);
         Match(TokenType.OpenParenthesis);
 
         // пока пропускаем тип

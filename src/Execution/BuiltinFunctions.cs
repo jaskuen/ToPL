@@ -172,7 +172,7 @@ public static class BuiltinFunctions
 
         RuntimeValue value = arguments[0];
         RuntimeValueType type = value.GetValueType();
-        if (type is not (RuntimeValueType.Int or RuntimeValueType.Double))
+        if (type is not(RuntimeValueType.Int or RuntimeValueType.Double))
         {
             throw new Exception($"Incorrect ToStringType argument type: {type}");
         }
