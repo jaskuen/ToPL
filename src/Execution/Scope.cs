@@ -1,6 +1,4 @@
-﻿using Ast;
-
-using Runtime;
+﻿using Runtime;
 
 namespace Execution;
 
@@ -36,8 +34,13 @@ public class Scope
     /// </summary>
     public bool TryAssignVariable(string name, RuntimeValue value)
     {
-        if (variables.ContainsKey(name))
+        if (variables.TryGetValue(name, out RuntimeValue? currentValue))
         {
+            if (currentValue.IsConstant)
+            {
+                throw new InvalidOperationException($"Constant '{name}' cannot be assigned.");
+            }
+
             variables[name] = value;
             return true;
         }

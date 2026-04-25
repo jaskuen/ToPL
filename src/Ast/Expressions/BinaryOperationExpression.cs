@@ -1,6 +1,4 @@
-﻿using Ast.Statements;
-
-namespace Ast.Expressions;
+﻿namespace Ast.Expressions;
 
 public class BinaryOperationExpression(Expression left, BinaryOperation? operation = null, Expression? right = null)
     : Expression

@@ -10,20 +10,24 @@ namespace MsilBackend;
 public class ExecutableBuilder
 {
     private readonly string _executablePath;
+    private readonly string _assemblyPath;
+    private readonly string _runtimeConfigPath;
     private readonly PersistedAssemblyBuilder _assemblyBuilder;
     private readonly ModuleBuilder _moduleBuilder;
 
     public ExecutableBuilder(string executablePath)
     {
         _executablePath = executablePath;
-        AssemblyName assemblyName = new(Path.GetFileNameWithoutExtension(executablePath));
+        _assemblyPath = Path.ChangeExtension(executablePath, "dll");
+        _runtimeConfigPath = Path.ChangeExtension(executablePath, "runtimeconfig.json");
+        AssemblyName assemblyName = new(Path.GetFileNameWithoutExtension(_assemblyPath));
 
         _assemblyBuilder = new PersistedAssemblyBuilder(
             assemblyName,
             coreAssembly: typeof(object).Assembly
         );
 
-        _moduleBuilder = _assemblyBuilder.DefineDynamicModule(Path.GetFileName(executablePath));
+        _moduleBuilder = _assemblyBuilder.DefineDynamicModule(Path.GetFileName(_assemblyPath));
     }
 
     public ModuleBuilder ModuleBuilder => _moduleBuilder;
@@ -48,9 +52,11 @@ public class ExecutableBuilder
             entryPoint: mainHandle
         );
 
-        // Сохраняем исполняемый файл и задаём ему UNIX-права на исполнение.
-        CreateExecutableFile(_executablePath, peBuilder);
+        // Сохраняем управляемую сборку и создаём apphost для прямого запуска.
+        CreateExecutableFile(_assemblyPath, peBuilder);
+        AppHostBuilder.CreateAppHost(_executablePath, Path.GetFileName(_assemblyPath));
         SetExecutePermissions(_executablePath);
+        RuntimeConfigGenerator.SaveRuntimeConfig(_runtimeConfigPath);
     }
 
     private static void CreateExecutableFile(

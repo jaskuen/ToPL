@@ -7,4 +7,15 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Execution\Execution.csproj" />
+      <ProjectReference Include="..\MsilBackend\MsilBackend.csproj" />
+      <ProjectReference Include="..\MsilCodegen\MsilCodegen.csproj" />
+      <ProjectReference Include="..\Parser\Parser.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.CommandLine" Version="3.0.0-preview.3.26207.106" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,6 @@
-﻿namespace Compiler.CommandLine;
+﻿using System.CommandLine;
+
+namespace Compiler.CommandLine;
 
 /// <summary>
 /// Представляет консольное приложение для компилятора языка W.
@@ -11,6 +13,11 @@ public static class CompilerApplication
         TextWriter stderrWriter
     )
     {
-        return 0; // Пока что возвращаем 0
+        RootCommand command = RootCommandFactory.Create();
+        InvocationConfiguration configuration = new()
+        {
+            Output = stdoutWriter, Error = stderrWriter,
+        };
+        return command.Parse(args).Invoke(configuration);
     }
 }

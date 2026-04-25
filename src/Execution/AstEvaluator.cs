@@ -59,7 +59,8 @@ public class AstEvaluator : IAstVisitor
             float d => new RuntimeValue(d),
             string s => new RuntimeValue(s),
             bool b => new RuntimeValue(b),
-            _ => throw new Exception($"Unknown expression type met while trying to visit {nameof(LiteralExpression)}"),
+            _ => throw new Exception(
+                $"Unknown expression type met while trying to visit {nameof(LiteralExpression)}"),
         };
         values.Push(value);
     }
@@ -177,6 +178,12 @@ public class AstEvaluator : IAstVisitor
             }
             else
             {
+                if (declaration.IsConst)
+                {
+                    throw new Exception(
+                        $"Constant variable declaration {name} requires a value");
+                }
+
                 value = declaration.VariableType switch
                 {
                     VariableType.Int => new RuntimeValue(RuntimeValueType.Int),
@@ -187,7 +194,7 @@ public class AstEvaluator : IAstVisitor
                 };
             }
 
-            context.DefineVariable(name, value);
+            context.DefineVariable(name, declaration.IsConst ? value.WithConstant() : value);
         }
     }
 
@@ -214,7 +221,8 @@ public class AstEvaluator : IAstVisitor
         if (expression.Operation is UnaryOperation.Increment or UnaryOperation.Decrement)
         {
             if (expression.Expression.GetType() != typeof(VariableExpression) &&
-                (expression.Expression as UnaryOperationExpression)?.Expression.GetType() != typeof(VariableExpression))
+                (expression.Expression as UnaryOperationExpression)?.Expression.GetType() !=
+                typeof(VariableExpression))
             {
                 throw new Exception("Cannot use this operation not on a variable");
             }

@@ -33,7 +33,8 @@ public sealed class CompilerStepDefinitions : IDisposable
         _compiledProgram ??= TempFile.CreateEmpty("program-", ".exe");
         _compilerTestDriver.RunCompiler(path, _compiledProgram.Path);
 
-        await DotnetIlVerifyRunner.Run(_compiledProgram.Path);
+        string dllPath = Path.ChangeExtension(_compiledProgram.Path, "dll");
+        await DotnetIlVerifyRunner.Run(dllPath);
     }
 
     [When(@"я ввожу (.*)")]
