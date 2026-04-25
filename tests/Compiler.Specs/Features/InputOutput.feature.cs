@@ -343,7 +343,7 @@ namespace Compiler.Specs.Features
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 50
-        await testRunner.ThenAsync("я увижу вывод 0 0.0 false", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 0 0 False", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

@@ -204,7 +204,6 @@ public class MsilCodegenPass : IAstVisitor
             UnaryOperationExpression unary => EmitUnaryOperation(unary),
             BinaryOperationExpression binary => EmitBinaryOperation(binary),
             BuiltinFunctionCallExpression builtin => EmitBuiltinFunctionCall(builtin),
-            BuiltinConstantExpression builtinConstant => EmitBuiltinConstant(builtinConstant),
             FunctionCallExpression => throw new NotSupportedException(
                 "User functions are not supported by the MSIL backend yet."),
             _ => throw new NotSupportedException($"Expression {expression.GetType().Name} is not supported."),
@@ -422,21 +421,7 @@ public class MsilCodegenPass : IAstVisitor
             "min" => EmitBinaryMathF(expression, nameof(MathF.Min)),
             "max" => EmitBinaryMathF(expression, nameof(MathF.Max)),
             "abs" => EmitUnaryMathF(expression, nameof(MathF.Abs)),
-            "кСловесам" => EmitConvertToString(expression),
-            "кБлагодати" => EmitParseConversion(expression, typeof(int), nameof(int.Parse), VariableType.Int),
-            "кКадилу" => EmitParseConversion(expression, typeof(float), nameof(float.Parse), VariableType.Double),
-            "кНевысокому" => EmitToLower(expression),
             _ => throw new NotSupportedException($"Builtin function {expression.FunctionName} is not supported."),
-        };
-    }
-
-    private VariableType EmitBuiltinConstant(BuiltinConstantExpression expression)
-    {
-        return expression.Name switch
-        {
-            "пи" => EmitFloatConstant(MathF.PI),
-            "эйлер" => EmitFloatConstant(MathF.E),
-            _ => throw new NotSupportedException($"Builtin constant {expression.Name} is not supported."),
         };
     }
 
@@ -670,8 +655,7 @@ public class MsilCodegenPass : IAstVisitor
                 break;
             case VariableType.Double:
                 EmitInvariantCulture();
-                il.Emit(OpCodes.Call,
-                    GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(float), typeof(IFormatProvider)]));
+                il.Emit(OpCodes.Call, GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(float), typeof(IFormatProvider)]));
                 break;
             case VariableType.Boolean:
                 il.Emit(OpCodes.Call, GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(bool)]));
@@ -770,8 +754,8 @@ public class MsilCodegenPass : IAstVisitor
     {
         return expression.FunctionName switch
         {
-            "length" or "кБлагодати" => VariableType.Int,
-            "substring" or "кСловесам" or "кНевысокому" => VariableType.String,
+            "length" => VariableType.Int,
+            "substring" => VariableType.String,
             _ => VariableType.Double,
         };
     }
