@@ -5,9 +5,9 @@ namespace TestLibrary.Helpers;
 
 public sealed class ConsoleSubprocessRunner
 {
-    private readonly string _workingDirectory;
-    private readonly string? _stdin;
-    private bool _runCalled;
+    private readonly string workingDirectory;
+    private readonly string? stdin;
+    private bool runCalled;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConsoleSubprocessRunner"/> class.
@@ -20,8 +20,8 @@ public sealed class ConsoleSubprocessRunner
         string? stdin = null
     )
     {
-        _workingDirectory = workingDirectory;
-        _stdin = stdin;
+        this.workingDirectory = workingDirectory;
+        this.stdin = stdin;
 
         ExitCode = -1;
         Stdout = string.Empty;
@@ -42,23 +42,23 @@ public sealed class ConsoleSubprocessRunner
         CancellationToken ct
     )
     {
-        if (_runCalled)
+        if (runCalled)
         {
             throw new InvalidOperationException("Cannot run process twice using this method");
         }
 
-        _runCalled = true;
+        runCalled = true;
 
         // Запускаем процесс.
         using Process process = new();
-        process.StartInfo = CreateStartInfo(command, _workingDirectory, redirectStdin: _stdin != null);
+        process.StartInfo = CreateStartInfo(command, workingDirectory, redirectStdin: stdin != null);
         process.Start();
         ct.ThrowIfCancellationRequested();
 
         // Записываем данные в stdin
-        if (_stdin != null)
+        if (stdin != null)
         {
-            await process.StandardInput.WriteAsync(_stdin);
+            await process.StandardInput.WriteAsync(stdin);
             process.StandardInput.Close();
         }
 
@@ -82,7 +82,7 @@ public sealed class ConsoleSubprocessRunner
     /// </summary>
     public void ThrowOnNonZeroExitCode()
     {
-        if (!_runCalled)
+        if (!runCalled)
         {
             throw new InvalidOperationException("Cannot check exit code before running process");
         }

@@ -5,37 +5,39 @@ using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
+using static System.IO.UnixFileMode;
+
 namespace MsilBackend;
 
 public class ExecutableBuilder
 {
-    private readonly string _executablePath;
-    private readonly string _assemblyPath;
-    private readonly string _runtimeConfigPath;
-    private readonly PersistedAssemblyBuilder _assemblyBuilder;
-    private readonly ModuleBuilder _moduleBuilder;
+    private readonly string executablePath;
+    private readonly string assemblyPath;
+    private readonly string runtimeConfigPath;
+    private readonly PersistedAssemblyBuilder assemblyBuilder;
+    private readonly ModuleBuilder moduleBuilder;
 
     public ExecutableBuilder(string executablePath)
     {
-        _executablePath = executablePath;
-        _assemblyPath = Path.ChangeExtension(executablePath, "dll");
-        _runtimeConfigPath = Path.ChangeExtension(executablePath, "runtimeconfig.json");
-        AssemblyName assemblyName = new(Path.GetFileNameWithoutExtension(_assemblyPath));
+        this.executablePath = executablePath;
+        assemblyPath = Path.ChangeExtension(executablePath, "dll");
+        runtimeConfigPath = Path.ChangeExtension(executablePath, "runtimeconfig.json");
+        AssemblyName assemblyName = new(Path.GetFileNameWithoutExtension(assemblyPath));
 
-        _assemblyBuilder = new PersistedAssemblyBuilder(
+        assemblyBuilder = new PersistedAssemblyBuilder(
             assemblyName,
             coreAssembly: typeof(object).Assembly
         );
 
-        _moduleBuilder = _assemblyBuilder.DefineDynamicModule(Path.GetFileName(_assemblyPath));
+        moduleBuilder = assemblyBuilder.DefineDynamicModule(Path.GetFileName(assemblyPath));
     }
 
-    public ModuleBuilder ModuleBuilder => _moduleBuilder;
+    public ModuleBuilder ModuleBuilder => moduleBuilder;
 
     public void Save(MethodBuilder mainMethod)
     {
         // Генерируем метаданные. После этого токены методов становятся валидными.
-        MetadataBuilder metadataBuilder = _assemblyBuilder.GenerateMetadata(
+        MetadataBuilder metadataBuilder = assemblyBuilder.GenerateMetadata(
             out BlobBuilder ilStream,
             out BlobBuilder fieldData
         );
@@ -53,10 +55,10 @@ public class ExecutableBuilder
         );
 
         // Сохраняем управляемую сборку и создаём apphost для прямого запуска.
-        CreateExecutableFile(_assemblyPath, peBuilder);
-        AppHostBuilder.CreateAppHost(_executablePath, Path.GetFileName(_assemblyPath));
-        SetExecutePermissions(_executablePath);
-        RuntimeConfigGenerator.SaveRuntimeConfig(_runtimeConfigPath);
+        CreateExecutableFile(assemblyPath, peBuilder);
+        AppHostBuilder.CreateAppHost(executablePath, Path.GetFileName(assemblyPath));
+        SetExecutePermissions(executablePath);
+        RuntimeConfigGenerator.SaveRuntimeConfig(runtimeConfigPath);
     }
 
     private static void CreateExecutableFile(
@@ -95,9 +97,7 @@ public class ExecutableBuilder
             // Добавляем UNIX-права на выполнение для владельца, группы и остальных, то есть -rwxr-xr-x (755).
             File.SetUnixFileMode(
                 executablePath,
-                UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
-                UnixFileMode.GroupRead | UnixFileMode.GroupExecute |
-                UnixFileMode.OtherRead | UnixFileMode.OtherExecute
+                UserRead | UserWrite | UserExecute | GroupRead | GroupExecute | OtherRead | OtherExecute
             );
         }
     }

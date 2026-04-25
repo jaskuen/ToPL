@@ -14,13 +14,12 @@ public sealed class CompilerStepDefinitions : IDisposable
 {
     private const int RunTimeoutSeconds = 20;
     private static readonly TimeSpan RunTimeout = TimeSpan.FromSeconds(RunTimeoutSeconds);
+    private readonly StringBuilder programInput = new();
 
-    private readonly CompilerTestDriver _compilerTestDriver = new();
-    private TempFile? _compiledProgram;
-
-    private readonly StringBuilder _programInput = new();
-    private string _lastProgramOutput = string.Empty;
-    private int _lastProgramExitCode = -1;
+    private readonly CompilerTestDriver compilerTestDriver = new();
+    private TempFile? compiledProgram;
+    private string lastProgramOutput = string.Empty;
+    private int lastProgramExitCode = -1;
 
     [Given(@"^я скомпилировал программу ""(.*)""$")]
     public async Task ПустьЯСкомпилировалПрограмму(string name)
@@ -30,53 +29,55 @@ public sealed class CompilerStepDefinitions : IDisposable
         Assert.True(File.Exists(path), $"Source code file {path} does not exist");
 
         // Компилируем программу в исполняемый файл (это будет временный файл).
-        _compiledProgram ??= TempFile.CreateEmpty("program-", ".exe");
-        _compilerTestDriver.RunCompiler(path, _compiledProgram.Path);
+        compiledProgram ??= TempFile.CreateEmpty("program-", ".exe");
+        compilerTestDriver.RunCompiler(path, compiledProgram.Path);
 
-        string dllPath = Path.ChangeExtension(_compiledProgram.Path, "dll");
+        string dllPath = Path.ChangeExtension(compiledProgram.Path, "dll");
         await DotnetIlVerifyRunner.Run(dllPath);
     }
 
-    [When(@"я ввожу (.*)")]
+    [When("я ввожу (.*)")]
     public void КогдаЯВвожу(string input)
     {
-        _programInput.Append(input);
+        programInput.Append(input);
     }
 
     [When(@"я ввожу текст:")]
     public void КогдаЯВвожуТекст(string input)
     {
-        _programInput.Append(input);
+        programInput.Append(input);
     }
 
     [When("^(?:я )?выполняю программу$")]
     public async Task КогдаВыполняюПрограмму()
     {
         // Проверяем, что программа была скомпилирована.
-        Assert.NotNull(_compiledProgram);
-        Assert.True(File.Exists(_compiledProgram.Path), $"Executable file {_compiledProgram.Path} does not exist");
+        Assert.NotNull(compiledProgram);
+        string dllPath = Path.ChangeExtension(compiledProgram.Path, "dll");
+        Assert.True(File.Exists(dllPath), $"Dll file {dllPath} does not exist");
 
         // Запускаем программу с таймаутом и сохраняем её вывод.
         CancellationTokenSource cts = new(RunTimeout);
-        _lastProgramOutput = await DotnetConsoleProgramRunner.RunAndReadOutputWithCheck(
-            _compiledProgram.Path, _programInput.ToString(), cts.Token
+        lastProgramOutput = await DotnetConsoleProgramRunner.RunAndReadOutputWithCheck(
+            dllPath, programInput.ToString(), cts.Token
         );
 
         // Код возврата нулевой — иначе используемый метод запуска выбросил бы исключение.
-        _lastProgramExitCode = 0;
+        lastProgramExitCode = 0;
     }
 
     [When("^(?:я )?выполняю программу с перехватом ошибок$")]
     public async Task WhenЯВыполняюПрограммуСПерехватомОшибок()
     {
         // Проверяем, что программа была скомпилирована.
-        Assert.NotNull(_compiledProgram);
-        Assert.True(File.Exists(_compiledProgram.Path), $"Executable file {_compiledProgram.Path} does not exist");
+        Assert.NotNull(compiledProgram);
+        string dllPath = Path.ChangeExtension(compiledProgram.Path, "dll");
+        Assert.True(File.Exists(dllPath), $"Dll file {dllPath} does not exist");
 
         // Запускаем программу с таймаутом и сохраняем её вывод и код возврата.
         CancellationTokenSource cts = new(RunTimeout);
-        (_lastProgramExitCode, _lastProgramOutput) = await DotnetConsoleProgramRunner.RunAndReadOutput(
-            _compiledProgram.Path, _programInput.ToString(), cts.Token
+        (lastProgramExitCode, lastProgramOutput) = await DotnetConsoleProgramRunner.RunAndReadOutput(
+            dllPath, programInput.ToString(), cts.Token
         );
     }
 
@@ -85,7 +86,7 @@ public sealed class CompilerStepDefinitions : IDisposable
     {
         Assert.Equal(
             ToUnixLineEnds(expected),
-            ToUnixLineEnds(_lastProgramOutput)
+            ToUnixLineEnds(lastProgramOutput)
         );
     }
 
@@ -94,19 +95,19 @@ public sealed class CompilerStepDefinitions : IDisposable
     {
         Assert.Equal(
             ToUnixLineEnds(expected),
-            ToUnixLineEnds(_lastProgramOutput)
+            ToUnixLineEnds(lastProgramOutput)
         );
     }
 
     [Then(@"^(?:я )?получу код возврата (\d+)$")]
     public void ТогдаЯПолучуКодВозврата(int exitCode)
     {
-        Assert.Equal(exitCode, _lastProgramExitCode);
+        Assert.Equal(exitCode, lastProgramExitCode);
     }
 
     public void Dispose()
     {
-        _compiledProgram?.Dispose();
+        compiledProgram?.Dispose();
     }
 
     private string ToUnixLineEnds(string text)
