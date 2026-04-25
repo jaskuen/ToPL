@@ -130,8 +130,7 @@ public class Parser
             }
 
             statements.Add(statement);
-        }
-        while (tokens.Peek().Type != TokenType.CloseBrace);
+        } while (tokens.Peek().Type != TokenType.CloseBrace);
 
         Match(TokenType.CloseBrace);
 
@@ -324,7 +323,13 @@ public class Parser
     {
         List<string> list = [];
 
+        if (tokens.Peek().Type == TokenType.CloseParenthesis)
+        {
+            return list;
+        }
+
         string name = tokens.Peek().Value!.ToString();
+
         tokens.Advance();
 
         list.Add(name);

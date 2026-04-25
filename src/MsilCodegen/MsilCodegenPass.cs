@@ -119,6 +119,13 @@ public class MsilCodegenPass : IAstVisitor
 
     public void Visit(InputStatement statement)
     {
+        if (statement.Names.Count == 0)
+        {
+            EmitConsoleRead(VariableType.String);
+            il.Emit(OpCodes.Pop);
+            return;
+        }
+
         foreach (string name in statement.Names)
         {
             LocalValue variable = FindVariable(name);
@@ -564,7 +571,8 @@ public class MsilCodegenPass : IAstVisitor
                 break;
             case VariableType.Double:
                 EmitInvariantCulture();
-                il.Emit(OpCodes.Call, GetMethod(typeof(float), nameof(float.Parse), [typeof(string), typeof(IFormatProvider)]));
+                il.Emit(OpCodes.Call,
+                    GetMethod(typeof(float), nameof(float.Parse), [typeof(string), typeof(IFormatProvider)]));
                 break;
             case VariableType.Boolean:
                 il.Emit(OpCodes.Call, GetMethod(typeof(bool), nameof(bool.Parse), [typeof(string)]));
@@ -662,7 +670,8 @@ public class MsilCodegenPass : IAstVisitor
                 break;
             case VariableType.Double:
                 EmitInvariantCulture();
-                il.Emit(OpCodes.Call, GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(float), typeof(IFormatProvider)]));
+                il.Emit(OpCodes.Call,
+                    GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(float), typeof(IFormatProvider)]));
                 break;
             case VariableType.Boolean:
                 il.Emit(OpCodes.Call, GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(bool)]));
@@ -746,7 +755,8 @@ public class MsilCodegenPass : IAstVisitor
 
         VariableType leftType = InferExpressionType(binary.Left);
         VariableType rightType = InferExpressionType(binary.Right);
-        if (binary.Operation == BinaryOperation.Plus && (leftType == VariableType.String || rightType == VariableType.String))
+        if (binary.Operation == BinaryOperation.Plus &&
+            (leftType == VariableType.String || rightType == VariableType.String))
         {
             return VariableType.String;
         }
@@ -821,7 +831,7 @@ public class MsilCodegenPass : IAstVisitor
 
     private static void EnsureNumeric(VariableType type, object operation)
     {
-        if (type is not(VariableType.Int or VariableType.Double))
+        if (type is not (VariableType.Int or VariableType.Double))
         {
             throw new NotSupportedException($"Operation {operation} cannot be applied to {type}.");
         }
