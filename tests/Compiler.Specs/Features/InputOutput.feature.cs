@@ -192,7 +192,7 @@ namespace Compiler.Specs.Features
         await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/read_write_string.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 15
-        await testRunner.AndAsync("я ввожу текст:", "TestInput", ((global::Reqnroll.Table)(null)), "И ");
+        await testRunner.WhenAsync("я ввожу текст:", "TestInput", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 19
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
@@ -229,13 +229,13 @@ namespace Compiler.Specs.Features
         await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/read_write_int.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 27
-        await testRunner.AndAsync("я ввожу \"-42\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "И ");
+        await testRunner.WhenAsync("я ввожу \"-42\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 28
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 29
-        await testRunner.ThenAsync("я увижу вывод \"-42\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод: \"-42\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -266,13 +266,13 @@ namespace Compiler.Specs.Features
         await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/read_write_float.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 33
-        await testRunner.AndAsync("я ввожу \"3.1415\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "И ");
+        await testRunner.WhenAsync("я ввожу \"3.1415\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 34
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 35
-        await testRunner.ThenAsync("я увижу вывод \"3.1415\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод: \"3.1415\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -303,13 +303,13 @@ namespace Compiler.Specs.Features
         await testRunner.GivenAsync("я скомпилировал программу \"features/input_output/read_ignore.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 39
-        await testRunner.AndAsync("я ввожу текст:", "skip_this\r\n100", ((global::Reqnroll.Table)(null)), "И ");
+        await testRunner.WhenAsync("я ввожу текст:", "skip_this\r\n100", ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 44
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 45
-        await testRunner.ThenAsync("я увижу вывод \"100\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод: \"100\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -343,7 +343,7 @@ namespace Compiler.Specs.Features
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 50
-        await testRunner.ThenAsync("я увижу вывод \"0 0.0 false\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод: \"0 0.0 false\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
