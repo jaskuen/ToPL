@@ -6,7 +6,7 @@ public class RuntimeValue
 {
     private const float DoubleTolerance = 0.001f;
     private readonly object value;
-    private RuntimeValueType type;
+    private readonly RuntimeValueType type;
 
     public RuntimeValue(int value)
     {
