@@ -160,7 +160,7 @@ public static class BuiltinFunctions
             throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
         }
 
-        return new RuntimeValue(arguments[0].ToString().ToLower());
+        return new RuntimeValue(arguments[0].ToString().ToLowerInvariant());
     }
 
     private static RuntimeValue ToStringType(List<RuntimeValue> arguments)
