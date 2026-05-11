@@ -130,7 +130,8 @@ public class Parser
             }
 
             statements.Add(statement);
-        } while (tokens.Peek().Type != TokenType.CloseBrace);
+        }
+        while (tokens.Peek().Type != TokenType.CloseBrace);
 
         Match(TokenType.CloseBrace);
 

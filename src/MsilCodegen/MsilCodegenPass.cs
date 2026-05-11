@@ -556,7 +556,8 @@ public class MsilCodegenPass : IAstVisitor
                 break;
             case VariableType.Double:
                 EmitInvariantCulture();
-                il.Emit(OpCodes.Call,
+                il.Emit(
+                    OpCodes.Call,
                     GetMethod(typeof(float), nameof(float.Parse), [typeof(string), typeof(IFormatProvider)]));
                 break;
             case VariableType.Boolean:
@@ -815,7 +816,7 @@ public class MsilCodegenPass : IAstVisitor
 
     private static void EnsureNumeric(VariableType type, object operation)
     {
-        if (type is not (VariableType.Int or VariableType.Double))
+        if (type is not(VariableType.Int or VariableType.Double))
         {
             throw new NotSupportedException($"Operation {operation} cannot be applied to {type}.");
         }
