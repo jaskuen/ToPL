@@ -1,0 +1,6 @@
+void main()
+{
+    float value;
+    read(value);
+    write(value);
+}

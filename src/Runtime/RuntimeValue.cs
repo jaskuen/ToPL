@@ -8,33 +8,38 @@ public class RuntimeValue
     private readonly object value;
     private readonly RuntimeValueType type;
 
-    public RuntimeValue(int value)
+    public RuntimeValue(int value, bool isConstant = false)
     {
         this.value = value;
+        IsConstant = isConstant;
         type = RuntimeValueType.Int;
     }
 
-    public RuntimeValue(float value)
+    public RuntimeValue(float value, bool isConstant = false)
     {
         this.value = value;
+        IsConstant = isConstant;
         type = RuntimeValueType.Double;
     }
 
-    public RuntimeValue(bool value)
+    public RuntimeValue(bool value, bool isConstant = false)
     {
         this.value = value;
+        IsConstant = isConstant;
         type = RuntimeValueType.Boolean;
     }
 
-    public RuntimeValue(string value)
+    public RuntimeValue(string value, bool isConstant = false)
     {
         this.value = value;
+        IsConstant = isConstant;
         type = RuntimeValueType.String;
     }
 
-    public RuntimeValue(RuntimeValueType type)
+    public RuntimeValue(RuntimeValueType type, bool isConstant = false)
     {
         this.type = type;
+        IsConstant = isConstant;
         value = type switch
         {
             RuntimeValueType.Int => 0,
@@ -44,6 +49,8 @@ public class RuntimeValue
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
+
+    public bool IsConstant { get; }
 
     public static RuntimeValue operator +(RuntimeValue left, RuntimeValue right)
     {
@@ -338,4 +345,16 @@ public class RuntimeValue
     }
 
     public RuntimeValueType GetValueType() => type;
+
+    public RuntimeValue WithConstant(bool isConstant = true)
+    {
+        return value switch
+        {
+            int i => new RuntimeValue(i, isConstant),
+            float d => new RuntimeValue(d, isConstant),
+            bool b => new RuntimeValue(b, isConstant),
+            string s => new RuntimeValue(s, isConstant),
+            _ => throw new NotImplementedException()
+        };
+    }
 }

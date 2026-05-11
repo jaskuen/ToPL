@@ -114,6 +114,34 @@ public class ParseTopLevelGrammarTest
                 """,
                 "y", new RuntimeValue("8")
             },
+
+            // Константа используется как обычное значение
+            { "const int x = 21; int y = x * 2;", "y", new RuntimeValue("42") },
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(GetThrowsOnConstErrorsData))]
+    public void Throws_on_const_errors(string code)
+    {
+        string program = $$"""
+                          void main() {
+                          {{code}}
+                          }
+                          """;
+
+        Parser parser = new(context, environment, program);
+        Assert.ThrowsAny<Exception>(() => parser.ParseProgram());
+    }
+
+    public static TheoryData<string> GetThrowsOnConstErrorsData()
+    {
+        return new TheoryData<string>
+        {
+            "const int x;",
+            "const int x = 1; x = 2;",
+            "const int x = 1; read(x);",
+            "const int x = 1; x++;",
         };
     }
 

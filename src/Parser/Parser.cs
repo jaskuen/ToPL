@@ -29,37 +29,45 @@ public class Parser
         tokens = new TokenStream(code);
     }
 
-    public void ParseProgram()
+    public ProgramUnit ParseProgramAst()
     {
         List<TokenType> types =
         [
             TokenType.Void, TokenType.Bool, TokenType.Float, TokenType.Int, TokenType.String
         ];
 
-        do
+        List<FunctionDeclaration> functions = [];
+        Token type = tokens.Peek();
+
+        while (types.Contains(type.Type) && tokens.Peek(1).Type != TokenType.Main)
         {
-            Token type = tokens.Peek();
-
-            while (types.Contains(type.Type) && tokens.Peek(1).Type != TokenType.Main)
-            {
-                FunctionDeclaration functionDeclaration = ParseFunctionDeclaration();
-                functionDeclaration.Accept(astEvaluator);
-            }
-
-            // "main"
+            FunctionDeclaration functionDeclaration = ParseFunctionDeclaration();
+            functions.Add(functionDeclaration);
             type = tokens.Peek();
-            tokens.Advance();
-            Match(TokenType.Main);
-            Match(TokenType.OpenParenthesis);
-            Match(TokenType.CloseParenthesis);
-            Statement scope = ParseScope();
-            RuntimeValue result = astEvaluator.Evaluate(scope, type.Type == TokenType.Void);
-
-            environment.PrintValue($"{result}");
-
-            Match(TokenType.End);
         }
-        while (tokens.Peek().Type != TokenType.End);
+
+        VariableType mainType = TokenTypeToVariableType(tokens.Peek().Type);
+        tokens.Advance();
+        Match(TokenType.Main);
+        Match(TokenType.OpenParenthesis);
+        Match(TokenType.CloseParenthesis);
+        ScopeStatement scope = ParseScope();
+
+        Match(TokenType.End);
+        return new ProgramUnit(functions, mainType, scope);
+    }
+
+    public void ParseProgram()
+    {
+        ProgramUnit program = ParseProgramAst();
+
+        foreach (FunctionDeclaration function in program.Functions)
+        {
+            function.Accept(astEvaluator);
+        }
+
+        RuntimeValue result = astEvaluator.Evaluate(program.MainBody, program.MainType == VariableType.Void);
+        environment.PrintValue($"{result}");
     }
 
     private FunctionDeclaration ParseFunctionDeclaration()
@@ -316,7 +324,13 @@ public class Parser
     {
         List<string> list = [];
 
+        if (tokens.Peek().Type == TokenType.CloseParenthesis)
+        {
+            return list;
+        }
+
         string name = tokens.Peek().Value!.ToString();
+
         tokens.Advance();
 
         list.Add(name);
@@ -432,7 +446,6 @@ public class Parser
     /// <summary>
     /// for_statement = "повторити", "(", assignment_expression, ",", logical_or_expression, ",", assignment_expression, ")", scope;
     /// </summary>
-    /// <returns></returns>
     private ForLoopStatement ParseForLoopStatement()
     {
         Match(TokenType.For);

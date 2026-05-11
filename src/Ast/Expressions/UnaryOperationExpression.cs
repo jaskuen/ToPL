@@ -1,6 +1,4 @@
-﻿using Ast.Statements;
-
-namespace Ast.Expressions;
+﻿namespace Ast.Expressions;
 
 public sealed class UnaryOperationExpression(UnaryOperation? operation, Expression expression, bool isPostfix = false, bool doPushToStack = true)
     : Expression

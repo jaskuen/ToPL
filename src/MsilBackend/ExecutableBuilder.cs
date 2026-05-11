@@ -5,6 +5,8 @@ using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
+using Microsoft.NET.HostModel.AppHost;
+
 using static System.IO.UnixFileMode;
 
 namespace MsilBackend;
@@ -12,20 +14,24 @@ namespace MsilBackend;
 public class ExecutableBuilder
 {
     private readonly string executablePath;
+    private readonly string assemblyPath;
+    private readonly string runtimeConfigPath;
     private readonly PersistedAssemblyBuilder assemblyBuilder;
     private readonly ModuleBuilder moduleBuilder;
 
     public ExecutableBuilder(string executablePath)
     {
         this.executablePath = executablePath;
-        AssemblyName assemblyName = new(Path.GetFileNameWithoutExtension(executablePath));
+        assemblyPath = Path.ChangeExtension(executablePath, "dll");
+        runtimeConfigPath = Path.ChangeExtension(executablePath, "runtimeconfig.json");
+        AssemblyName assemblyName = new(Path.GetFileNameWithoutExtension(assemblyPath));
 
         assemblyBuilder = new PersistedAssemblyBuilder(
             assemblyName,
             coreAssembly: typeof(object).Assembly
         );
 
-        moduleBuilder = assemblyBuilder.DefineDynamicModule(Path.GetFileName(executablePath));
+        moduleBuilder = assemblyBuilder.DefineDynamicModule(Path.GetFileName(assemblyPath));
     }
 
     public ModuleBuilder ModuleBuilder => moduleBuilder;
@@ -50,9 +56,21 @@ public class ExecutableBuilder
             entryPoint: mainHandle
         );
 
-        // Сохраняем исполняемый файл и задаём ему UNIX-права на исполнение.
-        CreateExecutableFile(executablePath, peBuilder);
+        // Сохраняем управляемую сборку и создаём apphost для прямого запуска.
+        CreateExecutableFile(assemblyPath, peBuilder);
+        string appHostTemplate = FindAppHostTemplate();
+
+        HostWriter.CreateAppHost(
+            appHostSourceFilePath: appHostTemplate,
+            appHostDestinationFilePath: executablePath,
+            appBinaryFilePath: Path.GetFileName(assemblyPath),
+            windowsGraphicalUserInterface: false,
+            assemblyToCopyResorcesFrom: null
+        );
         SetExecutePermissions(executablePath);
+
+        // Генерируем *.runtimeconfig.json для запуска программы утилитой dotnet exec в Linux / Mac OS X.
+        RuntimeConfigGenerator.SaveRuntimeConfig(runtimeConfigPath);
     }
 
     private static void CreateExecutableFile(
@@ -94,5 +112,62 @@ public class ExecutableBuilder
                 UserRead | UserWrite | UserExecute | GroupRead | GroupExecute | OtherRead | OtherExecute
             );
         }
+    }
+
+    /// <summary>
+    /// Находит путь установки .NET.
+    /// </summary>
+    private static string FindAppHostTemplate()
+    {
+        string dotnetRoot =
+            Environment.GetEnvironmentVariable("DOTNET_ROOT") ?? GetDefaultDotnetRoot();
+
+        if (string.IsNullOrEmpty(dotnetRoot))
+        {
+            return string.Empty;
+        }
+
+        string executableName =
+            RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? "apphost.exe"
+                : "apphost";
+
+        string packsDirectory = Path.Combine(
+            dotnetRoot,
+            "packs");
+
+        string hostPackDirectory = Directory
+            .EnumerateDirectories(
+                packsDirectory,
+                "Microsoft.NETCore.App.Host.*")
+            .OrderByDescending(x => x)
+            .First();
+
+        return Directory
+            .EnumerateFiles(
+                hostPackDirectory,
+                executableName,
+                SearchOption.AllDirectories)
+            .First();
+    }
+
+    /// <summary>
+    /// Возвращает стандартный путь установки .NET для текущей ОС.
+    /// </summary>
+    private static string GetDefaultDotnetRoot()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+                "dotnet");
+        }
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            return "/usr/local/share/dotnet";
+        }
+
+        return "/usr/share/dotnet";
     }
 }
