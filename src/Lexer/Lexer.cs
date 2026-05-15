@@ -283,7 +283,8 @@ public class Lexer
                 return new Token(TokenType.Error, new TokenValue(contents));
             }
 
-            if (scanner.Peek() == '\r' && scanner.Peek(1) == '\n')
+            if (scanner.Peek() == '\r' ||
+                (scanner.Peek() == '\r' && scanner.Peek(1) == '\n'))
             {
                 // Ошибка: перенос в строке без escape-последовательности
                 return new Token(TokenType.Error, new TokenValue(contents));
