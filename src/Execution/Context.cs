@@ -1,5 +1,4 @@
-﻿using Ast;
-using Ast.Declarations;
+﻿using Ast.Declarations;
 
 using Runtime;
 

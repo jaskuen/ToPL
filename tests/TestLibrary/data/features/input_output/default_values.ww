@@ -1,0 +1,7 @@
+void main()
+{
+    int i;
+    float f;
+    bool b;
+    write(i, " ", f, " ", b);
+}

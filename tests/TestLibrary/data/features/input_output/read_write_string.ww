@@ -1,0 +1,6 @@
+﻿void main()
+{
+    string input;
+    read(input);
+    write(input);
+}

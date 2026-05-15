@@ -17,10 +17,6 @@ public static class BuiltinFunctions
         { "min", Min },
         { "max", Max },
         { "abs", Abs },
-        { "кНевысокому", ToLower },
-        { "кСловесам", ToStringType },
-        { "кБлагодати", ToIntType },
-        { "кКадилу", ToFloatType },
     };
 
     public static Func<List<RuntimeValue>, RuntimeValue> GetFunction(string name)
@@ -151,66 +147,5 @@ public static class BuiltinFunctions
         RuntimeValue value = arguments[0];
 
         return new RuntimeValue(Math.Abs(arguments[0].ToFloat()));
-    }
-
-    private static RuntimeValue ToLower(List<RuntimeValue> arguments)
-    {
-        if (arguments.Count != 1)
-        {
-            throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
-        }
-
-        return new RuntimeValue(arguments[0].ToString().ToLowerInvariant());
-    }
-
-    private static RuntimeValue ToStringType(List<RuntimeValue> arguments)
-    {
-        if (arguments.Count != 1)
-        {
-            throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
-        }
-
-        RuntimeValue value = arguments[0];
-        RuntimeValueType type = value.GetValueType();
-        if (type is not(RuntimeValueType.Int or RuntimeValueType.Double))
-        {
-            throw new Exception($"Incorrect ToStringType argument type: {type}");
-        }
-
-        return new RuntimeValue(arguments[0].ToString());
-    }
-
-    private static RuntimeValue ToIntType(List<RuntimeValue> arguments)
-    {
-        if (arguments.Count != 1)
-        {
-            throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
-        }
-
-        RuntimeValue value = arguments[0];
-        RuntimeValueType type = value.GetValueType();
-        if (type is not RuntimeValueType.String)
-        {
-            throw new Exception($"Incorrect ToIntType argument type: {type}");
-        }
-
-        return new RuntimeValue(arguments[0].ToInt());
-    }
-
-    private static RuntimeValue ToFloatType(List<RuntimeValue> arguments)
-    {
-        if (arguments.Count != 1)
-        {
-            throw new ArgumentException($"Incorrect arguments count: {string.Join(", ", arguments)}");
-        }
-
-        RuntimeValue value = arguments[0];
-        RuntimeValueType type = value.GetValueType();
-        if (type is not RuntimeValueType.String)
-        {
-            throw new Exception($"Incorrect ToDoubleType argument type: {type}");
-        }
-
-        return new RuntimeValue(arguments[0].ToFloat());
     }
 }
