@@ -1,0 +1,11 @@
+void main()
+{
+    bool a = true;
+    bool b = false;
+    bool c = true;
+    if (a && b || c) {
+        write("precedence ok");
+    } else {
+        write("wrong");
+    }
+}

@@ -1,0 +1,9 @@
+void main()
+{
+    bool flag = true;
+    if (not flag) {
+        write("negated");
+    } else {
+        write("original");
+    }
+}

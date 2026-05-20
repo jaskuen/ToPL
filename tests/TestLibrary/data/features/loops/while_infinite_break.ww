@@ -1,8 +1,7 @@
 void main()
 {
-    int i = 0;
     while (true) {
-        write(i);
+        write(0);
         break;
     }
 }

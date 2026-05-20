@@ -17,21 +17,21 @@ namespace Compiler.Specs.Features
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class УсловныеОператорыIfElseFeature : object, global::Xunit.IClassFixture<УсловныеОператорыIfElseFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class ЛогическиеОператорыAndOrNotFeature : object, global::Xunit.IClassFixture<ЛогическиеОператорыAndOrNotFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru"), "Features", "условные операторы if/else", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru"), "Features", "логические операторы and, or, not", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "Conditions.feature"
+#line 1 "LogicalOps.feature"
 #line hidden
         
-        public УсловныеОператорыIfElseFeature(УсловныеОператорыIfElseFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public ЛогическиеОператорыAndOrNotFeature(ЛогическиеОператорыAndOrNotFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Compiler.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Conditions.feature.ndjson", 11);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/LogicalOps.feature.ndjson", 9);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Compiler.Specs.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="if с истинным условием — выполняется блок")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if с истинным условием — выполняется блок")]
-        public async global::System.Threading.Tasks.Task IfСИстиннымУсловиемВыполняетсяБлок()
+        [global::Xunit.SkippableFactAttribute(DisplayName="&& — логическое И (символьная форма)")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "логические операторы and, or, not")]
+        [global::Xunit.TraitAttribute("Description", "&& — логическое И (символьная форма)")]
+        public async global::System.Threading.Tasks.Task ЛогическоеИСимвольнаяФорма()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if с истинным условием — выполняется блок", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("&& — логическое И (символьная форма)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -155,27 +155,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 5
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_true.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/logical_ops/and_symbol.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 6
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 7
-        await testRunner.ThenAsync("я увижу вывод yes", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод not both", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="if с ложным условием — блок не выполняется")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if с ложным условием — блок не выполняется")]
-        public async global::System.Threading.Tasks.Task IfСЛожнымУсловиемБлокНеВыполняется()
+        [global::Xunit.SkippableFactAttribute(DisplayName="and — логическое И (словесная форма)")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "логические операторы and, or, not")]
+        [global::Xunit.TraitAttribute("Description", "and — логическое И (словесная форма)")]
+        public async global::System.Threading.Tasks.Task AndЛогическоеИСловеснаяФорма()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if с ложным условием — блок не выполняется", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("and — логическое И (словесная форма)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 9
@@ -189,27 +189,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 10
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_false.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/logical_ops/and_word.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 11
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 12
-        await testRunner.ThenAsync("я увижу вывод no", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод in range", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="if без else (else необязательный)")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if без else (else необязательный)")]
-        public async global::System.Threading.Tasks.Task IfБезElseElseНеобязательный()
+        [global::Xunit.SkippableFactAttribute(DisplayName="|| — логическое ИЛИ (символьная форма)")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "логические операторы and, or, not")]
+        [global::Xunit.TraitAttribute("Description", "|| — логическое ИЛИ (символьная форма)")]
+        public async global::System.Threading.Tasks.Task ЛогическоеИЛИСимвольнаяФорма()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if без else (else необязательный)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("|| — логическое ИЛИ (символьная форма)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 14
@@ -223,27 +223,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 15
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_no_else.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/logical_ops/or_symbol.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 16
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 17
-        await testRunner.ThenAsync("я увижу вывод positive", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод at least one", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="if-else — выполняется else при ложном условии")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if-else — выполняется else при ложном условии")]
-        public async global::System.Threading.Tasks.Task If_ElseВыполняетсяElseПриЛожномУсловии()
+        [global::Xunit.SkippableFactAttribute(DisplayName="or — логическое ИЛИ (словесная форма)")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "логические операторы and, or, not")]
+        [global::Xunit.TraitAttribute("Description", "or — логическое ИЛИ (словесная форма)")]
+        public async global::System.Threading.Tasks.Task OrЛогическоеИЛИСловеснаяФорма()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if-else — выполняется else при ложном условии", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("or — логическое ИЛИ (словесная форма)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 19
@@ -257,27 +257,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 20
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_else.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/logical_ops/or_word.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 21
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 22
-        await testRunner.ThenAsync("я увижу вывод non-positive", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод matches", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="вложенные if внутри if")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "вложенные if внутри if")]
-        public async global::System.Threading.Tasks.Task ВложенныеIfВнутриIf()
+        [global::Xunit.SkippableFactAttribute(DisplayName="! — логическое НЕ (символьная форма)")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "логические операторы and, or, not")]
+        [global::Xunit.TraitAttribute("Description", "! — логическое НЕ (символьная форма)")]
+        public async global::System.Threading.Tasks.Task ЛогическоеНЕСимвольнаяФорма()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "4";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вложенные if внутри if", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("! — логическое НЕ (символьная форма)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 24
@@ -291,27 +291,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 25
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/nested_if.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/logical_ops/not_symbol.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 26
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 27
-        await testRunner.ThenAsync("я увижу вывод big", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод original", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="if со сравнением строк (лексикографическое)")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if со сравнением строк (лексикографическое)")]
-        public async global::System.Threading.Tasks.Task IfСоСравнениемСтрокЛексикографическое()
+        [global::Xunit.SkippableFactAttribute(DisplayName="not — логическое НЕ (словесная форма)")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "логические операторы and, or, not")]
+        [global::Xunit.TraitAttribute("Description", "not — логическое НЕ (словесная форма)")]
+        public async global::System.Threading.Tasks.Task NotЛогическоеНЕСловеснаяФорма()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "5";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if со сравнением строк (лексикографическое)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("not — логическое НЕ (словесная форма)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 29
@@ -325,27 +325,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 30
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_string_compare.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/logical_ops/not_word.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 31
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 32
-        await testRunner.ThenAsync("я увижу вывод a is less", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод original", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="if с equals вместо ==")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if с equals вместо ==")]
-        public async global::System.Threading.Tasks.Task IfСEqualsВместо()
+        [global::Xunit.SkippableFactAttribute(DisplayName="приоритет && выше чем ||")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "логические операторы and, or, not")]
+        [global::Xunit.TraitAttribute("Description", "приоритет && выше чем ||")]
+        public async global::System.Threading.Tasks.Task ПриоритетВышеЧем()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "6";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if с equals вместо ==", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("приоритет && выше чем ||", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 34
@@ -359,81 +359,13 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 35
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_equals.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/logical_ops/and_or_precedence.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 36
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 37
-        await testRunner.ThenAsync("я увижу вывод equal", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="if с арифметическим выражением в условии")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if с арифметическим выражением в условии")]
-        public async global::System.Threading.Tasks.Task IfСАрифметическимВыражениемВУсловии()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "7";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if с арифметическим выражением в условии", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 39
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 40
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_arithmetic_condition.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 41
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 42
-        await testRunner.ThenAsync("я увижу вывод sum is greater", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="if-else if-else цепочка")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if-else if-else цепочка")]
-        public async global::System.Threading.Tasks.Task If_ElseIf_ElseЦепочка()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "8";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if-else if-else цепочка", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 44
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 45
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_else_if_else.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 46
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 47
-        await testRunner.ThenAsync("я увижу вывод zero", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод precedence ok", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -446,12 +378,12 @@ namespace Compiler.Specs.Features
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await УсловныеОператорыIfElseFeature.FeatureSetupAsync();
+                await ЛогическиеОператорыAndOrNotFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await УсловныеОператорыIfElseFeature.FeatureTearDownAsync();
+                await ЛогическиеОператорыAndOrNotFeature.FeatureTearDownAsync();
             }
         }
     }
