@@ -1,0 +1,10 @@
+void main()
+{
+    int x = 3;
+    int y = 2;
+    if (x + y > 4) {
+        write("sum is greater");
+    } else {
+        write("sum is not greater");
+    }
+}

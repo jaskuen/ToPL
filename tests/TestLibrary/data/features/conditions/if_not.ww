@@ -1,0 +1,9 @@
+void main()
+{
+    int x = 0;
+    if (not (x == 0)) {
+        write("not zero");
+    } else {
+        write("zero");
+    }
+}

@@ -1,0 +1,9 @@
+void main()
+{
+    int x = 5;
+    if (x equals 5) {
+        write("equal");
+    } else {
+        write("not equal");
+    }
+}

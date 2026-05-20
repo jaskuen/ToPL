@@ -1,0 +1,7 @@
+void main()
+{
+    while (false) {
+        write("should not print");
+    }
+    write("done");
+}
