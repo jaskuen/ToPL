@@ -3,20 +3,17 @@
 namespace Ast.Statements;
 
 public sealed class ForLoopStatement(
-    string iteratorName,
-    Expression startValue,
-    Expression endCondition,
-    Expression stepValueExpression,
+    AstNode? initializer,
+    Expression? condition,
+    AstNode? post,
     ScopeStatement body)
     : Statement, IAstNodeWithReturn
 {
-    public string IteratorName { get; } = iteratorName;
+    public AstNode? Initializer { get; } = initializer;
 
-    public Expression StartValue { get; } = startValue;
+    public Expression? Condition { get; } = condition;
 
-    public Expression EndCondition { get; } = endCondition;
-
-    public Expression StepValueExpression { get; } = stepValueExpression;
+    public AstNode? Post { get; } = post;
 
     public ScopeStatement Body { get; } = body;
 

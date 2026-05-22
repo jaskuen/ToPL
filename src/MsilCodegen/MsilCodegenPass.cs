@@ -14,9 +14,13 @@ public class MsilCodegenPass : IAstVisitor
     private readonly ModuleBuilder moduleBuilder;
     private readonly WTypeMapper typeMapper = new();
     private readonly Stack<Dictionary<string, LocalValue>> scopes = [];
+    private readonly Stack<LoopLabels> loops = [];
+    private readonly Dictionary<string, MethodBuilder> functionBuilders = [];
+    private readonly Dictionary<string, FunctionDeclaration> functionDeclarations = [];
 
     private TypeBuilder programTypeBuilder = null!;
     private ILGenerator il = null!;
+    private VariableType currentReturnType = VariableType.Void;
 
     public MsilCodegenPass(ModuleBuilder moduleBuilder)
     {
@@ -29,18 +33,29 @@ public class MsilCodegenPass : IAstVisitor
             "Program",
             TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Class);
 
+        foreach (FunctionDeclaration function in program.Functions)
+        {
+            DefineFunction(function);
+        }
+
+        foreach (FunctionDeclaration function in program.Functions)
+        {
+            GenerateFunction(function);
+        }
+
         MethodBuilder mainMethod = programTypeBuilder.DefineMethod(
             "Main",
             MethodAttributes.Public | MethodAttributes.Static,
-            typeof(void),
+            typeMapper.MapType(program.MainType),
             Type.EmptyTypes);
 
         il = mainMethod.GetILGenerator();
+        currentReturnType = program.MainType;
         BeginScope();
         EmitScopeBody(program.MainBody);
         EndScope();
 
-        il.Emit(OpCodes.Ret);
+        EmitDefaultReturn(program.MainType);
         programTypeBuilder.CreateType();
 
         return mainMethod;
@@ -58,7 +73,7 @@ public class MsilCodegenPass : IAstVisitor
 
     public void Visit(FunctionDeclaration declaration)
     {
-        throw new NotSupportedException("User functions are not supported by the MSIL backend yet.");
+        GenerateFunction(declaration);
     }
 
     public void Visit(VariableDeclaration declaration)
@@ -89,12 +104,37 @@ public class MsilCodegenPass : IAstVisitor
 
     public bool Visit(ForLoopStatement statement)
     {
-        throw new NotSupportedException("For loops are outside the third compiler iteration.");
+        BeginScope();
+        EmitStatementNode(statement.Initializer);
+
+        Label conditionLabel = il.DefineLabel();
+        Label postLabel = il.DefineLabel();
+        Label endLabel = il.DefineLabel();
+
+        il.MarkLabel(conditionLabel);
+        if (statement.Condition is not null)
+        {
+            VariableType conditionType = EmitExpression(statement.Condition);
+            EnsureType(conditionType, VariableType.Boolean, "for condition");
+            il.Emit(OpCodes.Brfalse, endLabel);
+        }
+
+        loops.Push(new LoopLabels(endLabel, postLabel));
+        EmitNestedScope(statement.Body);
+        loops.Pop();
+
+        il.MarkLabel(postLabel);
+        EmitStatementNode(statement.Post);
+        il.Emit(OpCodes.Br, conditionLabel);
+        il.MarkLabel(endLabel);
+
+        EndScope();
+        return false;
     }
 
     public void Visit(FunctionCallExpression expression)
     {
-        throw new NotSupportedException("User functions are not supported by the MSIL backend yet.");
+        EmitExpression(expression);
     }
 
     public void Visit(BuiltinFunctionCallExpression expression)
@@ -109,7 +149,21 @@ public class MsilCodegenPass : IAstVisitor
 
     public bool Visit(WhileLoopStatement statement)
     {
-        throw new NotSupportedException("While loops are outside the third compiler iteration.");
+        Label conditionLabel = il.DefineLabel();
+        Label endLabel = il.DefineLabel();
+
+        il.MarkLabel(conditionLabel);
+        VariableType conditionType = EmitExpression(statement.Condition);
+        EnsureType(conditionType, VariableType.Boolean, "while condition");
+        il.Emit(OpCodes.Brfalse, endLabel);
+
+        loops.Push(new LoopLabels(endLabel, conditionLabel));
+        EmitNestedScope(statement.Body);
+        loops.Pop();
+
+        il.Emit(OpCodes.Br, conditionLabel);
+        il.MarkLabel(endLabel);
+        return false;
     }
 
     public bool Visit(SwitchStatement statement)
@@ -146,7 +200,24 @@ public class MsilCodegenPass : IAstVisitor
 
     public bool Visit(IfElseStatement statement)
     {
-        throw new NotSupportedException("If statements are outside the third compiler iteration.");
+        Label elseLabel = il.DefineLabel();
+        Label endLabel = il.DefineLabel();
+
+        VariableType conditionType = EmitExpression(statement.Condition);
+        EnsureType(conditionType, VariableType.Boolean, "if condition");
+        il.Emit(OpCodes.Brfalse, elseLabel);
+
+        EmitNestedScope(statement.ThenBranch);
+        il.Emit(OpCodes.Br, endLabel);
+
+        il.MarkLabel(elseLabel);
+        if (statement.ElseBranch is not null)
+        {
+            EmitNestedScope(statement.ElseBranch);
+        }
+
+        il.MarkLabel(endLabel);
+        return false;
     }
 
     public bool Visit(ScopeStatement statement)
@@ -159,22 +230,48 @@ public class MsilCodegenPass : IAstVisitor
 
     public void Visit(BreakStatement statement)
     {
-        throw new NotSupportedException("Break statements are outside the third compiler iteration.");
+        if (loops.Count == 0)
+        {
+            throw new NotSupportedException("Break statements are allowed only inside loops.");
+        }
+
+        il.Emit(OpCodes.Br, loops.Peek().BreakLabel);
     }
 
     public void Visit(ContinueStatement statement)
     {
-        throw new NotSupportedException("Continue statements are outside the third compiler iteration.");
+        if (loops.Count == 0)
+        {
+            throw new NotSupportedException("Continue statements are allowed only inside loops.");
+        }
+
+        il.Emit(OpCodes.Br, loops.Peek().ContinueLabel);
     }
 
     public void Visit(ReturnStatement statement)
     {
-        VariableType valueType = EmitExpression(statement.Value);
-        if (valueType != VariableType.Void)
+        if (currentReturnType == VariableType.Void)
         {
-            il.Emit(OpCodes.Pop);
+            if (statement.Value is not null)
+            {
+                VariableType valueType = EmitExpression(statement.Value);
+                if (valueType != VariableType.Void)
+                {
+                    il.Emit(OpCodes.Pop);
+                }
+            }
+
+            il.Emit(OpCodes.Ret);
+            return;
         }
 
+        if (statement.Value is null)
+        {
+            throw new NotSupportedException($"Function returning {currentReturnType} requires a return value.");
+        }
+
+        VariableType returnType = EmitExpression(statement.Value);
+        EmitConversion(returnType, currentReturnType);
         il.Emit(OpCodes.Ret);
     }
 
@@ -191,8 +288,36 @@ public class MsilCodegenPass : IAstVisitor
     {
         foreach (AstNode node in statement.Statements)
         {
-            node.Accept(this);
+            EmitStatementNode(node);
         }
+    }
+
+    private void EmitNestedScope(ScopeStatement statement)
+    {
+        BeginScope();
+        EmitScopeBody(statement);
+        EndScope();
+    }
+
+    private void EmitStatementNode(AstNode? node)
+    {
+        if (node is null)
+        {
+            return;
+        }
+
+        if (node is Expression expression)
+        {
+            VariableType expressionType = EmitExpression(expression);
+            if (expressionType != VariableType.Void)
+            {
+                il.Emit(OpCodes.Pop);
+            }
+
+            return;
+        }
+
+        node.Accept(this);
     }
 
     private VariableType EmitExpression(Expression expression)
@@ -204,8 +329,7 @@ public class MsilCodegenPass : IAstVisitor
             UnaryOperationExpression unary => EmitUnaryOperation(unary),
             BinaryOperationExpression binary => EmitBinaryOperation(binary),
             BuiltinFunctionCallExpression builtin => EmitBuiltinFunctionCall(builtin),
-            FunctionCallExpression => throw new NotSupportedException(
-                "User functions are not supported by the MSIL backend yet."),
+            FunctionCallExpression function => EmitFunctionCall(function),
             _ => throw new NotSupportedException($"Expression {expression.GetType().Name} is not supported."),
         };
     }
@@ -285,7 +409,7 @@ public class MsilCodegenPass : IAstVisitor
         }
 
         il.Emit(OpCodes.Stloc, variable.Local);
-        return variable.Type;
+        return expression.DoPushToStack ? variable.Type : VariableType.Void;
     }
 
     private VariableType EmitBinaryOperation(BinaryOperationExpression expression)
@@ -352,6 +476,7 @@ public class MsilCodegenPass : IAstVisitor
         VariableType leftType = EmitExpression(expression.Left);
         EnsureType(leftType, VariableType.Boolean, expression.Operation!.Value);
 
+        // short-circuit evaluation
         if (expression.Operation == BinaryOperation.And)
         {
             il.Emit(OpCodes.Dup);
@@ -384,7 +509,9 @@ public class MsilCodegenPass : IAstVisitor
             EmitToString(leftType);
             EmitExpression(expression.Right!);
             EmitToString(rightType);
-            il.Emit(OpCodes.Call, GetMethod(typeof(string), nameof(string.Concat), [typeof(string), typeof(string)]));
+            il.Emit(
+                OpCodes.Call,
+                GetMethod(typeof(string ), nameof(string.Concat ), [typeof(string ), typeof(string )]));
             return VariableType.String;
         }
 
@@ -394,12 +521,28 @@ public class MsilCodegenPass : IAstVisitor
             EnsureType(rightType, VariableType.String, expression.Operation.Value);
             EmitExpression(expression.Left);
             EmitExpression(expression.Right!);
-            il.Emit(OpCodes.Call, GetMethod(typeof(string), nameof(string.Equals), [typeof(string), typeof(string)]));
+            il.Emit(
+                OpCodes.Call,
+                GetMethod(typeof(string ), nameof(string.Equals ), [typeof(string ), typeof(string )]));
             if (expression.Operation == BinaryOperation.NotEqual)
             {
                 EmitLogicalNot();
             }
 
+            return VariableType.Boolean;
+        }
+
+        if (IsComparison(expression.Operation!.Value))
+        {
+            EnsureType(leftType, VariableType.String, expression.Operation.Value);
+            EnsureType(rightType, VariableType.String, expression.Operation.Value);
+            EmitExpression(expression.Left);
+            EmitExpression(expression.Right!);
+            il.Emit(
+                OpCodes.Call,
+                GetMethod(typeof(string ), nameof(string.CompareOrdinal ), [typeof(string ), typeof(string )]));
+            il.Emit(OpCodes.Ldc_I4_0);
+            EmitComparison(expression.Operation.Value);
             return VariableType.Boolean;
         }
 
@@ -410,19 +553,45 @@ public class MsilCodegenPass : IAstVisitor
     {
         return expression.FunctionName switch
         {
-            "floor" => EmitUnaryMathF(expression, nameof(MathF.Floor)),
-            "ceil" => EmitUnaryMathF(expression, nameof(MathF.Ceiling)),
+            "floor" => EmitUnaryMathF(expression, nameof(MathF.Floor )),
+            "ceil" => EmitUnaryMathF(expression, nameof(MathF.Ceiling )),
             "round" => EmitRound(expression),
-            "sin" => EmitUnaryMathF(expression, nameof(MathF.Sin)),
-            "cos" => EmitUnaryMathF(expression, nameof(MathF.Cos)),
-            "tan" => EmitUnaryMathF(expression, nameof(MathF.Tan)),
+            "sin" => EmitUnaryMathF(expression, nameof(MathF.Sin )),
+            "cos" => EmitUnaryMathF(expression, nameof(MathF.Cos )),
+            "tan" => EmitUnaryMathF(expression, nameof(MathF.Tan )),
             "length" => EmitLength(expression),
             "substring" => EmitSubstring(expression),
-            "min" => EmitBinaryMathF(expression, nameof(MathF.Min)),
-            "max" => EmitBinaryMathF(expression, nameof(MathF.Max)),
-            "abs" => EmitUnaryMathF(expression, nameof(MathF.Abs)),
+            "min" => EmitBinaryMathF(expression, nameof(MathF.Min )),
+            "max" => EmitBinaryMathF(expression, nameof(MathF.Max )),
+            "abs" => EmitUnaryMathF(expression, nameof(MathF.Abs )),
             _ => throw new NotSupportedException($"Builtin function {expression.FunctionName} is not supported."),
         };
+    }
+
+    private VariableType EmitFunctionCall(FunctionCallExpression expression)
+    {
+        if (!functionBuilders.TryGetValue(expression.Name, out MethodBuilder? method) ||
+            !functionDeclarations.TryGetValue(expression.Name, out FunctionDeclaration? declaration))
+        {
+            throw new NotSupportedException($"User function {expression.Name} is not defined.");
+        }
+
+        if (expression.Arguments.Count != declaration.Parameters.Count)
+        {
+            throw new NotSupportedException(
+                $"Function {expression.Name} expected {declaration.Parameters.Count} arguments, got {expression.Arguments.Count}.");
+        }
+
+        int index = 0;
+        foreach (VariableType parameterType in declaration.Parameters.Values)
+        {
+            VariableType argumentType = EmitExpression(expression.Arguments[index]);
+            EmitConversion(argumentType, parameterType);
+            index++;
+        }
+
+        il.Emit(OpCodes.Call, method);
+        return declaration.Type;
     }
 
     private VariableType EmitUnaryMathF(BuiltinFunctionCallExpression expression, string methodName)
@@ -430,7 +599,7 @@ public class MsilCodegenPass : IAstVisitor
         EnsureArgumentsCount(expression, 1);
         VariableType argumentType = EmitExpression(expression.Arguments[0]);
         EmitConversion(argumentType, VariableType.Double);
-        il.Emit(OpCodes.Call, GetMethod(typeof(MathF), methodName, [typeof(float)]));
+        il.Emit(OpCodes.Call, GetMethod(typeof(MathF ), methodName, [typeof(float )]));
         return VariableType.Double;
     }
 
@@ -441,7 +610,7 @@ public class MsilCodegenPass : IAstVisitor
         EmitConversion(leftType, VariableType.Double);
         VariableType rightType = EmitExpression(expression.Arguments[1]);
         EmitConversion(rightType, VariableType.Double);
-        il.Emit(OpCodes.Call, GetMethod(typeof(MathF), methodName, [typeof(float), typeof(float)]));
+        il.Emit(OpCodes.Call, GetMethod(typeof(MathF ), methodName, [typeof(float ), typeof(float )]));
         return VariableType.Double;
     }
 
@@ -451,7 +620,9 @@ public class MsilCodegenPass : IAstVisitor
         VariableType argumentType = EmitExpression(expression.Arguments[0]);
         EmitConversion(argumentType, VariableType.Double);
         il.Emit(OpCodes.Ldc_I4, (int)MidpointRounding.AwayFromZero);
-        il.Emit(OpCodes.Call, GetMethod(typeof(MathF), nameof(MathF.Round), [typeof(float), typeof(MidpointRounding)]));
+        il.Emit(
+            OpCodes.Call,
+            GetMethod(typeof(MathF ), nameof(MathF.Round ), [typeof(float ), typeof(MidpointRounding )]));
         return VariableType.Double;
     }
 
@@ -460,7 +631,7 @@ public class MsilCodegenPass : IAstVisitor
         EnsureArgumentsCount(expression, 1);
         VariableType argumentType = EmitExpression(expression.Arguments[0]);
         EnsureType(argumentType, VariableType.String, expression.FunctionName);
-        il.Emit(OpCodes.Callvirt, GetMethod(typeof(string), "get_Length", Type.EmptyTypes));
+        il.Emit(OpCodes.Callvirt, GetMethod(typeof(string ), "get_Length", Type.EmptyTypes));
         return VariableType.Int;
     }
 
@@ -473,44 +644,10 @@ public class MsilCodegenPass : IAstVisitor
         EmitConversion(startType, VariableType.Int);
         VariableType lengthType = EmitExpression(expression.Arguments[2]);
         EmitConversion(lengthType, VariableType.Int);
-        il.Emit(OpCodes.Callvirt, GetMethod(typeof(string), nameof(string.Substring), [typeof(int), typeof(int)]));
+        il.Emit(
+            OpCodes.Callvirt,
+            GetMethod(typeof(string ), nameof(string.Substring ), [typeof(int ), typeof(int )]));
         return VariableType.String;
-    }
-
-    private VariableType EmitConvertToString(BuiltinFunctionCallExpression expression)
-    {
-        EnsureArgumentsCount(expression, 1);
-        VariableType argumentType = EmitExpression(expression.Arguments[0]);
-        EmitToString(argumentType);
-        return VariableType.String;
-    }
-
-    private VariableType EmitParseConversion(
-        BuiltinFunctionCallExpression expression,
-        Type targetType,
-        string methodName,
-        VariableType resultType)
-    {
-        EnsureArgumentsCount(expression, 1);
-        VariableType argumentType = EmitExpression(expression.Arguments[0]);
-        EnsureType(argumentType, VariableType.String, expression.FunctionName);
-        il.Emit(OpCodes.Call, GetMethod(targetType, methodName, [typeof(string)]));
-        return resultType;
-    }
-
-    private VariableType EmitToLower(BuiltinFunctionCallExpression expression)
-    {
-        EnsureArgumentsCount(expression, 1);
-        VariableType argumentType = EmitExpression(expression.Arguments[0]);
-        EnsureType(argumentType, VariableType.String, expression.FunctionName);
-        il.Emit(OpCodes.Callvirt, GetMethod(typeof(string), nameof(string.ToLower), Type.EmptyTypes));
-        return VariableType.String;
-    }
-
-    private VariableType EmitFloatConstant(float value)
-    {
-        il.Emit(OpCodes.Ldc_R4, value);
-        return VariableType.Double;
     }
 
     private void EmitInitialValue(VariableType type, Expression? initialValue, bool isConst, string name)
@@ -548,20 +685,20 @@ public class MsilCodegenPass : IAstVisitor
 
     private void EmitConsoleRead(VariableType type)
     {
-        il.Emit(OpCodes.Call, GetMethod(typeof(Console), nameof(Console.ReadLine), Type.EmptyTypes));
+        il.Emit(OpCodes.Call, GetMethod(typeof(Console ), nameof(Console.ReadLine ), Type.EmptyTypes));
         switch (type)
         {
             case VariableType.Int:
-                il.Emit(OpCodes.Call, GetMethod(typeof(int), nameof(int.Parse), [typeof(string)]));
+                il.Emit(OpCodes.Call, GetMethod(typeof(int ), nameof(int.Parse ), [typeof(string )]));
                 break;
             case VariableType.Double:
                 EmitInvariantCulture();
                 il.Emit(
                     OpCodes.Call,
-                    GetMethod(typeof(float), nameof(float.Parse), [typeof(string), typeof(IFormatProvider)]));
+                    GetMethod(typeof(float ), nameof(float.Parse ), [typeof(string ), typeof(IFormatProvider )]));
                 break;
             case VariableType.Boolean:
-                il.Emit(OpCodes.Call, GetMethod(typeof(bool), nameof(bool.Parse), [typeof(string)]));
+                il.Emit(OpCodes.Call, GetMethod(typeof(bool ), nameof(bool.Parse ), [typeof(string )]));
                 break;
             case VariableType.String:
                 break;
@@ -573,7 +710,7 @@ public class MsilCodegenPass : IAstVisitor
     private void EmitConsoleWrite(VariableType type)
     {
         EmitToString(type);
-        il.Emit(OpCodes.Call, GetMethod(typeof(Console), nameof(Console.Write), [typeof(string)]));
+        il.Emit(OpCodes.Call, GetMethod(typeof(Console ), nameof(Console.Write ), [typeof(string )]));
     }
 
     private void EmitNumericOperands(
@@ -652,14 +789,19 @@ public class MsilCodegenPass : IAstVisitor
         switch (type)
         {
             case VariableType.Int:
-                il.Emit(OpCodes.Call, GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(int)]));
+                il.Emit(OpCodes.Call, GetMethod(typeof(Convert ), nameof(Convert.ToString ), [typeof(int )]));
                 break;
             case VariableType.Double:
                 EmitInvariantCulture();
-                il.Emit(OpCodes.Call, GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(float), typeof(IFormatProvider)]));
+                il.Emit(
+                    OpCodes.Call,
+                    GetMethod(
+                        typeof(Convert ),
+                        nameof(Convert.ToString ),
+                        [typeof(float ), typeof(IFormatProvider )]));
                 break;
             case VariableType.Boolean:
-                il.Emit(OpCodes.Call, GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(bool)]));
+                il.Emit(OpCodes.Call, GetMethod(typeof(Convert), nameof(Convert.ToString), [typeof(bool )]));
                 break;
             case VariableType.String:
                 break;
@@ -701,8 +843,7 @@ public class MsilCodegenPass : IAstVisitor
             BinaryOperationExpression binary => InferBinaryType(binary),
             BuiltinFunctionCallExpression builtin => InferBuiltinFunctionType(builtin),
             BuiltinConstantExpression => VariableType.Double,
-            FunctionCallExpression => throw new NotSupportedException(
-                "User functions are not supported by the MSIL backend yet."),
+            FunctionCallExpression function => InferFunctionType(function),
             _ => throw new NotSupportedException($"Expression {expression.GetType().Name} is not supported."),
         };
     }
@@ -759,6 +900,16 @@ public class MsilCodegenPass : IAstVisitor
             "substring" => VariableType.String,
             _ => VariableType.Double,
         };
+    }
+
+    private VariableType InferFunctionType(FunctionCallExpression expression)
+    {
+        if (functionDeclarations.TryGetValue(expression.Name, out FunctionDeclaration? declaration))
+        {
+            return declaration.Type;
+        }
+
+        throw new NotSupportedException($"User function {expression.Name} is not defined.");
     }
 
     private void BeginScope()
@@ -853,13 +1004,99 @@ public class MsilCodegenPass : IAstVisitor
 
     private void EmitInvariantCulture()
     {
-        MethodInfo? getter = typeof(CultureInfo).GetProperty(nameof(CultureInfo.InvariantCulture))?.GetMethod;
+        MethodInfo? getter = typeof(CultureInfo ).GetProperty(nameof(CultureInfo.InvariantCulture ))?.GetMethod;
         if (getter == null)
         {
             throw new InvalidOperationException("Cannot find CultureInfo.InvariantCulture getter.");
         }
 
         il.Emit(OpCodes.Call, getter);
+    }
+
+    private void EmitDefaultReturn(VariableType returnType)
+    {
+        if (returnType != VariableType.Void)
+        {
+            EmitDefaultValue(returnType);
+        }
+
+        il.Emit(OpCodes.Ret);
+    }
+
+    private void EmitDefaultValue(VariableType type)
+    {
+        switch (type)
+        {
+            case VariableType.Int:
+            case VariableType.Boolean:
+                il.Emit(OpCodes.Ldc_I4_0);
+                break;
+            case VariableType.Double:
+                il.Emit(OpCodes.Ldc_R4, 0.0f);
+                break;
+            case VariableType.String:
+                il.Emit(OpCodes.Ldstr, string.Empty);
+                break;
+            case VariableType.Void:
+                break;
+            default:
+                throw new NotSupportedException($"Default value for {type} is not supported.");
+        }
+    }
+
+    private void DefineFunction(FunctionDeclaration function)
+    {
+        Type[] parameterTypes = function.Parameters.Values.Select(typeMapper.MapType).ToArray();
+        MethodBuilder method = programTypeBuilder.DefineMethod(
+            function.Name,
+            MethodAttributes.Private | MethodAttributes.Static,
+            typeMapper.MapType(function.Type),
+            parameterTypes);
+
+        functionBuilders.Add(function.Name, method);
+        functionDeclarations.Add(function.Name, function);
+    }
+
+    private void GenerateFunction(FunctionDeclaration function)
+    {
+        if (!functionBuilders.TryGetValue(function.Name, out MethodBuilder? method))
+        {
+            DefineFunction(function);
+            method = functionBuilders[function.Name];
+        }
+
+        // Нужно для переключения контекста с Main функции
+        ILGenerator previousIl = il;
+        VariableType previousReturnType = currentReturnType;
+
+        il = method.GetILGenerator();
+        currentReturnType = function.Type;
+        BeginScope();
+
+        int argumentIndex = 0;
+        foreach ((string name, VariableType type) in function.Parameters)
+        {
+            LocalBuilder local = il.DeclareLocal(typeMapper.MapType(type));
+            il.Emit(OpCodes.Ldarg, argumentIndex);
+            il.Emit(OpCodes.Stloc, local);
+            scopes.Peek().Add(name, new LocalValue(local, type, false));
+            argumentIndex++;
+        }
+
+        if (function.Body is ScopeStatement scope)
+        {
+            EmitScopeBody(scope);
+        }
+        else
+        {
+            EmitStatementNode(function.Body);
+        }
+
+        EndScope();
+        EmitDefaultReturn(function.Type);
+
+        il = previousIl;
+        currentReturnType = previousReturnType;
     }
 
     private sealed class LocalValue(LocalBuilder local, VariableType type, bool isConst)
@@ -869,5 +1106,12 @@ public class MsilCodegenPass : IAstVisitor
         public VariableType Type { get; } = type;
 
         public bool IsConst { get; } = isConst;
+    }
+
+    private sealed class LoopLabels(Label breakLabel, Label continueLabel)
+    {
+        public Label BreakLabel { get; } = breakLabel;
+
+        public Label ContinueLabel { get; } = continueLabel;
     }
 }

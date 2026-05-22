@@ -105,7 +105,7 @@ namespace Compiler.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Conditions.feature.ndjson", 11);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Conditions.feature.ndjson", 9);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -167,15 +167,15 @@ namespace Compiler.Specs.Features
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="if с ложным условием — блок не выполняется")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="if-else — выполняется else при ложном условии")]
         [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if с ложным условием — блок не выполняется")]
-        public async global::System.Threading.Tasks.Task IfСЛожнымУсловиемБлокНеВыполняется()
+        [global::Xunit.TraitAttribute("Description", "if-else — выполняется else при ложном условии")]
+        public async global::System.Threading.Tasks.Task If_ElseВыполняетсяElseПриЛожномУсловии()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if с ложным условием — блок не выполняется", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if-else — выполняется else при ложном условии", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 9
@@ -189,80 +189,12 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 10
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_false.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_else.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 11
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 12
-        await testRunner.ThenAsync("я увижу вывод no", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="if без else (else необязательный)")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if без else (else необязательный)")]
-        public async global::System.Threading.Tasks.Task IfБезElseElseНеобязательный()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if без else (else необязательный)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 14
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 15
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_no_else.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 16
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 17
-        await testRunner.ThenAsync("я увижу вывод positive", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="if-else — выполняется else при ложном условии")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "условные операторы if/else")]
-        [global::Xunit.TraitAttribute("Description", "if-else — выполняется else при ложном условии")]
-        public async global::System.Threading.Tasks.Task If_ElseВыполняетсяElseПриЛожномУсловии()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if-else — выполняется else при ложном условии", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 19
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 20
-        await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_else.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 21
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 22
         await testRunner.ThenAsync("я увижу вывод non-positive", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -276,11 +208,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "4";
+            string pickleIndex = "2";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вложенные if внутри if", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 24
+#line 14
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -290,13 +222,13 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 25
+#line 15
         await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/nested_if.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 26
+#line 16
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 27
+#line 17
         await testRunner.ThenAsync("я увижу вывод big", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -310,11 +242,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "5";
+            string pickleIndex = "3";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if со сравнением строк (лексикографическое)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 29
+#line 19
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -324,13 +256,13 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 30
+#line 20
         await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_string_compare.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 31
+#line 21
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 32
+#line 22
         await testRunner.ThenAsync("я увижу вывод a is less", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -344,11 +276,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "6";
+            string pickleIndex = "4";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if с equals вместо ==", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 34
+#line 24
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -358,13 +290,13 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 35
+#line 25
         await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_equals.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 36
+#line 26
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 37
+#line 27
         await testRunner.ThenAsync("я увижу вывод equal", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -378,11 +310,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "7";
+            string pickleIndex = "5";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if с арифметическим выражением в условии", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 39
+#line 29
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -392,13 +324,13 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 40
+#line 30
         await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_arithmetic_condition.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 41
+#line 31
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 42
+#line 32
         await testRunner.ThenAsync("я увижу вывод sum is greater", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -412,11 +344,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "8";
+            string pickleIndex = "6";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("if-else if-else цепочка", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 44
+#line 34
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -426,13 +358,13 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 45
+#line 35
         await testRunner.GivenAsync("я скомпилировал программу \"features/conditions/if_else_if_else.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 46
+#line 36
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 47
+#line 37
         await testRunner.ThenAsync("я увижу вывод zero", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }

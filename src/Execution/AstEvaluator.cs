@@ -291,20 +291,26 @@ public class AstEvaluator : IAstVisitor
         context.PushScope(new Scope());
         try
         {
-            // Вычисляем начальное значение переменной-итератора.
-            statement.StartValue.Accept(this);
-            RuntimeValue iteratorValue = values.Pop();
+            if (statement.Initializer is not null)
+            {
+                int stackSize = values.Count;
+                statement.Initializer.Accept(this);
+                if (values.Count > stackSize)
+                {
+                    values.Pop();
+                }
+            }
 
-            // Определяем переменную-итератор и добавляем в стек вероятное значение цикла
-            context.DefineVariable(statement.IteratorName, iteratorValue);
             while (true)
             {
-                // Вычисляем выражение-условие, проверяем, верно ли оно.
-                statement.EndCondition.Accept(this);
-                RuntimeValue endCondition = values.Pop();
-                if (!endCondition)
+                if (statement.Condition is not null)
                 {
-                    break;
+                    statement.Condition.Accept(this);
+                    RuntimeValue endCondition = values.Pop();
+                    if (!endCondition)
+                    {
+                        break;
+                    }
                 }
 
                 context.PushScope(new Scope());
@@ -319,9 +325,15 @@ public class AstEvaluator : IAstVisitor
                     break;
                 }
 
-                // Выполняем инкремент итератора.
-                statement.StepValueExpression.Accept(this);
-                values.Pop();
+                if (statement.Post is not null)
+                {
+                    int stackSize = values.Count;
+                    statement.Post.Accept(this);
+                    if (values.Count > stackSize)
+                    {
+                        values.Pop();
+                    }
+                }
             }
         }
         finally
@@ -580,7 +592,7 @@ public class AstEvaluator : IAstVisitor
 
     public void Visit(ReturnStatement statement)
     {
-        statement.Value.Accept(this);
+        statement.Value?.Accept(this);
     }
 
     public void Visit(EmptyStatement declaration)
