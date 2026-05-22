@@ -1,0 +1,9 @@
+int GetNumber()
+{
+    return 42;
+}
+
+void main()
+{
+    write(GetNumber());
+}

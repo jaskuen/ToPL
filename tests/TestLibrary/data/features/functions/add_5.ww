@@ -1,0 +1,9 @@
+int Add5(int x)
+{
+    return x + 5;
+}
+
+void main()
+{
+    write(Add5(10));
+}

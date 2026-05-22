@@ -1,0 +1,15 @@
+void PrintIfPositive(int x)
+{
+    if (x <= 0)
+    {
+        return;
+    }
+
+    write(x);
+}
+
+void main()
+{
+    PrintIfPositive(-5);
+    PrintIfPositive(10);
+}

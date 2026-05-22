@@ -17,21 +17,21 @@ namespace Compiler.Specs.Features
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class ЦиклыWhileForИУправлениеBreakContinueFeature : object, global::Xunit.IClassFixture<ЦиклыWhileForИУправлениеBreakContinueFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class ПользовательскиеФункцииFeature : object, global::Xunit.IClassFixture<ПользовательскиеФункцииFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru"), "Features", "циклы while, for и управление break/continue", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru"), "Features", "пользовательские функции", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "Loops.feature"
+#line 1 "Functions.feature"
 #line hidden
         
-        public ЦиклыWhileForИУправлениеBreakContinueFeature(ЦиклыWhileForИУправлениеBreakContinueFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public ПользовательскиеФункцииFeature(ПользовательскиеФункцииFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Compiler.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Loops.feature.ndjson", 14);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Functions.feature.ndjson", 13);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Compiler.Specs.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="while — тело выполняется пока условие истинно")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "while — тело выполняется пока условие истинно")]
-        public async global::System.Threading.Tasks.Task WhileТелоВыполняетсяПокаУсловиеИстинно()
+        [global::Xunit.SkippableFactAttribute(DisplayName="функция без параметров возвращает int")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "функция без параметров возвращает int")]
+        public async global::System.Threading.Tasks.Task ФункцияБезПараметровВозвращаетInt()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("while — тело выполняется пока условие истинно", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция без параметров возвращает int", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -155,27 +155,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 5
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/while_true.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/get_number.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 6
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 7
-        await testRunner.ThenAsync("я увижу вывод 012", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 42", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="while — тело не выполняется если условие ложно с начала")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "while — тело не выполняется если условие ложно с начала")]
-        public async global::System.Threading.Tasks.Task WhileТелоНеВыполняетсяЕслиУсловиеЛожноСНачала()
+        [global::Xunit.SkippableFactAttribute(DisplayName="функция с параметром int")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "функция с параметром int")]
+        public async global::System.Threading.Tasks.Task ФункцияСПараметромInt()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("while — тело не выполняется если условие ложно с начала", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция с параметром int", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 9
@@ -189,27 +189,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 10
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/while_false.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/add_5.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 11
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 12
-        await testRunner.ThenAsync("я увижу вывод done", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 15", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="while (true) — бесконечный цикл с выходом через break")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "while (true) — бесконечный цикл с выходом через break")]
-        public async global::System.Threading.Tasks.Task WhileTrueБесконечныйЦиклСВыходомЧерезBreak()
+        [global::Xunit.SkippableFactAttribute(DisplayName="функция с параметром float")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "функция с параметром float")]
+        public async global::System.Threading.Tasks.Task ФункцияСПараметромFloat()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("while (true) — бесконечный цикл с выходом через break", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция с параметром float", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 14
@@ -223,27 +223,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 15
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/while_infinite_break.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/half.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 16
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 17
-        await testRunner.ThenAsync("я увижу вывод 0", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 5", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="for без инициализации")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "for без инициализации")]
-        public async global::System.Threading.Tasks.Task ForБезИнициализации()
+        [global::Xunit.SkippableFactAttribute(DisplayName="функция с параметром string")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "функция с параметром string")]
+        public async global::System.Threading.Tasks.Task ФункцияСПараметромString()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("for без инициализации", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция с параметром string", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 19
@@ -257,27 +257,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 20
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/for_no_init.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/greet.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 21
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 22
-        await testRunner.ThenAsync("я увижу вывод 01", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод W!", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="for без шага")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "for без шага")]
-        public async global::System.Threading.Tasks.Task ForБезШага()
+        [global::Xunit.SkippableFactAttribute(DisplayName="функция с параметром bool")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "функция с параметром bool")]
+        public async global::System.Threading.Tasks.Task ФункцияСПараметромBool()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "4";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("for без шага", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция с параметром bool", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 24
@@ -291,27 +291,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 25
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/for_no_post.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/negate.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 26
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 27
-        await testRunner.ThenAsync("я увижу вывод 012", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод False", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="for (;;) — полностью пустой бесконечный цикл с break")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "for (;;) — полностью пустой бесконечный цикл с break")]
-        public async global::System.Threading.Tasks.Task ForПолностьюПустойБесконечныйЦиклСBreak()
+        [global::Xunit.SkippableFactAttribute(DisplayName="прямая рекурсия — факториал")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "прямая рекурсия — факториал")]
+        public async global::System.Threading.Tasks.Task ПрямаяРекурсияФакториал()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "5";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("for (;;) — полностью пустой бесконечный цикл с break", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("прямая рекурсия — факториал", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 29
@@ -325,27 +325,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 30
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/for_empty.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/factorial.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 31
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 32
-        await testRunner.ThenAsync("я увижу вывод 0", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 120", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="break внутри while — выход из цикла")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "break внутри while — выход из цикла")]
-        public async global::System.Threading.Tasks.Task BreakВнутриWhileВыходИзЦикла()
+        [global::Xunit.SkippableFactAttribute(DisplayName="взаимная рекурсия — чёт/нечет")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "взаимная рекурсия — чёт/нечет")]
+        public async global::System.Threading.Tasks.Task ВзаимнаяРекурсияЧётНечет()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "6";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("break внутри while — выход из цикла", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("взаимная рекурсия — чёт/нечет", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 34
@@ -359,27 +359,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 35
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/break_while.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/even_odd.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 36
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 37
-        await testRunner.ThenAsync("я увижу вывод 01", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод TrueFalse", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="break внутри for — выход из цикла")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "break внутри for — выход из цикла")]
-        public async global::System.Threading.Tasks.Task BreakВнутриForВыходИзЦикла()
+        [global::Xunit.SkippableFactAttribute(DisplayName="void-функция с выводом значений")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "void-функция с выводом значений")]
+        public async global::System.Threading.Tasks.Task Void_ФункцияСВыводомЗначений()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "7";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("break внутри for — выход из цикла", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("void-функция с выводом значений", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 39
@@ -393,27 +393,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 40
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/break_for.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/print_sum.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 41
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 42
-        await testRunner.ThenAsync("я увижу вывод 012", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 7", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="continue внутри while — переход к проверке условия")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "continue внутри while — переход к проверке условия")]
-        public async global::System.Threading.Tasks.Task ContinueВнутриWhileПереходКПроверкеУсловия()
+        [global::Xunit.SkippableFactAttribute(DisplayName="void-функция с досрочным return")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "void-функция с досрочным return")]
+        public async global::System.Threading.Tasks.Task Void_ФункцияСДосрочнымReturn()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "8";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("continue внутри while — переход к проверке условия", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("void-функция с досрочным return", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 44
@@ -427,27 +427,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 45
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/continue_while.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/print_if_positive.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 46
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 47
-        await testRunner.ThenAsync("я увижу вывод 1245", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 10", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="continue внутри for — переход к шагу, затем к условию")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "continue внутри for — переход к шагу, затем к условию")]
-        public async global::System.Threading.Tasks.Task ContinueВнутриForПереходКШагуЗатемКУсловию()
+        [global::Xunit.SkippableFactAttribute(DisplayName="передача параметра по значению")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "передача параметра по значению")]
+        public async global::System.Threading.Tasks.Task ПередачаПараметраПоЗначению()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "9";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("continue внутри for — переход к шагу, затем к условию", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("передача параметра по значению", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 49
@@ -461,27 +461,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 50
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/continue_for.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/pass_by_value.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 51
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 52
-        await testRunner.ThenAsync("я увижу вывод 0134", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 1005", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="вложенные циклы — break выходит только из ближайшего")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "вложенные циклы — break выходит только из ближайшего")]
-        public async global::System.Threading.Tasks.Task ВложенныеЦиклыBreakВыходитТолькоИзБлижайшего()
+        [global::Xunit.SkippableFactAttribute(DisplayName="неявное приведение int → float в аргументе")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
+        [global::Xunit.TraitAttribute("Description", "неявное приведение int → float в аргументе")]
+        public async global::System.Threading.Tasks.Task НеявноеПриведениеIntFloatВАргументе()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "10";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("вложенные циклы — break выходит только из ближайшего", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("неявное приведение int → float в аргументе", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 54
@@ -495,47 +495,13 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 55
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/nested_break.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/implicit_int_to_float.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 56
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 57
-        await testRunner.ThenAsync("я увижу вывод 0010", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="while с ++ в условии (побочный эффект)")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "циклы while, for и управление break/continue")]
-        [global::Xunit.TraitAttribute("Description", "while с ++ в условии (побочный эффект)")]
-        public async global::System.Threading.Tasks.Task WhileСВУсловииПобочныйЭффект()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "11";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("while с ++ в условии (побочный эффект)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 59
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 60
-        await testRunner.GivenAsync("я скомпилировал программу \"features/loops/while_inc_condition.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 61
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 62
-        await testRunner.ThenAsync("я увижу вывод 12", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 10", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -548,12 +514,12 @@ namespace Compiler.Specs.Features
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await ЦиклыWhileForИУправлениеBreakContinueFeature.FeatureSetupAsync();
+                await ПользовательскиеФункцииFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await ЦиклыWhileForИУправлениеBreakContinueFeature.FeatureTearDownAsync();
+                await ПользовательскиеФункцииFeature.FeatureTearDownAsync();
             }
         }
     }

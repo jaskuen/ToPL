@@ -1,0 +1,25 @@
+bool IsEven(int n)
+{
+    if (n == 0)
+    {
+        return true;
+    }
+
+    return IsOdd(n - 1);
+}
+
+bool IsOdd(int n)
+{
+    if (n == 0)
+    {
+        return false;
+    }
+
+    return IsEven(n - 1);
+}
+
+void main()
+{
+    write(IsEven(4));
+    write(IsOdd(4));
+}

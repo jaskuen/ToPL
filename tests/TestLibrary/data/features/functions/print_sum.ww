@@ -1,0 +1,9 @@
+void PrintSum(int a, int b)
+{
+    write(a + b);
+}
+
+void main()
+{
+    PrintSum(3, 4);
+}

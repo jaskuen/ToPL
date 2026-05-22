@@ -1,0 +1,9 @@
+float Half(float x)
+{
+    return x / 2;
+}
+
+void main()
+{
+    write(Half(10.0));
+}
