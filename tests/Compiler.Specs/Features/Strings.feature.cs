@@ -229,7 +229,7 @@ namespace Compiler.Specs.Features
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 17
-        await testRunner.ThenAsync("я увижу вывод pi = 3.14", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод pi = 3.1399999", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
