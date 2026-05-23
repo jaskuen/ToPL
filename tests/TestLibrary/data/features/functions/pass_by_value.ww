@@ -1,0 +1,12 @@
+int TryModify(int x)
+{
+    x = 100;
+    return x;
+}
+
+void main()
+{
+    int a = 5;
+    write(TryModify(a));
+    write(a);
+}

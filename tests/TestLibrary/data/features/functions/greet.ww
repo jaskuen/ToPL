@@ -1,0 +1,9 @@
+string Greet(string name)
+{
+    return name + "!";
+}
+
+void main()
+{
+    write(Greet("W"));
+}

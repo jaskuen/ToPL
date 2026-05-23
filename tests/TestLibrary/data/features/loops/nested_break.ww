@@ -1,0 +1,15 @@
+void main()
+{
+    int i = 0;
+    while (i < 2) {
+        int j = 0;
+        while (j < 3) {
+            if (j == 1) {
+                break;
+            }
+            write(i, j);
+            j++;
+        }
+        i++;
+    }
+}

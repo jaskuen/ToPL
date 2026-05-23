@@ -1,0 +1,9 @@
+float Mul2(float x)
+{
+    return x * 2;
+}
+
+void main()
+{
+    write(Mul2(5));
+}

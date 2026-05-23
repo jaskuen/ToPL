@@ -1,0 +1,13 @@
+void main()
+{
+    int x = 10;
+    if (x > 5) {
+        if (x > 8) {
+            write("big");
+        } else {
+            write("medium");
+        }
+    } else {
+        write("small");
+    }
+}

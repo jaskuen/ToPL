@@ -292,11 +292,18 @@ public class Parser
     /// </summary>
     private AssignmentStatement ParseAssignmentStatement()
     {
-        string name = tokens.Peek().Value!.ToString();
-        tokens.Advance();
-        Expression expression = ParseAssignmentTail();
+        AssignmentStatement assignment = ParseAssignmentExpression();
+        Match(TokenType.Semicolon);
 
-        return new AssignmentStatement(name, expression);
+        return assignment;
+    }
+
+    private AssignmentStatement ParseAssignmentExpression()
+    {
+        string name = tokens.Peek().Value!.ToString();
+        Match(TokenType.Identifier);
+        Match(TokenType.Assignment);
+        return new AssignmentStatement(name, ParseExpression());
     }
 
     /// <summary>
@@ -404,7 +411,7 @@ public class Parser
     private ReturnStatement ParseReturnStatement()
     {
         Match(TokenType.Return);
-        Expression result = ParseExpression();
+        Expression? result = tokens.Peek().Type == TokenType.Semicolon ? null : ParseExpression();
         Match(TokenType.Semicolon);
         return new ReturnStatement(result);
     }
@@ -423,7 +430,9 @@ public class Parser
         if (tokens.Peek().Type == TokenType.Else)
         {
             tokens.Advance();
-            elseScope = ParseScope();
+            elseScope = tokens.Peek().Type == TokenType.If
+                ? new ScopeStatement([ParseIfStatement()])
+                : ParseScope();
         }
 
         return new IfElseStatement(condition, thenScope, elseScope);
@@ -444,31 +453,53 @@ public class Parser
     }
 
     /// <summary>
-    /// for_statement = "повторити", "(", assignment_expression, ",", logical_or_expression, ",", assignment_expression, ")", scope;
+    /// for_statement = "for", "(", [for_init], ";", [expression], ";", [for_post], ")", scope;
     /// </summary>
     private ForLoopStatement ParseForLoopStatement()
     {
         Match(TokenType.For);
         Match(TokenType.OpenParenthesis);
 
-        // пока пропускаем тип
-        tokens.Advance();
-        string name = tokens.Peek().Value!.ToString();
-        tokens.Advance();
-        Match(TokenType.Assignment);
-        Expression startValue = ParseExpression();
-        Match(TokenType.Comma);
-        Expression condition = ParseExpression();
-        Match(TokenType.Comma);
-        Expression assignment = ParseExpression();
+        AstNode? initializer = ParseForInitializer();
+        Match(TokenType.Semicolon);
+        Expression? condition = tokens.Peek().Type == TokenType.Semicolon ? null : ParseExpression();
+        Match(TokenType.Semicolon);
+        AstNode? post = tokens.Peek().Type == TokenType.CloseParenthesis ? null : ParseForPost();
         Match(TokenType.CloseParenthesis);
 
         return new ForLoopStatement(
-            name,
-            startValue,
+            initializer,
             condition,
-            assignment,
+            post,
             ParseScope());
+    }
+
+    private AstNode? ParseForInitializer()
+    {
+        return tokens.Peek().Type switch
+        {
+            TokenType.Semicolon => null,
+            TokenType.Int or TokenType.Float or TokenType.Bool or TokenType.String or TokenType.Const =>
+                ParseVariableDeclaration(),
+            TokenType.Identifier when tokens.Peek(1).Type == TokenType.Assignment => ParseAssignmentExpression(),
+            TokenType.Identifier when tokens.Peek(1).Type is TokenType.Increment or TokenType.Decrement =>
+                ParsePostfixExpression(true),
+            TokenType.Increment or TokenType.Decrement => ParseUnaryExpression(true),
+            _ => ParseExpression(),
+        };
+    }
+
+    private AstNode? ParseForPost()
+    {
+        return tokens.Peek().Type switch
+        {
+            TokenType.CloseParenthesis => null,
+            TokenType.Identifier when tokens.Peek(1).Type == TokenType.Assignment => ParseAssignmentExpression(),
+            TokenType.Identifier when tokens.Peek(1).Type is TokenType.Increment or TokenType.Decrement =>
+                ParsePostfixExpression(true),
+            TokenType.Increment or TokenType.Decrement => ParseUnaryExpression(true),
+            _ => ParseExpression(),
+        };
     }
 
     /// <summary>
@@ -777,6 +808,11 @@ public class Parser
     /// </summary>
     private List<Expression> ParseArgumentList()
     {
+        if (tokens.Peek().Type == TokenType.CloseParenthesis)
+        {
+            return [];
+        }
+
         List<Expression> values =
         [
             ParseExpression(),

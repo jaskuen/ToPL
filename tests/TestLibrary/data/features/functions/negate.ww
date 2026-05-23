@@ -1,0 +1,9 @@
+bool Negate(bool b)
+{
+    return not b;
+}
+
+void main()
+{
+    write(Negate(true));
+}

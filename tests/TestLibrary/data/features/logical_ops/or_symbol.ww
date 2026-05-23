@@ -1,0 +1,10 @@
+void main()
+{
+    bool a = true;
+    bool b = false;
+    if (a || b) {
+        write("at least one");
+    } else {
+        write("none");
+    }
+}

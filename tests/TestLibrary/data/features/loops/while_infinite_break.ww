@@ -1,0 +1,7 @@
+void main()
+{
+    while (true) {
+        write(0);
+        break;
+    }
+}
