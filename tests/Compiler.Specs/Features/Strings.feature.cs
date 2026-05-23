@@ -17,21 +17,21 @@ namespace Compiler.Specs.Features
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class ПользовательскиеФункцииFeature : object, global::Xunit.IClassFixture<ПользовательскиеФункцииFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class СтроковыеОперацииFeature : object, global::Xunit.IClassFixture<СтроковыеОперацииFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru"), "Features", "пользовательские функции", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru"), "Features", "строковые операции", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "Functions.feature"
+#line 1 "Strings.feature"
 #line hidden
         
-        public ПользовательскиеФункцииFeature(ПользовательскиеФункцииFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public СтроковыеОперацииFeature(СтроковыеОперацииFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Compiler.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Functions.feature.ndjson", 13);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Strings.feature.ndjson", 15);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Compiler.Specs.Features
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="функция без параметров возвращает int")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "функция без параметров возвращает int")]
-        public async global::System.Threading.Tasks.Task ФункцияБезПараметровВозвращаетInt()
+        [global::Xunit.SkippableFactAttribute(DisplayName="конкатенация двух строк")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "конкатенация двух строк")]
+        public async global::System.Threading.Tasks.Task КонкатенацияДвухСтрок()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция без параметров возвращает int", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("конкатенация двух строк", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -155,27 +155,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 5
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/get_number.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/concat_strings.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 6
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 7
-        await testRunner.ThenAsync("я увижу вывод 42", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод HelloWorld", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="функция с параметром int")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "функция с параметром int")]
-        public async global::System.Threading.Tasks.Task ФункцияСПараметромInt()
+        [global::Xunit.SkippableFactAttribute(DisplayName="конкатенация строки с int")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "конкатенация строки с int")]
+        public async global::System.Threading.Tasks.Task КонкатенацияСтрокиСInt()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция с параметром int", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("конкатенация строки с int", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 9
@@ -189,27 +189,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 10
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/add_5.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/concat_int.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 11
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 12
-        await testRunner.ThenAsync("я увижу вывод 15", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод x = 42", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="функция с параметром float")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "функция с параметром float")]
-        public async global::System.Threading.Tasks.Task ФункцияСПараметромFloat()
+        [global::Xunit.SkippableFactAttribute(DisplayName="конкатенация строки с float")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "конкатенация строки с float")]
+        public async global::System.Threading.Tasks.Task КонкатенацияСтрокиСFloat()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция с параметром float", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("конкатенация строки с float", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 14
@@ -223,27 +223,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 15
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/half.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/concat_float.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 16
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 17
-        await testRunner.ThenAsync("я увижу вывод 5", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод pi = 3.14", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="функция с параметром string")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "функция с параметром string")]
-        public async global::System.Threading.Tasks.Task ФункцияСПараметромString()
+        [global::Xunit.SkippableFactAttribute(DisplayName="сравнение строк - равные")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "сравнение строк - равные")]
+        public async global::System.Threading.Tasks.Task СравнениеСтрок_Равные()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция с параметром string", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("сравнение строк - равные", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 19
@@ -257,27 +257,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 20
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/greet.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/string_equal.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 21
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 22
-        await testRunner.ThenAsync("я увижу вывод W!", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод equal", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="функция с параметром bool")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "функция с параметром bool")]
-        public async global::System.Threading.Tasks.Task ФункцияСПараметромBool()
+        [global::Xunit.SkippableFactAttribute(DisplayName="сравнение строк - не равные")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "сравнение строк - не равные")]
+        public async global::System.Threading.Tasks.Task СравнениеСтрок_НеРавные()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "4";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("функция с параметром bool", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("сравнение строк - не равные", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 24
@@ -291,27 +291,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 25
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/negate.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/string_not_equal.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 26
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 27
-        await testRunner.ThenAsync("я увижу вывод False", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод not equal", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="прямая рекурсия — факториал")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "прямая рекурсия — факториал")]
-        public async global::System.Threading.Tasks.Task ПрямаяРекурсияФакториал()
+        [global::Xunit.SkippableFactAttribute(DisplayName="сравнение строк - лексикографичски меньше")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "сравнение строк - лексикографичски меньше")]
+        public async global::System.Threading.Tasks.Task СравнениеСтрок_ЛексикографичскиМеньше()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "5";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("прямая рекурсия — факториал", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("сравнение строк - лексикографичски меньше", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 29
@@ -325,27 +325,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 30
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/factorial.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/string_less.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 31
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 32
-        await testRunner.ThenAsync("я увижу вывод 120", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод less", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="взаимная рекурсия — чёт/нечет")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "взаимная рекурсия — чёт/нечет")]
-        public async global::System.Threading.Tasks.Task ВзаимнаяРекурсияЧётНечет()
+        [global::Xunit.SkippableFactAttribute(DisplayName="сравнение строк - лексикографически больше")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "сравнение строк - лексикографически больше")]
+        public async global::System.Threading.Tasks.Task СравнениеСтрок_ЛексикографическиБольше()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "6";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("взаимная рекурсия — чёт/нечет", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("сравнение строк - лексикографически больше", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 34
@@ -359,27 +359,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 35
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/even_odd.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/string_greater.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 36
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 37
-        await testRunner.ThenAsync("я увижу вывод TrueFalse", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод greater", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="void-функция с выводом значений")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "void-функция с выводом значений")]
-        public async global::System.Threading.Tasks.Task Void_ФункцияСВыводомЗначений()
+        [global::Xunit.SkippableFactAttribute(DisplayName="сравнение строк регистрозависимо")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "сравнение строк регистрозависимо")]
+        public async global::System.Threading.Tasks.Task СравнениеСтрокРегистрозависимо()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "7";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("void-функция с выводом значений", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("сравнение строк регистрозависимо", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 39
@@ -393,27 +393,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 40
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/print_sum.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/string_case_sensitive.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 41
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 42
-        await testRunner.ThenAsync("я увижу вывод 7", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод different", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="void-функция с досрочным return")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "void-функция с досрочным return")]
-        public async global::System.Threading.Tasks.Task Void_ФункцияСДосрочнымReturn()
+        [global::Xunit.SkippableFactAttribute(DisplayName="length — длина строки")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "length — длина строки")]
+        public async global::System.Threading.Tasks.Task LengthДлинаСтроки()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "8";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("void-функция с досрочным return", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("length — длина строки", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 44
@@ -427,27 +427,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 45
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/print_if_positive.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/string_length.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 46
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 47
-        await testRunner.ThenAsync("я увижу вывод 10", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод 5", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="передача параметра по значению")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "передача параметра по значению")]
-        public async global::System.Threading.Tasks.Task ПередачаПараметраПоЗначению()
+        [global::Xunit.SkippableFactAttribute(DisplayName="substring от начала")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "substring от начала")]
+        public async global::System.Threading.Tasks.Task SubstringОтНачала()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "9";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("передача параметра по значению", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("substring от начала", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 49
@@ -461,27 +461,27 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 50
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/pass_by_value.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/substring_start.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 51
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 52
-        await testRunner.ThenAsync("я увижу вывод 1005", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод he", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="неявное приведение int к float в аргументе")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "пользовательские функции")]
-        [global::Xunit.TraitAttribute("Description", "неявное приведение int к float в аргументе")]
-        public async global::System.Threading.Tasks.Task НеявноеПриведениеIntКFloatВАргументе()
+        [global::Xunit.SkippableFactAttribute(DisplayName="substring из середины")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "substring из середины")]
+        public async global::System.Threading.Tasks.Task SubstringИзСередины()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "10";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("неявное приведение int к float в аргументе", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("substring из середины", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 54
@@ -495,13 +495,81 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 55
-        await testRunner.GivenAsync("я скомпилировал программу \"features/functions/implicit_int_to_float.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/substring_mid.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
 #line 56
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 57
-        await testRunner.ThenAsync("я увижу вывод 10", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод ell", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="пустая строка")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "пустая строка")]
+        public async global::System.Threading.Tasks.Task ПустаяСтрока()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "11";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("пустая строка", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 59
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 60
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/string_empty.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+#line hidden
+#line 61
+        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 62
+        await testRunner.ThenAsync("я увижу вывод 0x", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="escape-последовательности (\\n)")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "строковые операции")]
+        [global::Xunit.TraitAttribute("Description", "escape-последовательности (\\n)")]
+        public async global::System.Threading.Tasks.Task Escape_ПоследовательностиN()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "12";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("escape-последовательности (\\n)", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = null;
+#line 64
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 65
+        await testRunner.GivenAsync("я скомпилировал программу \"features/strings/string_escapes.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
+#line hidden
+#line 66
+        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
+#line hidden
+#line 67
+        await testRunner.ThenAsync("я увижу вывод:", "line1\r\nline2", ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -514,12 +582,12 @@ namespace Compiler.Specs.Features
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await ПользовательскиеФункцииFeature.FeatureSetupAsync();
+                await СтроковыеОперацииFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await ПользовательскиеФункцииFeature.FeatureTearDownAsync();
+                await СтроковыеОперацииFeature.FeatureTearDownAsync();
             }
         }
     }

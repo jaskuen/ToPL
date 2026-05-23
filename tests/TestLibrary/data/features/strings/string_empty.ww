@@ -1,0 +1,6 @@
+void main()
+{
+    string s = "";
+    write(length(s));
+    write(s + "x");
+}

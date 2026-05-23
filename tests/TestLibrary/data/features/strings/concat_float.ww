@@ -1,0 +1,4 @@
+void main()
+{
+    write("pi = " + 3.14);
+}

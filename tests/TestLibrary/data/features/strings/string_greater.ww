@@ -1,0 +1,10 @@
+void main()
+{
+    string a = "xyz";
+    string b = "abc";
+    if (a > b) {
+        write("greater");
+    } else {
+        write("not greater");
+    }
+}

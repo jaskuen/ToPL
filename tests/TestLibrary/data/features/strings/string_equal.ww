@@ -1,0 +1,10 @@
+void main()
+{
+    string a = "abc";
+    string b = "abc";
+    if (a == b) {
+        write("equal");
+    } else {
+        write("not equal");
+    }
+}
