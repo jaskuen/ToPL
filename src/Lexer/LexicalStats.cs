@@ -6,7 +6,7 @@ public static class LexicalStats
 {
     public static string CollectFromFile(string path)
     {
-        string fileText = File.ReadAllText(path, Encoding.UTF8);
+        string fileText = File.ReadAllText(path, Encoding.ASCII);
 
         Lexer lexer = new Lexer(fileText);
         IDictionary<LexicalType, int> result = new Dictionary<LexicalType, int>();
@@ -73,7 +73,7 @@ public static class LexicalStats
             case TokenType.LogicalNot:
                 return LexicalType.Operator;
             default:
-                return LexicalType.Punctuation; // Тут было OtherLexems, думаю что это {}(),;
+                return LexicalType.Punctuation;
         }
     }
 

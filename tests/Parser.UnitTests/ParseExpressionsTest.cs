@@ -37,10 +37,10 @@ public class ParseExpressionsTest
                     result.ToBoolean() == boolValue,
                     $"Expected boolean {expectedValue}, but got {result.ToBoolean()}");
                 break;
-            case float doubleValue:
+            case float floatValue:
                 Assert.True(
-                    Math.Abs(result.ToFloat() - doubleValue) < 0.001,
-                    $"Expected double {expectedValue}, but got {result.ToFloat()}");
+                    Math.Abs(result.ToFloat() - floatValue) < 0.001,
+                    $"Expected float {expectedValue}, but got {result.ToFloat()}");
                 break;
             case int intValue:
                 Assert.True(

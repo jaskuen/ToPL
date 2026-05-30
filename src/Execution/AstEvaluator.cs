@@ -166,7 +166,7 @@ public class AstEvaluator : IAstVisitor
                 RuntimeValueType valueType = value.GetValueType();
                 RuntimeValueType variableType = ToRuntimeValueType(declaration.VariableType);
 
-                if (valueType == RuntimeValueType.Int && variableType == RuntimeValueType.Double)
+                if (valueType == RuntimeValueType.Int && variableType == RuntimeValueType.Float)
                 {
                     value = new RuntimeValue(value.ToFloat());
                 }
@@ -187,7 +187,7 @@ public class AstEvaluator : IAstVisitor
                 value = declaration.VariableType switch
                 {
                     VariableType.Int => new RuntimeValue(RuntimeValueType.Int),
-                    VariableType.Double => new RuntimeValue(RuntimeValueType.Double),
+                    VariableType.Float => new RuntimeValue(RuntimeValueType.Float),
                     VariableType.Boolean => new RuntimeValue(RuntimeValueType.Boolean),
                     VariableType.String => new RuntimeValue(RuntimeValueType.String),
                     _ => throw new InvalidOperationException()
@@ -372,7 +372,7 @@ public class AstEvaluator : IAstVisitor
                 RuntimeValueType valueType = value.GetValueType();
                 RuntimeValueType returnType = ToRuntimeValueType(function.Type);
 
-                if (valueType == RuntimeValueType.Int && returnType == RuntimeValueType.Double)
+                if (valueType == RuntimeValueType.Int && returnType == RuntimeValueType.Float)
                 {
                     values.Push(new RuntimeValue(values.Pop().ToFloat()));
                 }
@@ -498,7 +498,7 @@ public class AstEvaluator : IAstVisitor
             RuntimeValue value = environment.ReadValue(variableType);
             RuntimeValueType valueType = value.GetValueType();
 
-            if (valueType == RuntimeValueType.Int && variableType == RuntimeValueType.Double)
+            if (valueType == RuntimeValueType.Int && variableType == RuntimeValueType.Float)
             {
                 context.AssignVariable(variableName, new RuntimeValue(value.ToFloat()));
             }
@@ -614,7 +614,7 @@ public class AstEvaluator : IAstVisitor
             case UnaryOperation.Minus:
             case UnaryOperation.Increment:
             case UnaryOperation.Decrement:
-                return value is RuntimeValueType.Int or RuntimeValueType.Double;
+                return value is RuntimeValueType.Int or RuntimeValueType.Float;
             case null:
                 return true;
             default:
@@ -651,7 +651,7 @@ public class AstEvaluator : IAstVisitor
 
     private bool IsNumericType(RuntimeValueType value)
     {
-        return value is RuntimeValueType.Int or RuntimeValueType.Double;
+        return value is RuntimeValueType.Int or RuntimeValueType.Float;
     }
 
     private RuntimeValueType ToRuntimeValueType(VariableType value)
@@ -659,7 +659,7 @@ public class AstEvaluator : IAstVisitor
         return value switch
         {
             VariableType.Int => RuntimeValueType.Int,
-            VariableType.Double => RuntimeValueType.Double,
+            VariableType.Float => RuntimeValueType.Float,
             VariableType.String => RuntimeValueType.String,
             VariableType.Boolean => RuntimeValueType.Boolean,
             _ => throw new Exception($"Unexpected value type: {value}"),

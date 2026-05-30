@@ -4,7 +4,7 @@ namespace Runtime;
 
 public class RuntimeValue
 {
-    private const float DoubleTolerance = 0.001f;
+    private const float FloatTolerance = 0.001f;
     private readonly object value;
     private readonly RuntimeValueType type;
 
@@ -19,7 +19,7 @@ public class RuntimeValue
     {
         this.value = value;
         IsConstant = isConstant;
-        type = RuntimeValueType.Double;
+        type = RuntimeValueType.Float;
     }
 
     public RuntimeValue(bool value, bool isConstant = false)
@@ -43,7 +43,7 @@ public class RuntimeValue
         value = type switch
         {
             RuntimeValueType.Int => 0,
-            RuntimeValueType.Double => 0.0,
+            RuntimeValueType.Float => 0.0,
             RuntimeValueType.Boolean => false,
             RuntimeValueType.String => string.Empty,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
@@ -184,7 +184,7 @@ public class RuntimeValue
         {
             bool b => b,
             int i => i != 0,
-            float d => Math.Abs(d) < DoubleTolerance,
+            float d => Math.Abs(d) < FloatTolerance,
             _ => throw new NotImplementedException()
         };
     }
@@ -195,7 +195,7 @@ public class RuntimeValue
         {
             bool b => !b,
             int i => i == 0,
-            float d => Math.Abs(d) > DoubleTolerance,
+            float d => Math.Abs(d) > FloatTolerance,
             _ => throw new NotImplementedException()
         };
     }
@@ -215,14 +215,14 @@ public class RuntimeValue
         {
             float d => right.value switch
             {
-                float d2 => d - d2 > DoubleTolerance,
-                int i => d - i > DoubleTolerance,
+                float d2 => d - d2 > FloatTolerance,
+                int i => d - i > FloatTolerance,
                 _ => throw new Exception("Incorrect comparison parameters.")
             },
             int i => right.value switch
             {
                 int j => i > j,
-                float d => i - d > DoubleTolerance,
+                float d => i - d > FloatTolerance,
                 _ => throw new Exception("Incorrect comparison parameters.")
             },
             _ => throw new NotImplementedException()
@@ -252,7 +252,7 @@ public class RuntimeValue
         return value switch
         {
             bool s => s,
-            float d => Math.Abs(d) < DoubleTolerance,
+            float d => Math.Abs(d) < FloatTolerance,
             int i => i != 0,
             _ => throw new NotImplementedException()
         };
@@ -322,14 +322,14 @@ public class RuntimeValue
                 },
                 float d => other.value switch
                 {
-                    float d2 => Math.Abs(d2 - d) < DoubleTolerance,
-                    int i => Math.Abs(i - d) < DoubleTolerance,
+                    float d2 => Math.Abs(d2 - d) < FloatTolerance,
+                    int i => Math.Abs(i - d) < FloatTolerance,
                     _ => false
                 },
                 int i => other.value switch
                 {
                     int j => i == j,
-                    float d => Math.Abs(d - i) < DoubleTolerance,
+                    float d => Math.Abs(d - i) < FloatTolerance,
                     _ => false
                 },
                 string s => other.value switch

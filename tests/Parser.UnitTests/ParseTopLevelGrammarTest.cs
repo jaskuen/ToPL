@@ -51,10 +51,10 @@ public class ParseTopLevelGrammarTest
             // Функция в качестве значения переменной
             { "float f = min(1.0, 5.0);", "f", new RuntimeValue("1") },
 
-            // Неявное преобразование Int -> Double
+            // Неявное преобразование Int -> Float
             { "float x = 3;", "x", new RuntimeValue("3") },
 
-            // Сравнение Int и Double
+            // Сравнение Int и Float
             { "bool x = 5 >= 3.0;", "x", new RuntimeValue("True") },
 
             // Вычисление по короткой схеме
@@ -193,11 +193,11 @@ public class ParseTopLevelGrammarTest
     {
         return new TheoryData<string>
         {
-            "int а = 5.0;", // Double -> Int
+            "int а = 5.0;", // Float -> Int
             "int а = \"5\";", // String -> Int
             "int а = false;", // Boolean -> Int
-            "float а = \"5.0\";", // String -> Double
-            "float а = false;", // Boolean -> Double
+            "float а = \"5.0\";", // String -> Float
+            "float а = false;", // Boolean -> Float
             "bool а = 3 >= \"2\";", // Сравнение Int и String
             "bool а = 3 >= false;", // Сравнение Int и Boolean
             "bool ",

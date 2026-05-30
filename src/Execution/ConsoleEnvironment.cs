@@ -23,7 +23,7 @@ public class ConsoleEnvironment : IEnvironment
         return type switch
         {
             RuntimeValueType.Int => new RuntimeValue(int.Parse(value, CultureInfo.InvariantCulture)),
-            RuntimeValueType.Double => new RuntimeValue(
+            RuntimeValueType.Float => new RuntimeValue(
                 float.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture)),
             RuntimeValueType.String => new RuntimeValue(value),
             RuntimeValueType.Boolean => new RuntimeValue(bool.Parse(value)),

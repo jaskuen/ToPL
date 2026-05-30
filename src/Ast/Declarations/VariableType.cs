@@ -10,7 +10,7 @@ public enum VariableType
     /// <summary>
     /// Нецелочисленное значение
     /// </summary>
-    Double,
+    Float,
 
     /// <summary>
     /// Булевское значение

@@ -343,7 +343,7 @@ public class MsilCodegenPass : IAstVisitor
                 return VariableType.Int;
             case float value:
                 il.Emit(OpCodes.Ldc_R4, value);
-                return VariableType.Double;
+                return VariableType.Float;
             case bool value:
                 il.Emit(value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
                 return VariableType.Boolean;
@@ -439,8 +439,8 @@ public class MsilCodegenPass : IAstVisitor
             return VariableType.Boolean;
         }
 
-        VariableType resultType = leftType == VariableType.Double || rightType == VariableType.Double
-            ? VariableType.Double
+        VariableType resultType = leftType == VariableType.Float || rightType == VariableType.Float
+            ? VariableType.Float
             : VariableType.Int;
         EmitNumericOperands(expression.Left, leftType, expression.Right, rightType, resultType);
 
@@ -598,32 +598,32 @@ public class MsilCodegenPass : IAstVisitor
     {
         EnsureArgumentsCount(expression, 1);
         VariableType argumentType = EmitExpression(expression.Arguments[0]);
-        EmitConversion(argumentType, VariableType.Double);
+        EmitConversion(argumentType, VariableType.Float);
         il.Emit(OpCodes.Call, GetMethod(typeof(MathF ), methodName, [typeof(float )]));
-        return VariableType.Double;
+        return VariableType.Float;
     }
 
     private VariableType EmitBinaryMathF(BuiltinFunctionCallExpression expression, string methodName)
     {
         EnsureArgumentsCount(expression, 2);
         VariableType leftType = EmitExpression(expression.Arguments[0]);
-        EmitConversion(leftType, VariableType.Double);
+        EmitConversion(leftType, VariableType.Float);
         VariableType rightType = EmitExpression(expression.Arguments[1]);
-        EmitConversion(rightType, VariableType.Double);
+        EmitConversion(rightType, VariableType.Float);
         il.Emit(OpCodes.Call, GetMethod(typeof(MathF ), methodName, [typeof(float ), typeof(float )]));
-        return VariableType.Double;
+        return VariableType.Float;
     }
 
     private VariableType EmitRound(BuiltinFunctionCallExpression expression)
     {
         EnsureArgumentsCount(expression, 1);
         VariableType argumentType = EmitExpression(expression.Arguments[0]);
-        EmitConversion(argumentType, VariableType.Double);
+        EmitConversion(argumentType, VariableType.Float);
         il.Emit(OpCodes.Ldc_I4, (int)MidpointRounding.AwayFromZero);
         il.Emit(
             OpCodes.Call,
             GetMethod(typeof(MathF ), nameof(MathF.Round ), [typeof(float ), typeof(MidpointRounding )]));
-        return VariableType.Double;
+        return VariableType.Float;
     }
 
     private VariableType EmitLength(BuiltinFunctionCallExpression expression)
@@ -669,7 +669,7 @@ public class MsilCodegenPass : IAstVisitor
             case VariableType.Int:
                 il.Emit(OpCodes.Ldc_I4_0);
                 break;
-            case VariableType.Double:
+            case VariableType.Float:
                 il.Emit(OpCodes.Ldc_R4, 0.0f);
                 break;
             case VariableType.Boolean:
@@ -691,7 +691,7 @@ public class MsilCodegenPass : IAstVisitor
             case VariableType.Int:
                 il.Emit(OpCodes.Call, GetMethod(typeof(int ), nameof(int.Parse ), [typeof(string )]));
                 break;
-            case VariableType.Double:
+            case VariableType.Float:
                 EmitInvariantCulture();
                 il.Emit(
                     OpCodes.Call,
@@ -720,8 +720,8 @@ public class MsilCodegenPass : IAstVisitor
         VariableType rightType,
         VariableType? targetType = null)
     {
-        VariableType resultType = targetType ?? (leftType == VariableType.Double || rightType == VariableType.Double
-            ? VariableType.Double
+        VariableType resultType = targetType ?? (leftType == VariableType.Float || rightType == VariableType.Float
+            ? VariableType.Float
             : VariableType.Int);
         EnsureNumeric(leftType, "binary operation");
         EnsureNumeric(rightType, "binary operation");
@@ -769,13 +769,13 @@ public class MsilCodegenPass : IAstVisitor
             return;
         }
 
-        if (from == VariableType.Int && to == VariableType.Double)
+        if (from == VariableType.Int && to == VariableType.Float)
         {
             il.Emit(OpCodes.Conv_R4);
             return;
         }
 
-        if (from == VariableType.Double && to == VariableType.Int)
+        if (from == VariableType.Float && to == VariableType.Int)
         {
             il.Emit(OpCodes.Conv_I4);
             return;
@@ -791,7 +791,7 @@ public class MsilCodegenPass : IAstVisitor
             case VariableType.Int:
                 il.Emit(OpCodes.Call, GetMethod(typeof(Convert ), nameof(Convert.ToString ), [typeof(int )]));
                 break;
-            case VariableType.Double:
+            case VariableType.Float:
                 EmitInvariantCulture();
                 il.Emit(
                     OpCodes.Call,
@@ -824,7 +824,7 @@ public class MsilCodegenPass : IAstVisitor
             return;
         }
 
-        if (type == VariableType.Double)
+        if (type == VariableType.Float)
         {
             il.Emit(OpCodes.Ldc_R4, 1.0f);
             return;
@@ -842,7 +842,7 @@ public class MsilCodegenPass : IAstVisitor
             UnaryOperationExpression unary => InferUnaryType(unary),
             BinaryOperationExpression binary => InferBinaryType(binary),
             BuiltinFunctionCallExpression builtin => InferBuiltinFunctionType(builtin),
-            BuiltinConstantExpression => VariableType.Double,
+            BuiltinConstantExpression => VariableType.Float,
             FunctionCallExpression function => InferFunctionType(function),
             _ => throw new NotSupportedException($"Expression {expression.GetType().Name} is not supported."),
         };
@@ -853,7 +853,7 @@ public class MsilCodegenPass : IAstVisitor
         return literal.Value switch
         {
             int => VariableType.Int,
-            float => VariableType.Double,
+            float => VariableType.Float,
             bool => VariableType.Boolean,
             string => VariableType.String,
             _ => throw new NotSupportedException($"Literal {literal.Value.GetType().Name} is not supported."),
@@ -887,8 +887,8 @@ public class MsilCodegenPass : IAstVisitor
             return VariableType.String;
         }
 
-        return leftType == VariableType.Double || rightType == VariableType.Double
-            ? VariableType.Double
+        return leftType == VariableType.Float || rightType == VariableType.Float
+            ? VariableType.Float
             : VariableType.Int;
     }
 
@@ -898,7 +898,7 @@ public class MsilCodegenPass : IAstVisitor
         {
             "length" => VariableType.Int,
             "substring" => VariableType.String,
-            _ => VariableType.Double,
+            _ => VariableType.Float,
         };
     }
 
@@ -967,7 +967,7 @@ public class MsilCodegenPass : IAstVisitor
 
     private static void EnsureNumeric(VariableType type, object operation)
     {
-        if (type is not(VariableType.Int or VariableType.Double))
+        if (type is not(VariableType.Int or VariableType.Float))
         {
             throw new NotSupportedException($"Operation {operation} cannot be applied to {type}.");
         }
@@ -1031,7 +1031,7 @@ public class MsilCodegenPass : IAstVisitor
             case VariableType.Boolean:
                 il.Emit(OpCodes.Ldc_I4_0);
                 break;
-            case VariableType.Double:
+            case VariableType.Float:
                 il.Emit(OpCodes.Ldc_R4, 0.0f);
                 break;
             case VariableType.String:

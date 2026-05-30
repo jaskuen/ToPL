@@ -847,7 +847,7 @@ public class Parser
             TokenType.Bool => VariableType.Boolean,
             TokenType.String => VariableType.String,
             TokenType.Int => VariableType.Int,
-            TokenType.Float => VariableType.Double,
+            TokenType.Float => VariableType.Float,
             TokenType.Void => VariableType.Void,
             _ => throw new UnexpectedLexemeException(tokenType, tokens.Peek())
         };

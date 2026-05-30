@@ -9,7 +9,7 @@ public class WTypeMapper
         return type switch
         {
             VariableType.Int => typeof(int),
-            VariableType.Double => typeof(float),
+            VariableType.Float => typeof(float),
             VariableType.Boolean => typeof(bool),
             VariableType.String => typeof(string),
             VariableType.Void => typeof(void),
