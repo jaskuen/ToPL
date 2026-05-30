@@ -70,13 +70,13 @@ float_literal = digit , { digit } , "." , digit , { digit } ;
 
 ### 2.3 Строковые литералы
 
-Строковый литерал представляет собой последовательность UTF-8 символов, заключенную в двойные кавычки.
+Строковый литерал представляет собой последовательность ASCII символов, заключенную в двойные кавычки.
 К использованию в строковых литералах не допускаются символы двойных кавычек и обратного слэша, если таковые не
 используются как составляющие escape-последовательности.
 
 ```ebnf
 escape_sequence    = "\" , ( '"' | "\" | "n" | "t" | "r" | "0" ) ;
-str_char           = ? any UTF-8 character except '"' and '\' ? | escape_sequence ;
+str_char           = ? any ASCII character except '"' and '\' ? | escape_sequence ;
 string_literal     = '"' , { str_char } , '"' ;
 ```
 
@@ -116,7 +116,7 @@ bool_literal = "true" | "false" ;
 |----------------|-------------------------------------------------------|
 | `int`          | 32-битное знаковое целое число                        |
 | `float`        | 32-битное число с плавающей точкой одинарной точности |
-| `string`       | Неизменяемая строка символов UTF-8                    |
+| `string`       | Неизменяемая строка символов ASCII                    |
 | `bool`         | Булевый тип (истина/ложь)                             |
 | `void`         | Отсутствие типа (только для функций)                  |
 
@@ -274,7 +274,7 @@ float_literal = digit , { digit } , "." , digit , { digit } ;
 
 escape_char = '"' | "\" | "n" | "t" | "r" | "0" ;
 
-string_char = ? any UTF-8 character except '"' and '\' ? 
+string_char = ? any ASCII character except '"' and '\' ? 
             | "\" , escape_char ;
 
 string_literal = '"' , { string_char } , '"' ;
