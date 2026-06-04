@@ -7,10 +7,11 @@
 Выражения в языке `W Language` могут содержать:
 
 1. Переменные и константы
-2. Литералы (числовые, строковые, булевы)
+2. Литералы (числовые, строковые, булевы, массивов, структур)
 3. Вызовы функций (пользовательских и встроенных)
 4. Операторы (арифметические, логические, сравнения, присваивания)
-5. Группировку с помощью скобок `()`
+5. Доступ к элементам массива (`[]`) и полям структуры (`.`)
+6. Группировку с помощью скобок `()`
 
 ## 2. Приоритеты операций
 
@@ -24,6 +25,8 @@
 | 10                      | `-` (унарный)      | Унарный минус          | Правая          |
 | 9                       | `++` (постфикс)    | Постфиксный инкремент  | Левая           |
 | 9                       | `--` (постфикс)    | Постфиксный декремент  | Левая           |
+| 9                       | `[]`               | Индексация массива     | Левая           |
+| 9                       | `.`                | Доступ к полю          | Левая           |
 | 8                       | `*`                | Умножение              | Левая           |
 | 8                       | `/`                | Деление                | Левая           |
 | 8                       | `%`                | Остаток от деления     | Левая           |
@@ -193,14 +196,85 @@ for (;;) {
 }
 ```
 
-## 8. EBNF-грамматика
+## 8. Массивы
+
+Массив — составной тип, элементы которого имеют один базовый тип (`int`, `float`, `string` или `bool`).
+
+**Объявление:**
+
+```cpp
+int[] numbers;
+int[] primes = { 2, 3, 5, 7 };
+bool[] flags = { true, false };
+```
+
+**Литерал массива** — список выражений в фигурных скобках; каждое выражение вычисляется при инициализации:
+
+```cpp
+int x = 1, y = 2;
+int[] data = { x, y, x + y };
+```
+
+**Доступ к элементу** (чтение и запись) выполняется через квадратные скобки:
+
+```cpp
+numbers[0] = 10;
+int first = numbers[0];
+numbers[i] = numbers[i - 1];
+```
+
+>[!INFO]
+> Индекс должен иметь тип `int`.
+> Количество элементов в литерале определяет размер массива при инициализации.
+> Индексация с нуля.
+
+## 9. Структуры
+
+Структура — пользовательский тип с именованными полями фиксированных типов.
+
+**Объявление типа:**
+
+```cpp
+struct Point {
+    int x;
+    int y;
+};
+
+struct Person {
+    string name;
+    int age;
+};
+```
+
+**Объявление переменной и литерал структуры** — инициализация всех полей значениями выражений в порядке объявления полей:
+
+```cpp
+Point origin = Point { 0, 0 };
+Point p = Point { 10, 20 };
+```
+
+**Доступ к полям** (чтение и запись) выполняется через точку:
+
+```cpp
+p.x = 5;
+int px = p.x;
+origin.y = p.x + 10;
+```
+
+>[!INFO]
+> Оператор `.` применяется к переменной (или выражению) типа структуры.
+> В литерале структуры должны быть указаны значения для **всех** полей.
+> Поля объявляются внутри тела структуры и завершаются точкой с запятой.
+
+## 10. EBNF-грамматика
 
 ```ebnf
 program = { global_declaration } , main_function ;
 
 global_declaration = variable_definition 
                    | const_definition 
-                   | function_definition ;
+                   | function_definition
+                   | struct_definition ;
 
 main_function = ( "void" | "int" ) , "main" , "(" , ")" , block ;
 
@@ -271,12 +345,25 @@ multiplicative = unary , { ( "*" | "/" | "%" ) , unary } ;
 unary = ( "!" | "not" | "-" | "++" | "--" ) , unary
       | postfix ;
 
-postfix = primary , [ "++" | "--" ] ;
+postfix = postfix , [ "++" | "--" ]
+        | postfix , "[" , expression , "]"
+        | postfix , "." , identifier
+        | primary ;
 
 primary = literal
         | identifier , [ "(" , [ argument_list ] , ")" ]
         | builtin_function
+        | array_literal
+        | struct_literal
         | "(" , expression , ")" ;
+
+array_literal = "{" , [ expression , { "," , expression } ] , "}" ;
+
+struct_literal = identifier , "{" , expression , { "," , expression } , "}" ;
+
+struct_definition = "struct" , identifier , "{" , { field_definition } , "}" ;
+
+field_definition = type , identifier , ";" ;
 
 builtin_function = ( "abs" | "round" | "ceil" | "floor" ) , "(" , expression , ")"
                  | ( "min" | "max" ) , "(" , expression , "," , expression , ")"
@@ -285,4 +372,10 @@ builtin_function = ( "abs" | "round" | "ceil" | "floor" ) , "(" , expression , "
 
 argument_list = expression , { "," , expression } ;
 
-type = "int" | "float" | "string" | "bool" | "void" ;
+type = base_type , [ "[]" ]
+     | struct_type
+     | "void" ;
+
+base_type = "int" | "float" | "string" | "bool" ;
+
+struct_type = identifier ;
