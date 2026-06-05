@@ -424,7 +424,7 @@ public class MsilCodegenPass : IAstVisitor
             il.Emit(OpCodes.Ldc_I4, i);
             VariableType valueType = EmitExpression(expression.Elements[i]);
             EmitConversion(valueType, elementType);
-            il.Emit(OpCodes.Stelem, MapClrType(elementType));
+            EmitStoreArrayElement(elementType);
         }
 
         return TypeReference.ArrayOf(elementType);
@@ -487,7 +487,7 @@ public class MsilCodegenPass : IAstVisitor
 
         il.Emit(OpCodes.Ldloc, arrayLocal);
         il.Emit(OpCodes.Ldloc, indexLocal);
-        il.Emit(OpCodes.Ldelem, MapClrType(arrayType.ElementType));
+        EmitLoadArrayElement(arrayType.ElementType);
         return arrayType.ElementType;
     }
 
@@ -1025,6 +1025,54 @@ public class MsilCodegenPass : IAstVisitor
         il.MarkLabel(okLabel);
     }
 
+    private void EmitStoreArrayElement(TypeReference elementType)
+    {
+        if (elementType.IsArray || elementType.Kind == VariableType.Struct || elementType.Kind == VariableType.String)
+        {
+            il.Emit(OpCodes.Stelem_Ref);
+            return;
+        }
+
+        switch (elementType.Kind)
+        {
+            case VariableType.Int:
+                il.Emit(OpCodes.Stelem_I4);
+                break;
+            case VariableType.Float:
+                il.Emit(OpCodes.Stelem_R4);
+                break;
+            case VariableType.Boolean:
+                il.Emit(OpCodes.Stelem_I1);
+                break;
+            default:
+                throw new NotSupportedException($"Array element type {elementType} is not supported.");
+        }
+    }
+
+    private void EmitLoadArrayElement(TypeReference elementType)
+    {
+        if (elementType.IsArray || elementType.Kind == VariableType.Struct || elementType.Kind == VariableType.String)
+        {
+            il.Emit(OpCodes.Ldelem_Ref);
+            return;
+        }
+
+        switch (elementType.Kind)
+        {
+            case VariableType.Int:
+                il.Emit(OpCodes.Ldelem_I4);
+                break;
+            case VariableType.Float:
+                il.Emit(OpCodes.Ldelem_R4);
+                break;
+            case VariableType.Boolean:
+                il.Emit(OpCodes.Ldelem_U1);
+                break;
+            default:
+                throw new NotSupportedException($"Array element type {elementType} is not supported.");
+        }
+    }
+
     private TypeReference InferExpressionType(Expression expression)
     {
         return expression switch
@@ -1379,7 +1427,7 @@ public class MsilCodegenPass : IAstVisitor
                     il.Emit(OpCodes.Stloc, arrayTemp);
                 }
 
-                il.Emit(OpCodes.Stelem, MapClrType(arrayType.ElementType));
+                EmitStoreArrayElement(arrayType.ElementType);
                 if (arrayTemp is not null)
                 {
                     il.Emit(OpCodes.Ldloc, arrayTemp);
