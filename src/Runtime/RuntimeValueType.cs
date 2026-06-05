@@ -21,4 +21,14 @@ public enum RuntimeValueType
     /// Булевское значение
     /// </summary>
     Boolean,
+
+    /// <summary>
+    /// Массив
+    /// </summary>
+    Array,
+
+    /// <summary>
+    /// Структура
+    /// </summary>
+    Struct,
 }

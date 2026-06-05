@@ -2,9 +2,16 @@
 
 namespace Ast.Statements;
 
-public sealed class AssignmentStatement(string name, Expression value) : Statement
+public sealed class AssignmentStatement(Expression target, Expression value) : Statement
 {
-    public string Name { get; } = name;
+    public AssignmentStatement(string name, Expression value)
+        : this(new VariableExpression(name), value)
+    {
+    }
+
+    public Expression Target { get; } = target;
+
+    public string Name => Target is VariableExpression variable ? variable.Name : string.Empty;
 
     public Expression Value { get; } = value;
 

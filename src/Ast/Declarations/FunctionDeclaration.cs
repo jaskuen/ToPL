@@ -3,17 +3,19 @@
 namespace Ast.Declarations;
 
 public sealed class FunctionDeclaration(
-    VariableType type,
+    TypeReference type,
     string name,
-    Dictionary<string, VariableType> parameters,
+    Dictionary<string, TypeReference> parameters,
     Statement body)
     : Declaration
 {
-    public VariableType Type { get; } = type;
+    public TypeReference ReturnType { get; } = type;
+
+    public VariableType Type => ReturnType.Kind;
 
     public string Name { get; } = name;
 
-    public Dictionary<string, VariableType> Parameters { get; } = parameters;
+    public Dictionary<string, TypeReference> Parameters { get; } = parameters;
 
     public Statement Body { get; } = body;
 

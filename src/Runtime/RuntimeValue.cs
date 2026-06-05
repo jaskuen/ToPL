@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 
+using Ast.Declarations;
+
 namespace Runtime;
 
 public class RuntimeValue
@@ -7,12 +9,14 @@ public class RuntimeValue
     private const float FloatTolerance = 0.001f;
     private readonly object value;
     private readonly RuntimeValueType type;
+    private readonly TypeReference typeReference;
 
     public RuntimeValue(int value, bool isConstant = false)
     {
         this.value = value;
         IsConstant = isConstant;
         type = RuntimeValueType.Int;
+        typeReference = TypeReference.Int;
     }
 
     public RuntimeValue(float value, bool isConstant = false)
@@ -20,6 +24,7 @@ public class RuntimeValue
         this.value = value;
         IsConstant = isConstant;
         type = RuntimeValueType.Float;
+        typeReference = TypeReference.Float;
     }
 
     public RuntimeValue(bool value, bool isConstant = false)
@@ -27,6 +32,7 @@ public class RuntimeValue
         this.value = value;
         IsConstant = isConstant;
         type = RuntimeValueType.Boolean;
+        typeReference = TypeReference.Boolean;
     }
 
     public RuntimeValue(string value, bool isConstant = false)
@@ -34,20 +40,55 @@ public class RuntimeValue
         this.value = value;
         IsConstant = isConstant;
         type = RuntimeValueType.String;
+        typeReference = TypeReference.String;
+    }
+
+    public RuntimeValue(RuntimeArrayValue value, bool isConstant = false)
+    {
+        this.value = value;
+        IsConstant = isConstant;
+        type = RuntimeValueType.Array;
+        typeReference = TypeReference.ArrayOf(value.ElementType);
+    }
+
+    public RuntimeValue(RuntimeStructValue value, bool isConstant = false)
+    {
+        this.value = value;
+        IsConstant = isConstant;
+        type = RuntimeValueType.Struct;
+        typeReference = TypeReference.Struct(value.TypeName);
+    }
+
+    public RuntimeValue(TypeReference type, bool isConstant = false)
+    {
+        IsConstant = isConstant;
+        typeReference = type;
+
+        if (type.IsArray)
+        {
+            this.type = RuntimeValueType.Array;
+            value = new RuntimeArrayValue(type.ElementType, []);
+            return;
+        }
+
+        this.type = ToRuntimeValueType(type);
+        value = type.Kind switch
+        {
+            VariableType.Int => 0,
+            VariableType.Float => 0.0f,
+            VariableType.Boolean => false,
+            VariableType.String => string.Empty,
+            VariableType.Struct => new RuntimeStructValue(
+                type.StructName ?? string.Empty,
+                new Dictionary<string, TypeReference>(),
+                new Dictionary<string, RuntimeValue>()),
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
     }
 
     public RuntimeValue(RuntimeValueType type, bool isConstant = false)
+        : this(ToTypeReference(type), isConstant)
     {
-        this.type = type;
-        IsConstant = isConstant;
-        value = type switch
-        {
-            RuntimeValueType.Int => 0,
-            RuntimeValueType.Float => 0.0,
-            RuntimeValueType.Boolean => false,
-            RuntimeValueType.String => string.Empty,
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-        };
     }
 
     public bool IsConstant { get; }
@@ -56,7 +97,7 @@ public class RuntimeValue
     {
         return left.value switch
         {
-            bool _ => throw new Exception("Cannot sum a bool value."),
+            bool => throw new Exception("Cannot sum a bool value."),
             float d => right.value switch
             {
                 float d2 => new RuntimeValue(d + d2),
@@ -82,8 +123,8 @@ public class RuntimeValue
     {
         return left.value switch
         {
-            bool _ => throw new Exception("Cannot subtract a bool value."),
-            string _ => throw new Exception("Cannot subtract a string value."),
+            bool => throw new Exception("Cannot subtract a bool value."),
+            string => throw new Exception("Cannot subtract a string value."),
             float d => right.value switch
             {
                 float d2 => new RuntimeValue(d - d2),
@@ -104,8 +145,8 @@ public class RuntimeValue
     {
         return value.value switch
         {
-            bool _ => throw new Exception("Cannot subtract a bool value."),
-            string _ => throw new Exception("Cannot subtract a string value."),
+            bool => throw new Exception("Cannot subtract a bool value."),
+            string => throw new Exception("Cannot subtract a string value."),
             float d => new RuntimeValue(-d),
             int i => new RuntimeValue(-i),
             _ => throw new NotImplementedException()
@@ -116,8 +157,8 @@ public class RuntimeValue
     {
         return left.value switch
         {
-            bool _ => throw new Exception("Cannot multiply a bool value."),
-            string _ => throw new Exception("Cannot multiply a string value."),
+            bool => throw new Exception("Cannot multiply a bool value."),
+            string => throw new Exception("Cannot multiply a string value."),
             float d => right.value switch
             {
                 float d2 => new RuntimeValue(d * d2),
@@ -138,8 +179,8 @@ public class RuntimeValue
     {
         return left.value switch
         {
-            bool _ => throw new Exception("Cannot divide a bool value."),
-            string _ => throw new Exception("Cannot divide a string value."),
+            bool => throw new Exception("Cannot divide a bool value."),
+            string => throw new Exception("Cannot divide a string value."),
             float d => right.value switch
             {
                 float d2 => new RuntimeValue(d / d2),
@@ -160,8 +201,8 @@ public class RuntimeValue
     {
         return left.value switch
         {
-            bool _ => throw new Exception("Cannot find module of a bool value."),
-            string _ => throw new Exception("Cannot find module of a string value."),
+            bool => throw new Exception("Cannot find module of a bool value."),
+            string => throw new Exception("Cannot find module of a string value."),
             float d => right.value switch
             {
                 float d2 => new RuntimeValue(d % d2),
@@ -229,24 +270,12 @@ public class RuntimeValue
         };
     }
 
-    public static bool operator <(RuntimeValue left, RuntimeValue right)
-    {
-        return !(left > right) && !left.Equals(right);
-    }
+    public static bool operator <(RuntimeValue left, RuntimeValue right) => !(left > right) && !left.Equals(right);
 
-    public static bool operator >=(RuntimeValue left, RuntimeValue right)
-    {
-        return !(left < right);
-    }
+    public static bool operator >=(RuntimeValue left, RuntimeValue right) => !(left < right);
 
-    public static bool operator <=(RuntimeValue left, RuntimeValue right)
-    {
-        return !(left > right);
-    }
+    public static bool operator <=(RuntimeValue left, RuntimeValue right) => !(left > right);
 
-    /// <summary>
-    ///  Возвращает значение в виде boolean.
-    /// </summary>
     public bool ToBoolean()
     {
         return value switch
@@ -258,9 +287,6 @@ public class RuntimeValue
         };
     }
 
-    /// <summary>
-    ///  Возвращает значение в виде числа c плавающей точкой.
-    /// </summary>
     public float ToFloat()
     {
         return value switch
@@ -289,6 +315,20 @@ public class RuntimeValue
         };
     }
 
+    public RuntimeArrayValue ToArray()
+    {
+        return value is RuntimeArrayValue array
+            ? array
+            : throw new InvalidOperationException($"Expected array, got {type}.");
+    }
+
+    public RuntimeStructValue ToStruct()
+    {
+        return value is RuntimeStructValue structure
+            ? structure
+            : throw new InvalidOperationException($"Expected struct, got {type}.");
+    }
+
     public override string ToString()
     {
         return value switch
@@ -297,54 +337,46 @@ public class RuntimeValue
             float d => d.ToString("0.####", CultureInfo.InvariantCulture),
             int i => i.ToString(CultureInfo.InvariantCulture),
             string s => s,
+            RuntimeArrayValue array => "{" + string.Join(", ", array.Values.Select(v => v.ToString())) + "}",
+            RuntimeStructValue structure => structure.TypeName,
             _ => throw new NotImplementedException()
         };
     }
 
-    public override int GetHashCode()
-    {
-        return value.GetHashCode();
-    }
+    public override int GetHashCode() => value.GetHashCode();
 
-    /// <summary>
-    ///  Проверяет равенство значений. Сравнение может проводиться между числовыми значениями разных типов.
-    /// </summary>
     public override bool Equals(object? obj)
     {
-        if (obj is RuntimeValue other)
+        if (obj is not RuntimeValue other)
         {
-            return value switch
-            {
-                bool s => other.value switch
-                {
-                    bool b => b == s,
-                    _ => false
-                },
-                float d => other.value switch
-                {
-                    float d2 => Math.Abs(d2 - d) < FloatTolerance,
-                    int i => Math.Abs(i - d) < FloatTolerance,
-                    _ => false
-                },
-                int i => other.value switch
-                {
-                    int j => i == j,
-                    float d => Math.Abs(d - i) < FloatTolerance,
-                    _ => false
-                },
-                string s => other.value switch
-                {
-                    string s2 => s.Equals(s2),
-                    _ => false
-                },
-                _ => throw new NotImplementedException()
-            };
+            return false;
         }
 
-        return false;
+        return value switch
+        {
+            bool s => other.value is bool b && b == s,
+            float d => other.value switch
+            {
+                float d2 => Math.Abs(d2 - d) < FloatTolerance,
+                int i => Math.Abs(i - d) < FloatTolerance,
+                _ => false
+            },
+            int i => other.value switch
+            {
+                int j => i == j,
+                float d => Math.Abs(d - i) < FloatTolerance,
+                _ => false
+            },
+            string s => other.value is string s2 && s.Equals(s2),
+            RuntimeArrayValue s => ReferenceEquals(s, other.value),
+            RuntimeStructValue s => ReferenceEquals(s, other.value),
+            _ => throw new NotImplementedException()
+        };
     }
 
     public RuntimeValueType GetValueType() => type;
+
+    public TypeReference GetTypeReference() => typeReference;
 
     public RuntimeValue WithConstant(bool isConstant = true)
     {
@@ -354,7 +386,39 @@ public class RuntimeValue
             float d => new RuntimeValue(d, isConstant),
             bool b => new RuntimeValue(b, isConstant),
             string s => new RuntimeValue(s, isConstant),
+            RuntimeArrayValue array => new RuntimeValue(array, isConstant),
+            RuntimeStructValue structure => new RuntimeValue(structure, isConstant),
             _ => throw new NotImplementedException()
+        };
+    }
+
+    private static RuntimeValueType ToRuntimeValueType(TypeReference type)
+    {
+        if (type.IsArray)
+        {
+            return RuntimeValueType.Array;
+        }
+
+        return type.Kind switch
+        {
+            VariableType.Int => RuntimeValueType.Int,
+            VariableType.Float => RuntimeValueType.Float,
+            VariableType.Boolean => RuntimeValueType.Boolean,
+            VariableType.String => RuntimeValueType.String,
+            VariableType.Struct => RuntimeValueType.Struct,
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
+
+    private static TypeReference ToTypeReference(RuntimeValueType type)
+    {
+        return type switch
+        {
+            RuntimeValueType.Int => TypeReference.Int,
+            RuntimeValueType.Float => TypeReference.Float,
+            RuntimeValueType.Boolean => TypeReference.Boolean,
+            RuntimeValueType.String => TypeReference.String,
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
 }

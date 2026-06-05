@@ -78,6 +78,11 @@ public enum TokenType
     Const,
 
     /// <summary>
+    /// Ключевое слово 'struct' (объявление структуры).
+    /// </summary>
+    Struct,
+
+    /// <summary>
     /// Ключевое слово 'if'.
     /// </summary>
     If,
@@ -266,6 +271,21 @@ public enum TokenType
     /// Закрывающая фигурная скобка '}' (Конец блока кода).
     /// </summary>
     CloseBrace,
+
+    /// <summary>
+    /// Открывающая квадратная скобка '['.
+    /// </summary>
+    OpenBracket,
+
+    /// <summary>
+    /// Закрывающая квадратная скобка ']'.
+    /// </summary>
+    CloseBracket,
+
+    /// <summary>
+    /// Точка '.'.
+    /// </summary>
+    Dot,
 
     /// <summary>
     /// Запятая ','.

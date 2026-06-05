@@ -2,14 +2,27 @@
 
 namespace Ast.Declarations;
 
-public class VariableDeclaration(bool isConst, VariableType variableType, Dictionary<string, Expression?> namesToValues)
-    : Declaration
+public class VariableDeclaration : Declaration
 {
-    public bool IsConst { get; } = isConst;
+    public VariableDeclaration(bool isConst, VariableType variableType, Dictionary<string, Expression?> namesToValues)
+        : this(isConst, new TypeReference(variableType), namesToValues)
+    {
+    }
 
-    public VariableType VariableType { get; } = variableType;
+    public VariableDeclaration(bool isConst, TypeReference type, Dictionary<string, Expression?> namesToValues)
+    {
+        IsConst = isConst;
+        Type = type;
+        NamesToValues = namesToValues;
+    }
 
-    public Dictionary<string, Expression?> NamesToValues => namesToValues;
+    public bool IsConst { get; }
+
+    public TypeReference Type { get; }
+
+    public VariableType VariableType => Type.Kind;
+
+    public Dictionary<string, Expression?> NamesToValues { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

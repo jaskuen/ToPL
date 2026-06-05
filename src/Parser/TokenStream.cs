@@ -20,15 +20,12 @@ public class TokenStream
 
     public Token Peek(int n = 0)
     {
-        if (n >= tokens.Count)
+        while (n >= tokens.Count)
         {
-            for (int i = n; i > 0; --i)
-            {
-                tokens.Add(lexer.ParseToken());
-            }
+            tokens.Add(lexer.ParseToken());
         }
 
-        return tokens[n == 0 ? 0 : tokens.Count - 1];
+        return tokens[n];
     }
 
     public void Advance()

@@ -105,7 +105,7 @@ namespace Compiler.Specs.Features
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Arrays.feature.ndjson", 19);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Arrays.feature.ndjson", 14);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -263,7 +263,7 @@ namespace Compiler.Specs.Features
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
 #line 22
-        await testRunner.ThenAsync("я увижу вывод truefalse", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+        await testRunner.ThenAsync("я увижу вывод TrueFalse", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -371,15 +371,15 @@ namespace Compiler.Specs.Features
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="длина массива через length()")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="ошибка компиляции — индекс с плавающей точкой")]
         [global::Xunit.TraitAttribute("FeatureTitle", "массивы")]
-        [global::Xunit.TraitAttribute("Description", "длина массива через length()")]
-        public async global::System.Threading.Tasks.Task ДлинаМассиваЧерезLength()
+        [global::Xunit.TraitAttribute("Description", "ошибка компиляции — индекс с плавающей точкой")]
+        public async global::System.Threading.Tasks.Task ОшибкаКомпиляцииИндексСПлавающейТочкой()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "7";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("длина массива через length()", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ошибка компиляции — индекс с плавающей точкой", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 39
@@ -393,77 +393,9 @@ namespace Compiler.Specs.Features
             {
                 await this.ScenarioStartAsync();
 #line 40
-        await testRunner.GivenAsync("я скомпилировал программу \"features/arrays/array_length.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 41
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 42
-        await testRunner.ThenAsync("я увижу вывод 3", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="пустой массив")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "массивы")]
-        [global::Xunit.TraitAttribute("Description", "пустой массив")]
-        public async global::System.Threading.Tasks.Task ПустойМассив()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "8";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("пустой массив", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 44
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 45
-        await testRunner.GivenAsync("я скомпилировал программу \"features/arrays/array_empty.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 46
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 47
-        await testRunner.ThenAsync("я увижу вывод 0", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="ошибка компиляции — индекс с плавающей точкой")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "массивы")]
-        [global::Xunit.TraitAttribute("Description", "ошибка компиляции — индекс с плавающей точкой")]
-        public async global::System.Threading.Tasks.Task ОшибкаКомпиляцииИндексСПлавающейТочкой()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "9";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ошибка компиляции — индекс с плавающей точкой", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 49
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 50
         await testRunner.GivenAsync("я попытался скомпилировать программу \"features/arrays/array_index_float.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 51
+#line 41
         await testRunner.ThenAsync("компиляция завершилась с кодом 1", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -477,11 +409,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "10";
+            string pickleIndex = "8";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ошибка компиляции — строковый индекс", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 53
+#line 43
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -491,10 +423,10 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 54
+#line 44
         await testRunner.GivenAsync("я попытался скомпилировать программу \"features/arrays/array_index_string.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 55
+#line 45
         await testRunner.ThenAsync("компиляция завершилась с кодом 1", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -508,11 +440,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "11";
+            string pickleIndex = "9";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ошибка компиляции — несовместимый тип в литерале", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 57
+#line 47
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -522,10 +454,10 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 58
+#line 48
         await testRunner.GivenAsync("я попытался скомпилировать программу \"features/arrays/array_type_mismatch.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 59
+#line 49
         await testRunner.ThenAsync("компиляция завершилась с кодом 1", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -539,11 +471,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "12";
+            string pickleIndex = "10";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ошибка компиляции — несовместимый тип при присваивании элемента", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 61
+#line 51
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -553,11 +485,11 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 62
+#line 52
         await testRunner.GivenAsync("я попытался скомпилировать программу \"features/arrays/array_assign_type_mismatch." +
                         "ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 63
+#line 53
         await testRunner.ThenAsync("компиляция завершилась с кодом 1", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
@@ -571,11 +503,11 @@ namespace Compiler.Specs.Features
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "13";
+            string pickleIndex = "11";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("ошибка выполнения — выход за границы массива", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
-#line 65
+#line 55
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -585,116 +517,14 @@ namespace Compiler.Specs.Features
             else
             {
                 await this.ScenarioStartAsync();
-#line 66
+#line 56
         await testRunner.GivenAsync("я скомпилировал программу \"features/arrays/array_out_of_bounds.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
 #line hidden
-#line 67
+#line 57
         await testRunner.WhenAsync("я выполняю программу с перехватом ошибок", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-#line 68
-        await testRunner.ThenAsync("я получу код возврата 1", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="массив структур — литерал и чтение полей")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "массивы")]
-        [global::Xunit.TraitAttribute("Description", "массив структур — литерал и чтение полей")]
-        public async global::System.Threading.Tasks.Task МассивСтруктурЛитералИЧтениеПолей()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "14";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("массив структур — литерал и чтение полей", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 70
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 71
-        await testRunner.GivenAsync("я скомпилировал программу \"features/arrays/array_of_structs.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 72
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 73
-        await testRunner.ThenAsync("я увижу вывод 14", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="массив структур — запись в поле элемента")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "массивы")]
-        [global::Xunit.TraitAttribute("Description", "массив структур — запись в поле элемента")]
-        public async global::System.Threading.Tasks.Task МассивСтруктурЗаписьВПолеЭлемента()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "15";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("массив структур — запись в поле элемента", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 75
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 76
-        await testRunner.GivenAsync("я скомпилировал программу \"features/arrays/array_of_structs_write.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 77
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 78
-        await testRunner.ThenAsync("я увижу вывод 10", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="массив структур — чтение поля через индекс-переменную")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "массивы")]
-        [global::Xunit.TraitAttribute("Description", "массив структур — чтение поля через индекс-переменную")]
-        public async global::System.Threading.Tasks.Task МассивСтруктурЧтениеПоляЧерезИндекс_Переменную()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "16";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("массив структур — чтение поля через индекс-переменную", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = null;
-#line 80
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 81
-        await testRunner.GivenAsync("я скомпилировал программу \"features/arrays/array_of_structs_index_var.ww\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Пусть ");
-#line hidden
-#line 82
-        await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
-#line hidden
-#line 83
-        await testRunner.ThenAsync("я увижу вывод 30", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
+#line 58
+        await testRunner.ThenAsync("я получу код возврата -532462766", ((string)(null)), ((global::Reqnroll.Table)(null)), "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

@@ -11,6 +11,7 @@ public class Context
 {
     private readonly Stack<Scope> scopes = [];
     private readonly Dictionary<string, FunctionDeclaration> functions = [];
+    private readonly Dictionary<string, StructDeclaration> structs = [];
 
     public void PushScope(Scope scope)
     {
@@ -89,6 +90,24 @@ public class Context
         if (!functions.TryAdd(function.Name, function))
         {
             throw new ArgumentException($"Function '{function.Name}' is already defined");
+        }
+    }
+
+    public StructDeclaration GetStruct(string name)
+    {
+        if (structs.TryGetValue(name, out StructDeclaration? structure))
+        {
+            return structure;
+        }
+
+        throw new ArgumentException($"Struct '{name}' is not defined");
+    }
+
+    public void DefineStruct(StructDeclaration structure)
+    {
+        if (!structs.TryAdd(structure.Name, structure))
+        {
+            throw new ArgumentException($"Struct '{structure.Name}' is already defined");
         }
     }
 }

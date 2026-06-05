@@ -26,4 +26,9 @@ public enum VariableType
     /// Пустое значение
     /// </summary>
     Void,
+
+    /// <summary>
+    /// Пользовательская структура
+    /// </summary>
+    Struct,
 }

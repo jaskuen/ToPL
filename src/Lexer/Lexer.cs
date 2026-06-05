@@ -30,7 +30,16 @@ public class Lexer
         { "write", TokenType.Write },
         { "read", TokenType.Read },
         { "const", TokenType.Const },
+        { "struct", TokenType.Struct },
         { "main",  TokenType.Main },
+        { "abs", TokenType.Abs },
+        { "round", TokenType.Round },
+        { "ceil", TokenType.Ceil },
+        { "floor", TokenType.Floor },
+        { "min", TokenType.Min },
+        { "max", TokenType.Max },
+        { "length", TokenType.Length },
+        { "substring", TokenType.Substring },
     };
 
     private readonly TextScanner scanner;
@@ -100,6 +109,15 @@ public class Lexer
             case '}':
                 scanner.Advance();
                 return new Token(TokenType.CloseBrace);
+            case '[':
+                scanner.Advance();
+                return new Token(TokenType.OpenBracket);
+            case ']':
+                scanner.Advance();
+                return new Token(TokenType.CloseBracket);
+            case '.':
+                scanner.Advance();
+                return new Token(TokenType.Dot);
             case '!':
             case '>':
             case '<':

@@ -17,10 +17,13 @@ public class MsilCodegenPass : IAstVisitor
     private readonly Stack<LoopLabels> loops = [];
     private readonly Dictionary<string, MethodBuilder> functionBuilders = [];
     private readonly Dictionary<string, FunctionDeclaration> functionDeclarations = [];
+    private readonly Dictionary<string, TypeBuilder> structBuilders = [];
+    private readonly Dictionary<string, StructDeclaration> structDeclarations = [];
+    private readonly Dictionary<string, Dictionary<string, FieldBuilder>> structFields = [];
 
     private TypeBuilder programTypeBuilder = null!;
     private ILGenerator il = null!;
-    private VariableType currentReturnType = VariableType.Void;
+    private TypeReference currentReturnType = TypeReference.Void;
 
     public MsilCodegenPass(ModuleBuilder moduleBuilder)
     {
@@ -32,6 +35,21 @@ public class MsilCodegenPass : IAstVisitor
         programTypeBuilder = moduleBuilder.DefineType(
             "Program",
             TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.Class);
+
+        foreach (StructDeclaration structure in program.Structs)
+        {
+            DefineStructShell(structure);
+        }
+
+        foreach (StructDeclaration structure in program.Structs)
+        {
+            DefineStructFields(structure);
+        }
+
+        foreach (StructDeclaration structure in program.Structs)
+        {
+            structBuilders[structure.Name].CreateType();
+        }
 
         foreach (FunctionDeclaration function in program.Functions)
         {
@@ -46,7 +64,7 @@ public class MsilCodegenPass : IAstVisitor
         MethodBuilder mainMethod = programTypeBuilder.DefineMethod(
             "Main",
             MethodAttributes.Public | MethodAttributes.Static,
-            typeMapper.MapType(program.MainType),
+            MapClrType(program.MainType),
             Type.EmptyTypes);
 
         il = mainMethod.GetILGenerator();
@@ -80,21 +98,26 @@ public class MsilCodegenPass : IAstVisitor
     {
         foreach ((string name, Expression? initialValue) in declaration.NamesToValues)
         {
-            Type clrType = typeMapper.MapType(declaration.VariableType);
+            Type clrType = MapClrType(declaration.Type);
             LocalBuilder local = il.DeclareLocal(clrType);
-            EmitInitialValue(declaration.VariableType, initialValue, declaration.IsConst, name);
+            EmitInitialValue(declaration.Type, initialValue, declaration.IsConst, name);
             il.Emit(OpCodes.Stloc, local);
-            scopes.Peek().Add(name, new LocalValue(local, declaration.VariableType, declaration.IsConst));
+            scopes.Peek().Add(name, new LocalValue(local, declaration.Type, declaration.IsConst));
+        }
+    }
+
+    public void Visit(StructDeclaration declaration)
+    {
+        if (!structDeclarations.ContainsKey(declaration.Name))
+        {
+            DefineStructShell(declaration);
+            DefineStructFields(declaration);
         }
     }
 
     public void Visit(AssignmentStatement statement)
     {
-        LocalValue variable = FindVariable(statement.Name);
-        EnsureMutable(statement.Name, variable);
-        VariableType valueType = EmitExpression(statement.Value);
-        EmitConversion(valueType, variable.Type);
-        il.Emit(OpCodes.Stloc, variable.Local);
+        EmitAssignment(statement.Target, statement.Value, false);
     }
 
     public void Visit(UnaryOperationExpression expression)
@@ -284,6 +307,31 @@ public class MsilCodegenPass : IAstVisitor
         EmitExpression(declaration);
     }
 
+    public void Visit(ArrayLiteralExpression expression)
+    {
+        EmitExpression(expression);
+    }
+
+    public void Visit(StructLiteralExpression expression)
+    {
+        EmitExpression(expression);
+    }
+
+    public void Visit(ArrayAccessExpression expression)
+    {
+        EmitExpression(expression);
+    }
+
+    public void Visit(FieldAccessExpression expression)
+    {
+        EmitExpression(expression);
+    }
+
+    public void Visit(AssignmentExpression expression)
+    {
+        EmitExpression(expression);
+    }
+
     private void EmitScopeBody(ScopeStatement statement)
     {
         foreach (AstNode node in statement.Statements)
@@ -320,7 +368,7 @@ public class MsilCodegenPass : IAstVisitor
         node.Accept(this);
     }
 
-    private VariableType EmitExpression(Expression expression)
+    private TypeReference EmitExpression(Expression expression)
     {
         return expression switch
         {
@@ -330,6 +378,11 @@ public class MsilCodegenPass : IAstVisitor
             BinaryOperationExpression binary => EmitBinaryOperation(binary),
             BuiltinFunctionCallExpression builtin => EmitBuiltinFunctionCall(builtin),
             FunctionCallExpression function => EmitFunctionCall(function),
+            AssignmentExpression assignment => EmitAssignment(assignment.Target, assignment.Value, true),
+            ArrayLiteralExpression arrayLiteral => EmitArrayLiteral(arrayLiteral),
+            StructLiteralExpression structLiteral => EmitStructLiteral(structLiteral),
+            ArrayAccessExpression arrayAccess => EmitArrayAccess(arrayAccess),
+            FieldAccessExpression fieldAccess => EmitFieldAccess(fieldAccess),
             _ => throw new NotSupportedException($"Expression {expression.GetType().Name} is not supported."),
         };
     }
@@ -355,7 +408,105 @@ public class MsilCodegenPass : IAstVisitor
         }
     }
 
-    private VariableType EmitVariable(VariableExpression expression)
+    private TypeReference EmitArrayLiteral(ArrayLiteralExpression expression, TypeReference? expectedElementType = null)
+    {
+        if (expression.Elements.Count == 0 && expectedElementType is null)
+        {
+            throw new NotSupportedException("Empty array literals require target type inference and are not supported by MSIL backend.");
+        }
+
+        TypeReference elementType = expectedElementType ?? InferExpressionType(expression.Elements[0]);
+        il.Emit(OpCodes.Ldc_I4, expression.Elements.Count);
+        il.Emit(OpCodes.Newarr, MapClrType(elementType));
+        for (int i = 0; i < expression.Elements.Count; i++)
+        {
+            il.Emit(OpCodes.Dup);
+            il.Emit(OpCodes.Ldc_I4, i);
+            VariableType valueType = EmitExpression(expression.Elements[i]);
+            EmitConversion(valueType, elementType);
+            il.Emit(OpCodes.Stelem, MapClrType(elementType));
+        }
+
+        return TypeReference.ArrayOf(elementType);
+    }
+
+    private TypeReference EmitStructLiteral(StructLiteralExpression expression)
+    {
+        if (!structBuilders.TryGetValue(expression.TypeName, out TypeBuilder? builder) ||
+            !structDeclarations.TryGetValue(expression.TypeName, out StructDeclaration? declaration))
+        {
+            throw new NotSupportedException($"Struct {expression.TypeName} is not defined.");
+        }
+
+        if (declaration.Fields.Count != expression.Values.Count)
+        {
+            throw new NotSupportedException(
+                $"Struct {expression.TypeName} expected {declaration.Fields.Count} values, got {expression.Values.Count}.");
+        }
+
+        ConstructorInfo constructor = builder.GetConstructor(Type.EmptyTypes)
+                                      ?? throw new InvalidOperationException($"Struct {expression.TypeName} has no default constructor.");
+        il.Emit(OpCodes.Newobj, constructor);
+        for (int i = 0; i < declaration.Fields.Count; i++)
+        {
+            StructFieldDeclaration field = declaration.Fields[i];
+            il.Emit(OpCodes.Dup);
+
+            VariableType valueType = EmitExpression(expression.Values[i]);
+            EmitConversion(valueType, field.Type);
+
+            il.Emit(OpCodes.Stfld, structFields[expression.TypeName][field.Name]);
+        }
+
+        return TypeReference.Struct(expression.TypeName);
+    }
+
+    private TypeReference EmitArrayAccess(ArrayAccessExpression expression)
+    {
+        TypeReference arrayType = InferExpressionType(expression.Target);
+        if (!arrayType.IsArray)
+        {
+            throw new NotSupportedException($"Indexing requires array, got {arrayType}.");
+        }
+
+        TypeReference arrayClrType = arrayType;
+        LocalBuilder arrayLocal = il.DeclareLocal(MapClrType(arrayClrType));
+        LocalBuilder indexLocal = il.DeclareLocal(typeof(int));
+
+        EmitExpression(expression.Target);
+        il.Emit(OpCodes.Stloc, arrayLocal);
+        TypeReference indexType = EmitExpression(expression.Index);
+
+        if (indexType.Kind is not VariableType.Int)
+        {
+            throw new NotSupportedException($"Array access requires int index type, got {indexType.Kind}.");
+        }
+
+        il.Emit(OpCodes.Stloc, indexLocal);
+        EmitArrayBoundsCheck(arrayLocal, indexLocal);
+
+        il.Emit(OpCodes.Ldloc, arrayLocal);
+        il.Emit(OpCodes.Ldloc, indexLocal);
+        il.Emit(OpCodes.Ldelem, MapClrType(arrayType.ElementType));
+        return arrayType.ElementType;
+    }
+
+    private TypeReference EmitFieldAccess(FieldAccessExpression expression)
+    {
+        TypeReference targetType = InferExpressionType(expression.Target);
+        if (targetType.Kind != VariableType.Struct || targetType.StructName is null)
+        {
+            throw new NotSupportedException($"Field access requires struct, got {targetType}.");
+        }
+
+        StructFieldDeclaration field = structDeclarations[targetType.StructName].Fields
+            .First(f => f.Name == expression.FieldName);
+        EmitExpression(expression.Target);
+        il.Emit(OpCodes.Ldfld, structFields[targetType.StructName][expression.FieldName]);
+        return field.Type;
+    }
+
+    private TypeReference EmitVariable(VariableExpression expression)
     {
         LocalValue variable = FindVariable(expression.Name);
         il.Emit(OpCodes.Ldloc, variable.Local);
@@ -650,11 +801,14 @@ public class MsilCodegenPass : IAstVisitor
         return VariableType.String;
     }
 
-    private void EmitInitialValue(VariableType type, Expression? initialValue, bool isConst, string name)
+    private void EmitInitialValue(TypeReference type, Expression? initialValue, bool isConst, string name)
     {
         if (initialValue != null)
         {
-            VariableType valueType = EmitExpression(initialValue);
+            Expression unwrappedInitialValue = UnwrapTransparentUnary(initialValue);
+            TypeReference valueType = unwrappedInitialValue is ArrayLiteralExpression arrayLiteral && type.IsArray
+                ? EmitArrayLiteral(arrayLiteral, type.ElementType)
+                : EmitExpression(initialValue);
             EmitConversion(valueType, type);
             return;
         }
@@ -664,7 +818,14 @@ public class MsilCodegenPass : IAstVisitor
             throw new NotSupportedException($"Constant {name} requires an initial value.");
         }
 
-        switch (type)
+        if (type.IsArray)
+        {
+            il.Emit(OpCodes.Ldc_I4_0);
+            il.Emit(OpCodes.Newarr, MapClrType(type.ElementType));
+            return;
+        }
+
+        switch (type.Kind)
         {
             case VariableType.Int:
                 il.Emit(OpCodes.Ldc_I4_0);
@@ -677,6 +838,11 @@ public class MsilCodegenPass : IAstVisitor
                 break;
             case VariableType.String:
                 il.Emit(OpCodes.Ldstr, string.Empty);
+                break;
+            case VariableType.Struct:
+                ConstructorInfo constructor = MapClrType(type).GetConstructor(Type.EmptyTypes)
+                                              ?? throw new InvalidOperationException($"Struct {type} has no default constructor.");
+                il.Emit(OpCodes.Newobj, constructor);
                 break;
             default:
                 throw new NotSupportedException($"Default value for {type} is not supported.");
@@ -833,7 +999,33 @@ public class MsilCodegenPass : IAstVisitor
         throw new NotSupportedException($"Cannot emit one for {type}.");
     }
 
-    private VariableType InferExpressionType(Expression expression)
+    private void EmitArrayBoundsCheck(LocalBuilder arrayLocal, LocalBuilder indexLocal)
+    {
+        Label throwLabel = il.DefineLabel();
+        Label okLabel = il.DefineLabel();
+
+        il.Emit(OpCodes.Ldloc, indexLocal);
+        il.Emit(OpCodes.Ldc_I4_0);
+        il.Emit(OpCodes.Blt, throwLabel);
+
+        il.Emit(OpCodes.Ldloc, indexLocal);
+        il.Emit(OpCodes.Ldloc, arrayLocal);
+        il.Emit(OpCodes.Ldlen);
+        il.Emit(OpCodes.Conv_I4);
+        il.Emit(OpCodes.Bge, okLabel);
+
+        il.MarkLabel(throwLabel);
+        il.Emit(OpCodes.Ldstr, "Array index is out of bounds.");
+        ConstructorInfo exceptionConstructor = typeof(IndexOutOfRangeException).GetConstructor([typeof(string)])
+                                               ?? throw new IndexOutOfRangeException(
+                                                   "Cannot find IndexOutOfRangeException(string).");
+        il.Emit(OpCodes.Newobj, exceptionConstructor);
+        il.Emit(OpCodes.Throw);
+
+        il.MarkLabel(okLabel);
+    }
+
+    private TypeReference InferExpressionType(Expression expression)
     {
         return expression switch
         {
@@ -844,11 +1036,16 @@ public class MsilCodegenPass : IAstVisitor
             BuiltinFunctionCallExpression builtin => InferBuiltinFunctionType(builtin),
             BuiltinConstantExpression => VariableType.Float,
             FunctionCallExpression function => InferFunctionType(function),
+            AssignmentExpression assignment => InferExpressionType(assignment.Target),
+            ArrayLiteralExpression arrayLiteral => InferArrayLiteralType(arrayLiteral),
+            StructLiteralExpression structLiteral => TypeReference.Struct(structLiteral.TypeName),
+            ArrayAccessExpression arrayAccess => InferExpressionType(arrayAccess.Target).ElementType,
+            FieldAccessExpression fieldAccess => InferFieldAccessType(fieldAccess),
             _ => throw new NotSupportedException($"Expression {expression.GetType().Name} is not supported."),
         };
     }
 
-    private VariableType InferLiteralType(LiteralExpression literal)
+    private TypeReference InferLiteralType(LiteralExpression literal)
     {
         return literal.Value switch
         {
@@ -860,14 +1057,14 @@ public class MsilCodegenPass : IAstVisitor
         };
     }
 
-    private VariableType InferUnaryType(UnaryOperationExpression unary)
+    private TypeReference InferUnaryType(UnaryOperationExpression unary)
     {
         return unary.Operation == UnaryOperation.Not
             ? VariableType.Boolean
             : InferExpressionType(unary.Expression);
     }
 
-    private VariableType InferBinaryType(BinaryOperationExpression binary)
+    private TypeReference InferBinaryType(BinaryOperationExpression binary)
     {
         if (binary.Operation == null || binary.Right == null)
         {
@@ -892,7 +1089,7 @@ public class MsilCodegenPass : IAstVisitor
             : VariableType.Int;
     }
 
-    private VariableType InferBuiltinFunctionType(BuiltinFunctionCallExpression expression)
+    private TypeReference InferBuiltinFunctionType(BuiltinFunctionCallExpression expression)
     {
         return expression.FunctionName switch
         {
@@ -902,14 +1099,35 @@ public class MsilCodegenPass : IAstVisitor
         };
     }
 
-    private VariableType InferFunctionType(FunctionCallExpression expression)
+    private TypeReference InferFunctionType(FunctionCallExpression expression)
     {
         if (functionDeclarations.TryGetValue(expression.Name, out FunctionDeclaration? declaration))
         {
-            return declaration.Type;
+            return declaration.ReturnType;
         }
 
         throw new NotSupportedException($"User function {expression.Name} is not defined.");
+    }
+
+    private TypeReference InferArrayLiteralType(ArrayLiteralExpression expression)
+    {
+        if (expression.Elements.Count == 0)
+        {
+            throw new NotSupportedException("Empty array literal type cannot be inferred.");
+        }
+
+        return TypeReference.ArrayOf(InferExpressionType(expression.Elements[0]));
+    }
+
+    private TypeReference InferFieldAccessType(FieldAccessExpression expression)
+    {
+        TypeReference targetType = InferExpressionType(expression.Target);
+        if (targetType.Kind != VariableType.Struct || targetType.StructName is null)
+        {
+            throw new NotSupportedException($"Field access requires struct, got {targetType}.");
+        }
+
+        return structDeclarations[targetType.StructName].Fields.First(f => f.Name == expression.FieldName).Type;
     }
 
     private void BeginScope()
@@ -1023,6 +1241,13 @@ public class MsilCodegenPass : IAstVisitor
         il.Emit(OpCodes.Ret);
     }
 
+    private void EmitDefaultStructReturn(string structName)
+    {
+        EmitDefaultStructLiteral(structName);
+
+        il.Emit(OpCodes.Ret);
+    }
+
     private void EmitDefaultValue(VariableType type)
     {
         switch (type)
@@ -1044,13 +1269,167 @@ public class MsilCodegenPass : IAstVisitor
         }
     }
 
+    private void EmitDefaultStructLiteral(string structName)
+    {
+        if (!structBuilders.TryGetValue(structName, out TypeBuilder? builder) ||
+            !structDeclarations.TryGetValue(structName, out StructDeclaration? declaration))
+        {
+            throw new NotSupportedException($"Struct {structName} is not defined.");
+        }
+
+        ConstructorInfo constructor = builder.GetConstructor(Type.EmptyTypes)
+                                      ?? throw new InvalidOperationException($"Struct {structName} has no default constructor.");
+        il.Emit(OpCodes.Newobj, constructor);
+    }
+
+    private Type MapClrType(TypeReference type)
+    {
+        if (type.IsArray)
+        {
+            return MapClrType(type.ElementType).MakeArrayType();
+        }
+
+        if (type.Kind == VariableType.Struct)
+        {
+            if (type.StructName is null || !structBuilders.TryGetValue(type.StructName, out TypeBuilder? builder))
+            {
+                throw new NotSupportedException($"Struct type {type.StructName} is not defined.");
+            }
+
+            return builder;
+        }
+
+        return typeMapper.MapType(type.Kind);
+    }
+
+    private void DefineStructShell(StructDeclaration structure)
+    {
+        if (structBuilders.ContainsKey(structure.Name))
+        {
+            return;
+        }
+
+        TypeBuilder builder = moduleBuilder.DefineType(
+            structure.Name,
+            TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Sealed);
+        builder.DefineDefaultConstructor(MethodAttributes.Public);
+        structBuilders.Add(structure.Name, builder);
+        structDeclarations.Add(structure.Name, structure);
+        structFields.Add(structure.Name, []);
+    }
+
+    private void DefineStructFields(StructDeclaration structure)
+    {
+        TypeBuilder builder = structBuilders[structure.Name];
+        Dictionary<string, FieldBuilder> fields = structFields[structure.Name];
+        foreach (StructFieldDeclaration field in structure.Fields)
+        {
+            if (fields.ContainsKey(field.Name))
+            {
+                continue;
+            }
+
+            fields.Add(field.Name, builder.DefineField(field.Name, MapClrType(field.Type), FieldAttributes.Public));
+        }
+    }
+
+    private TypeReference EmitAssignment(Expression target, Expression value, bool pushAssignedValue)
+    {
+        target = UnwrapTransparentUnary(target);
+        switch (target)
+        {
+            case VariableExpression variableExpression:
+                LocalValue variable = FindVariable(variableExpression.Name);
+                EnsureMutable(variableExpression.Name, variable);
+                TypeReference valueType = EmitExpression(value);
+                EmitConversion(valueType, variable.Type);
+                if (pushAssignedValue)
+                {
+                    il.Emit(OpCodes.Dup);
+                }
+
+                il.Emit(OpCodes.Stloc, variable.Local);
+                return pushAssignedValue ? variable.Type : VariableType.Void;
+            case ArrayAccessExpression arrayAccess:
+                TypeReference arrayType = InferExpressionType(arrayAccess.Target);
+                if (!arrayType.IsArray)
+                {
+                    throw new NotSupportedException($"Index assignment requires array, got {arrayType}.");
+                }
+
+                LocalBuilder arrayLocal = il.DeclareLocal(MapClrType(arrayType));
+                LocalBuilder indexLocal = il.DeclareLocal(typeof(int));
+
+                EmitExpression(arrayAccess.Target);
+                il.Emit(OpCodes.Stloc, arrayLocal);
+                TypeReference indexType = EmitExpression(arrayAccess.Index);
+                EmitConversion(indexType, VariableType.Int);
+                il.Emit(OpCodes.Stloc, indexLocal);
+                EmitArrayBoundsCheck(arrayLocal, indexLocal);
+
+                il.Emit(OpCodes.Ldloc, arrayLocal);
+                il.Emit(OpCodes.Ldloc, indexLocal);
+                TypeReference arrayValueType = EmitExpression(value);
+                EmitConversion(arrayValueType, arrayType.ElementType);
+                LocalBuilder? arrayTemp = null;
+                if (pushAssignedValue)
+                {
+                    arrayTemp = il.DeclareLocal(MapClrType(arrayType.ElementType));
+                    il.Emit(OpCodes.Dup);
+                    il.Emit(OpCodes.Stloc, arrayTemp);
+                }
+
+                il.Emit(OpCodes.Stelem, MapClrType(arrayType.ElementType));
+                if (arrayTemp is not null)
+                {
+                    il.Emit(OpCodes.Ldloc, arrayTemp);
+                }
+
+                return pushAssignedValue ? arrayType.ElementType : VariableType.Void;
+            case FieldAccessExpression fieldAccess:
+                TypeReference targetType = InferExpressionType(fieldAccess.Target);
+                if (targetType.Kind != VariableType.Struct || targetType.StructName is null)
+                {
+                    throw new NotSupportedException($"Field assignment requires struct, got {targetType}.");
+                }
+
+                StructFieldDeclaration field = structDeclarations[targetType.StructName].Fields
+                    .First(f => f.Name == fieldAccess.FieldName);
+                EmitExpression(fieldAccess.Target);
+                TypeReference fieldValueType = EmitExpression(value);
+                EmitConversion(fieldValueType, field.Type);
+                LocalBuilder? fieldTemp = null;
+                if (pushAssignedValue)
+                {
+                    fieldTemp = il.DeclareLocal(MapClrType(field.Type));
+                    il.Emit(OpCodes.Dup);
+                    il.Emit(OpCodes.Stloc, fieldTemp);
+                }
+
+                il.Emit(OpCodes.Stfld, structFields[targetType.StructName][fieldAccess.FieldName]);
+                if (fieldTemp is not null)
+                {
+                    il.Emit(OpCodes.Ldloc, fieldTemp);
+                }
+
+                return pushAssignedValue ? field.Type : VariableType.Void;
+            default:
+                throw new NotSupportedException($"Assignment to {target.GetType().Name} is not supported by MSIL backend yet.");
+        }
+    }
+
+    private static Expression UnwrapTransparentUnary(Expression expression)
+    {
+        return expression is UnaryOperationExpression { Operation: null } unary ? unary.Expression : expression;
+    }
+
     private void DefineFunction(FunctionDeclaration function)
     {
-        Type[] parameterTypes = function.Parameters.Values.Select(typeMapper.MapType).ToArray();
+        Type[] parameterTypes = function.Parameters.Values.Select(MapClrType).ToArray();
         MethodBuilder method = programTypeBuilder.DefineMethod(
             function.Name,
             MethodAttributes.Private | MethodAttributes.Static,
-            typeMapper.MapType(function.Type),
+            MapClrType(function.ReturnType),
             parameterTypes);
 
         functionBuilders.Add(function.Name, method);
@@ -1067,16 +1446,16 @@ public class MsilCodegenPass : IAstVisitor
 
         // Нужно для переключения контекста с Main функции
         ILGenerator previousIl = il;
-        VariableType previousReturnType = currentReturnType;
+        TypeReference previousReturnType = currentReturnType;
 
         il = method.GetILGenerator();
-        currentReturnType = function.Type;
+        currentReturnType = function.ReturnType;
         BeginScope();
 
         int argumentIndex = 0;
-        foreach ((string name, VariableType type) in function.Parameters)
+        foreach ((string name, TypeReference type) in function.Parameters)
         {
-            LocalBuilder local = il.DeclareLocal(typeMapper.MapType(type));
+            LocalBuilder local = il.DeclareLocal(MapClrType(type));
             il.Emit(OpCodes.Ldarg, argumentIndex);
             il.Emit(OpCodes.Stloc, local);
             scopes.Peek().Add(name, new LocalValue(local, type, false));
@@ -1093,17 +1472,25 @@ public class MsilCodegenPass : IAstVisitor
         }
 
         EndScope();
-        EmitDefaultReturn(function.Type);
+
+        if (function.ReturnType.StructName is not null)
+        {
+            EmitDefaultStructReturn(function.ReturnType.StructName);
+        }
+        else
+        {
+            EmitDefaultReturn(function.ReturnType);
+        }
 
         il = previousIl;
         currentReturnType = previousReturnType;
     }
 
-    private sealed class LocalValue(LocalBuilder local, VariableType type, bool isConst)
+    private sealed class LocalValue(LocalBuilder local, TypeReference type, bool isConst)
     {
         public LocalBuilder Local { get; } = local;
 
-        public VariableType Type { get; } = type;
+        public TypeReference Type { get; } = type;
 
         public bool IsConst { get; } = isConst;
     }

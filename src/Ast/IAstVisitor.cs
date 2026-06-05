@@ -14,6 +14,8 @@ public interface IAstVisitor
 
     public void Visit(VariableDeclaration declaration);
 
+    public void Visit(StructDeclaration declaration);
+
     public void Visit(AssignmentStatement statement);
 
     public void Visit(UnaryOperationExpression expression);
@@ -47,4 +49,14 @@ public interface IAstVisitor
     public void Visit(EmptyStatement declaration);
 
     public void Visit(VariableExpression declaration);
+
+    public void Visit(ArrayLiteralExpression expression);
+
+    public void Visit(StructLiteralExpression expression);
+
+    public void Visit(ArrayAccessExpression expression);
+
+    public void Visit(FieldAccessExpression expression);
+
+    public void Visit(AssignmentExpression expression);
 }

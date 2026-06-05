@@ -160,21 +160,7 @@ public class AstEvaluator : IAstVisitor
             RuntimeValue value;
             if (v is not null)
             {
-                v.Accept(this);
-                value = values.Pop();
-
-                RuntimeValueType valueType = value.GetValueType();
-                RuntimeValueType variableType = ToRuntimeValueType(declaration.VariableType);
-
-                if (valueType == RuntimeValueType.Int && variableType == RuntimeValueType.Float)
-                {
-                    value = new RuntimeValue(value.ToFloat());
-                }
-                else if (valueType != variableType)
-                {
-                    throw new Exception(
-                        $"Variable declaration type mismatch: Expected {variableType}, got {valueType}");
-                }
+                value = EvaluateExpression(v, declaration.Type);
             }
             else
             {
@@ -184,35 +170,21 @@ public class AstEvaluator : IAstVisitor
                         $"Constant variable declaration {name} requires a value");
                 }
 
-                value = declaration.VariableType switch
-                {
-                    VariableType.Int => new RuntimeValue(RuntimeValueType.Int),
-                    VariableType.Float => new RuntimeValue(RuntimeValueType.Float),
-                    VariableType.Boolean => new RuntimeValue(RuntimeValueType.Boolean),
-                    VariableType.String => new RuntimeValue(RuntimeValueType.String),
-                    _ => throw new InvalidOperationException()
-                };
+                value = CreateDefaultValue(declaration.Type);
             }
 
             context.DefineVariable(name, declaration.IsConst ? value.WithConstant() : value);
         }
     }
 
+    public void Visit(StructDeclaration declaration)
+    {
+        context.DefineStruct(declaration);
+    }
+
     public void Visit(AssignmentStatement statement)
     {
-        statement.Value.Accept(this);
-        RuntimeValue value = values.Pop();
-
-        RuntimeValueType expressionValueType = value.GetValueType();
-        RuntimeValueType actualType = context.GetValueType(statement.Name);
-
-        if (expressionValueType != actualType)
-        {
-            throw new Exception(
-                $"Variable assign type mismatch: Expected {actualType}, got {expressionValueType}");
-        }
-
-        context.AssignVariable(statement.Name, value);
+        AssignTarget(statement.Target, EvaluateExpression(statement.Value));
     }
 
     public void Visit(UnaryOperationExpression expression)
@@ -220,19 +192,8 @@ public class AstEvaluator : IAstVisitor
         // Инкремент / декремент - значит у нас должно быть выражение - переменная
         if (expression.Operation is UnaryOperation.Increment or UnaryOperation.Decrement)
         {
-            if (expression.Expression.GetType() != typeof(VariableExpression) &&
-                (expression.Expression as UnaryOperationExpression)?.Expression.GetType() !=
-                typeof(VariableExpression))
-            {
-                throw new Exception("Cannot use this operation not on a variable");
-            }
-
-            VariableExpression variable = expression.Expression is VariableExpression
-                ? (expression.Expression as VariableExpression)!
-                : ((expression.Expression as UnaryOperationExpression)!.Expression as VariableExpression)!;
-            string name = variable.Name;
-
-            variable.Accept(this);
+            Expression target = UnwrapTransparentUnary(expression.Expression);
+            target.Accept(this);
             RuntimeValue value = expression is { IsPostfix: true, DoPushToStack: true } ? values.Peek() : values.Pop();
 
             if (!CanDoOperation(value.GetValueType(), expression.Operation))
@@ -250,7 +211,7 @@ public class AstEvaluator : IAstVisitor
                 value -= new RuntimeValue(1);
             }
 
-            context.AssignVariable(name, value);
+            AssignTarget(target, value);
             if (expression is { IsPostfix: false, DoPushToStack: true })
             {
                 values.Push(value);
@@ -358,29 +319,19 @@ public class AstEvaluator : IAstVisitor
         try
         {
             // Определяем параметры, извлекая их из стека в обратном порядке.
-            foreach ((string name, VariableType _) in Enumerable.Reverse(function.Parameters))
+            foreach ((string name, TypeReference type) in Enumerable.Reverse(function.Parameters))
             {
-                context.DefineVariable(name, values.Pop());
+                context.DefineVariable(name, Coerce(values.Pop(), type));
             }
 
             // Исполняем функцию
             function.Body.Accept(this);
 
-            if (function.Type != VariableType.Void)
+            if (function.ReturnType.Kind != VariableType.Void)
             {
                 RuntimeValue value = values.Peek();
-                RuntimeValueType valueType = value.GetValueType();
-                RuntimeValueType returnType = ToRuntimeValueType(function.Type);
-
-                if (valueType == RuntimeValueType.Int && returnType == RuntimeValueType.Float)
-                {
-                    values.Push(new RuntimeValue(values.Pop().ToFloat()));
-                }
-                else if (valueType != returnType)
-                {
-                    throw new Exception(
-                        $"Incorrect function return type: Expected {ToRuntimeValueType(function.Type)},  got {value.GetValueType()}");
-                }
+                values.Pop();
+                values.Push(Coerce(value, function.ReturnType));
             }
         }
         finally
@@ -602,6 +553,144 @@ public class AstEvaluator : IAstVisitor
     public void Visit(VariableExpression declaration)
     {
         values.Push(context.GetValue(declaration.Name));
+    }
+
+    public void Visit(ArrayLiteralExpression expression)
+    {
+        TypeReference? elementType = null;
+        List<RuntimeValue> elements = [];
+        foreach (Expression element in expression.Elements)
+        {
+            RuntimeValue value = EvaluateExpression(element);
+            elementType ??= value.GetTypeReference();
+            elements.Add(Coerce(value, elementType));
+        }
+
+        values.Push(new RuntimeValue(new RuntimeArrayValue(elementType ?? TypeReference.Int, elements)));
+    }
+
+    public void Visit(StructLiteralExpression expression)
+    {
+        StructDeclaration declaration = context.GetStruct(expression.TypeName);
+        if (declaration.Fields.Count != expression.Values.Count)
+        {
+            throw new Exception(
+                $"Struct {expression.TypeName} expects {declaration.Fields.Count} values, got {expression.Values.Count}.");
+        }
+
+        Dictionary<string, TypeReference> fieldTypes = [];
+        Dictionary<string, RuntimeValue> fieldValues = [];
+        for (int i = 0; i < declaration.Fields.Count; i++)
+        {
+            StructFieldDeclaration field = declaration.Fields[i];
+            fieldTypes.Add(field.Name, field.Type);
+            fieldValues.Add(field.Name, EvaluateExpression(expression.Values[i], field.Type));
+        }
+
+        values.Push(new RuntimeValue(new RuntimeStructValue(expression.TypeName, fieldTypes, fieldValues)));
+    }
+
+    public void Visit(ArrayAccessExpression expression)
+    {
+        RuntimeArrayValue array = EvaluateExpression(expression.Target).ToArray();
+        int index = EvaluateExpression(expression.Index, TypeReference.Int).ToInt();
+        values.Push(array.Get(index));
+    }
+
+    public void Visit(FieldAccessExpression expression)
+    {
+        RuntimeStructValue structure = EvaluateExpression(expression.Target).ToStruct();
+        values.Push(structure.GetField(expression.FieldName));
+    }
+
+    public void Visit(AssignmentExpression expression)
+    {
+        RuntimeValue value = AssignTarget(expression.Target, EvaluateExpression(expression.Value));
+        values.Push(value);
+    }
+
+    private RuntimeValue EvaluateExpression(Expression expression, TypeReference? expectedType = null)
+    {
+        expression.Accept(this);
+        RuntimeValue value = values.Pop();
+        return expectedType is null ? value : Coerce(value, expectedType);
+    }
+
+    private RuntimeValue AssignTarget(Expression target, RuntimeValue value)
+    {
+        Expression unwrapped = UnwrapTransparentUnary(target);
+        switch (unwrapped)
+        {
+            case VariableExpression variable:
+                TypeReference variableType = context.GetValue(variable.Name).GetTypeReference();
+                RuntimeValue coercedValue = Coerce(value, variableType);
+                context.AssignVariable(variable.Name, coercedValue);
+                return coercedValue;
+            case ArrayAccessExpression arrayAccess:
+                RuntimeArrayValue array = EvaluateExpression(arrayAccess.Target).ToArray();
+                int index = EvaluateExpression(arrayAccess.Index, TypeReference.Int).ToInt();
+                RuntimeValue arrayValue = Coerce(value, array.ElementType);
+                array.Set(index, arrayValue);
+                return arrayValue;
+            case FieldAccessExpression fieldAccess:
+                RuntimeStructValue structure = EvaluateExpression(fieldAccess.Target).ToStruct();
+                if (!structure.FieldTypes.TryGetValue(fieldAccess.FieldName, out TypeReference? fieldType))
+                {
+                    throw new Exception($"Struct {structure.TypeName} has no field {fieldAccess.FieldName}.");
+                }
+
+                RuntimeValue fieldValue = Coerce(value, fieldType);
+                structure.SetField(fieldAccess.FieldName, fieldValue);
+                return fieldValue;
+            default:
+                throw new Exception($"Expression {target.GetType().Name} cannot be assigned.");
+        }
+    }
+
+    private RuntimeValue Coerce(RuntimeValue value, TypeReference expectedType)
+    {
+        if (expectedType.IsAssignableFrom(value.GetTypeReference()))
+        {
+            if (!expectedType.IsArray &&
+                expectedType.Kind == VariableType.Float &&
+                value.GetTypeReference().Kind == VariableType.Int)
+            {
+                return new RuntimeValue(value.ToFloat());
+            }
+
+            return value;
+        }
+
+        throw new Exception($"Type mismatch: Expected {expectedType}, got {value.GetTypeReference()}");
+    }
+
+    private RuntimeValue CreateDefaultValue(TypeReference type)
+    {
+        if (type.IsArray)
+        {
+            return new RuntimeValue(new RuntimeArrayValue(type.ElementType, []));
+        }
+
+        if (type.Kind == VariableType.Struct)
+        {
+            StructDeclaration declaration = context.GetStruct(type.StructName ?? string.Empty);
+            Dictionary<string, TypeReference> fieldTypes = [];
+            Dictionary<string, RuntimeValue> fieldValues = [];
+            foreach (StructFieldDeclaration field in declaration.Fields)
+            {
+                fieldTypes.Add(field.Name, field.Type);
+                fieldValues.Add(field.Name, CreateDefaultValue(field.Type));
+            }
+
+            return new RuntimeValue(new RuntimeStructValue(declaration.Name, fieldTypes, fieldValues));
+        }
+
+        return new RuntimeValue(type);
+    }
+
+    private static Expression UnwrapTransparentUnary(Expression expression)
+    {
+        return expression is UnaryOperationExpression { Operation: null } unary ? unary.Expression : expression;
     }
 
     private bool CanDoOperation(RuntimeValueType value, UnaryOperation? operation)
