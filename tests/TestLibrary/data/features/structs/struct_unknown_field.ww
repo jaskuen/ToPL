@@ -1,0 +1,10 @@
+struct Point {
+    int x;
+    int y;
+};
+
+void main()
+{
+    Point p = Point { 1, 2 };
+    p.z = 5;
+}

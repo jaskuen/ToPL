@@ -1,0 +1,11 @@
+struct Person {
+    string name;
+    bool active;
+};
+
+void main()
+{
+    Person p = Person { "Alice", true };
+    write(p.name);
+    write(p.active);
+}

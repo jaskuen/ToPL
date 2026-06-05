@@ -1,0 +1,11 @@
+struct Point {
+    int x;
+    int y;
+};
+
+void main()
+{
+    Point[] arr = { Point { 10, 20 }, Point { 30, 40 } };
+    int i = 1;
+    write(arr[i].x);
+}

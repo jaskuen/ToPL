@@ -1,0 +1,15 @@
+struct Point {
+    int x;
+    int y;
+};
+
+int Sum(Point p)
+{
+    return p.x + p.y;
+}
+
+void main()
+{
+    Point p = Point { 10, 20 };
+    write(Sum(p));
+}

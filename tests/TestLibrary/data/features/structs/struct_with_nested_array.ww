@@ -1,0 +1,15 @@
+struct Point {
+    int x;
+    int y;
+};
+
+struct Group {
+    Point[] points;
+};
+
+void main()
+{
+    Group g = Group { { Point { 5, 6 }, Point { 7, 8 } } };
+    write(g.points[0].x);
+    write(g.points[1].y);
+}

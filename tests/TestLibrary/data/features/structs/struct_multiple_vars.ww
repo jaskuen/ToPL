@@ -1,0 +1,11 @@
+struct Point {
+    int x;
+    int y;
+};
+
+void main()
+{
+    Point a = Point { 1, 2 }, b = Point { 3, 4 };
+    write(a.x);
+    write(b.y);
+}

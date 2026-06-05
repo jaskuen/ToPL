@@ -1,0 +1,8 @@
+struct Empty {
+};
+
+void main()
+{
+    Empty e;
+    write("ok");
+}

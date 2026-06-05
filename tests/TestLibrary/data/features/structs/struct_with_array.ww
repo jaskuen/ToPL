@@ -1,0 +1,10 @@
+struct Foo {
+    int[] data;
+};
+
+void main()
+{
+    Foo f = Foo { { 1, 2, 3 } };
+    write(f.data[0]);
+    write(f.data[2]);
+}
