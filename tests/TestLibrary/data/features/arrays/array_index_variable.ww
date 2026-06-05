@@ -1,0 +1,8 @@
+void main()
+{
+    int[] a = { 10, 20 };
+    int i = 0;
+    write(a[i]);
+    a[i] = 99;
+    write(a[i]);
+}

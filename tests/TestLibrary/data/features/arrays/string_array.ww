@@ -1,0 +1,6 @@
+void main()
+{
+    string[] a = { "x", "y" };
+    write(a[0]);
+    write(a[1]);
+}

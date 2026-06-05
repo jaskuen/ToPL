@@ -1,0 +1,6 @@
+void main()
+{
+    bool[] a = { true, false };
+    write(a[0]);
+    write(a[1]);
+}

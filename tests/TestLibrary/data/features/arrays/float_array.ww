@@ -1,0 +1,6 @@
+void main()
+{
+    float[] a = { 1.5, 2.5 };
+    write(a[0]);
+    write(a[1]);
+}

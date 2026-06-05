@@ -20,6 +20,7 @@ public sealed class CompilerStepDefinitions : IDisposable
     private TempFile? compiledProgram;
     private string lastProgramOutput = string.Empty;
     private int lastProgramExitCode = -1;
+    private CompilerResult? lastCompilerResult;
 
     [Given(@"^я скомпилировал программу ""(.*)""$")]
     public async Task ПустьЯСкомпилировалПрограмму(string name)
@@ -34,6 +35,23 @@ public sealed class CompilerStepDefinitions : IDisposable
 
         string dllPath = Path.ChangeExtension(compiledProgram.Path, "dll");
         await DotnetIlVerifyRunner.Run(dllPath);
+    }
+
+    [Given(@"^я попытался скомпилировать программу ""(.*)""$")]
+    public void ПустьЯПопыталсяСкомпилироватьПрограмму(string name)
+    {
+        string path = Samples.GetSampleProgramPath(name);
+        Assert.True(File.Exists(path), $"Source code file {path} does not exist");
+
+        compiledProgram ??= TempFile.CreateEmpty("program-", ".exe");
+        lastCompilerResult = compilerTestDriver.RunCompilerWithResult(path, compiledProgram.Path);
+    }
+
+    [Then(@"компиляция завершилась с кодом (\d+)")]
+    public void ТогдаКомпиляцияЗавершиласьСКодом(int exitCode)
+    {
+        Assert.NotNull(lastCompilerResult);
+        Assert.Equal(exitCode, lastCompilerResult.ExitCode);
     }
 
     [When("я ввожу (.*)")]
@@ -99,7 +117,7 @@ public sealed class CompilerStepDefinitions : IDisposable
         );
     }
 
-    [Then(@"^(?:я )?получу код возврата (\d+)$")]
+    [Then(@"^(?:я )?получу код возврата (-?\d+)$")]
     public void ТогдаЯПолучуКодВозврата(int exitCode)
     {
         Assert.Equal(exitCode, lastProgramExitCode);
