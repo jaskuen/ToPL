@@ -1012,7 +1012,7 @@ public class MsilCodegenPass : IAstVisitor
         il.Emit(OpCodes.Ldloc, arrayLocal);
         il.Emit(OpCodes.Ldlen);
         il.Emit(OpCodes.Conv_I4);
-        il.Emit(OpCodes.Bge, okLabel);
+        il.Emit(OpCodes.Blt, okLabel);
 
         il.MarkLabel(throwLabel);
         il.Emit(OpCodes.Ldstr, "Array index is out of bounds.");
